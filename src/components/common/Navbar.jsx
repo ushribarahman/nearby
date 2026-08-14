@@ -1,0 +1,129 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import logo from "/logo.png";
+
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  /*
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+  */
+
+  return (
+    <nav
+      className={`w-full bg-white sticky top-0 z-50 transition-shadow duration-300 ${
+        scrolled ? "shadow-sm" : "shadow-none"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-1">
+
+        {/* Main Navbar */}
+        <div className="grid grid-cols-3 items-center">
+
+          {/* Logo */}
+          <Link to="/" className="justify-self-start">
+            <img
+              src={logo}
+              alt="Nearby"
+              className="h-17 w-auto"
+            />
+          </Link>
+
+          {/* Navigation */}
+          <div className="flex items-center justify-center gap-8">
+
+            <Link
+              to="/"
+              className="text-gray-700 hover:text-black transition"
+            >
+              Home
+            </Link>
+
+            <Link
+              to="/events"
+              className="text-gray-700 hover:text-black transition"
+            >
+              Events
+            </Link>
+
+            <Link
+              to="/offers"
+              className="text-gray-700 hover:text-black transition"
+            >
+              Offers
+            </Link>
+
+            <Link
+              to="/explore"
+              className="text-gray-700 hover:text-black transition"
+            >
+              Explore
+            </Link>
+
+            <Link
+              to="/about"
+              className="text-gray-700 hover:text-black transition"
+            >
+              About
+            </Link>
+
+          </div>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-self-end gap-3">
+
+            {/* Login */}
+            <Link
+              to="/login"
+              className="
+                text-gray-700
+                px-5
+                py-2.5
+                rounded-lg
+                outline-1
+                outline-gray-300
+                hover:bg-gray-100
+                hover:text-black
+                transition
+              "
+            >
+              Login
+            </Link>
+
+            {/* Register */}
+            <Link
+              to="/register"
+              className="
+                bg-black
+                text-white
+                px-5
+                py-2.5
+                rounded-lg
+                outline-1
+                outline-gray-300
+                hover:bg-gray-800
+                transition
+              "
+            >
+              Register
+            </Link>
+
+          </div>
+
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+export default Navbar;
