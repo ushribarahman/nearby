@@ -25,7 +25,7 @@ function Navbar() {
         scrolled ? "shadow-sm" : "shadow-none"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-1">
+      <div className="max-w-7xl mx-auto px-6 py-4">
 
         {/* Main Navbar */}
         <div className="grid grid-cols-3 items-center">
@@ -35,7 +35,7 @@ function Navbar() {
             <img
               src={logo}
               alt="Nearby"
-              className="h-17 w-auto"
+              className="h-8 w-auto"
             />
           </Link>
 
@@ -88,7 +88,7 @@ function Navbar() {
               className="
                 text-gray-700
                 px-5
-                py-2.5
+                py-2
                 rounded-lg
                 outline-1
                 outline-gray-300
@@ -107,7 +107,7 @@ function Navbar() {
                 bg-black
                 text-white
                 px-5
-                py-2.5
+                py-2
                 rounded-lg
                 outline-1
                 outline-gray-300

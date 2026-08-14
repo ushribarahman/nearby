@@ -1,0 +1,48 @@
+const events = [
+  {
+    id: 1,
+    type: "event",
+    title: "Ritviz's Kurta Saree Dance Party",
+    location: "Aloki, Dhaka",
+    date: "18 Sep",
+    image: "/event1.jpg",
+    category: "Music",
+    status: "Coming Soon",
+    ticketPrice: 1500,
+  },
+  {
+    id: 2,
+    type: "event",
+    title: "Dhaka International Jazz Festival",
+    location: "Army Stadium, Dhaka",
+    date: "25 Sep",
+    image: "/event1.jpg",
+    category: "Music",
+    status: "Available",
+    ticketPrice: 1200,
+  },
+  {
+    id: 3,
+    type: "event",
+    title: "Tech Carnival 2026",
+    location: "BICC, Dhaka",
+    date: "03 Oct",
+    image: "/event1.jpg",
+    category: "Technology",
+    status: "Available",
+    ticketPrice: 500,
+  },
+  {
+    id: 4,
+    type: "event",
+    title: "Tech Carnival 2026",
+    location: "BICC, Dhaka",
+    date: "03 Oct",
+    image: "/event1.jpg",
+    category: "Technology",
+    status: "Available",
+    ticketPrice: 500,
+  },
+];
+
+export default events;
