@@ -3,7 +3,7 @@ import Filter from "../../components/common/Filter";
 import Search from "../../components/common/Search";
 import CategoryFilter from "../../components/common/CategoryFilter";
 import events from "../../data/Events";
-import EventHero from "../../components/events"
+import EventHero from "../../components/events/EventHero"
 
 function Events() {
   return (
