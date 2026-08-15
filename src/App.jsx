@@ -7,6 +7,8 @@ import Offers from "./pages/public/Offers";
 import Explore from "./pages/public/Explore";
 import About from "./pages/public/About";
 import Footer from "./components/common/Footer";
+import Login from "./pages/public/Login";
+import Register from "./pages/public/Register";
 
 function App() {
   return (
@@ -23,6 +25,10 @@ function App() {
         <Route path="/explore" element={<Explore />} />
 
         <Route path="/about" element={<About />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
 
       </Routes>
       <div className="my-10"></div>
