@@ -5,6 +5,7 @@ import CategoryFilter from "../../components/common/CategoryFilter";
 import events from "../../data/Events";
 import EventHero from "../../components/events/EventHero"
 
+
 function Events() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
