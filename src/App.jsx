@@ -7,8 +7,8 @@ import Offers from "./pages/public/Offers";
 import Explore from "./pages/public/Explore";
 import About from "./pages/public/About";
 import Footer from "./components/common/Footer";
-import Login from "./pages/public/Login";
-import Register from "./pages/public/Register";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 
 function App() {
   return (
@@ -31,7 +31,6 @@ function App() {
         <Route path="/register" element={<Register />} />
 
       </Routes>
-      <div className="my-10"></div>
       <Footer />
     </BrowserRouter>
   );
