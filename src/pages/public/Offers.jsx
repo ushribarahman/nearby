@@ -9,11 +9,9 @@ function Offers() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
 
-      <div className="relative mb-8 overflow-hidden rounded-2xl">
-        <OfferHero />
-      </div>
+      <OfferHero />
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-gray-50 p-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-gray-100 p-3">
 
         <Filter />
 
