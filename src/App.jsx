@@ -6,6 +6,7 @@ import Events from "./pages/public/Events";
 import Offers from "./pages/public/Offers";
 import Explore from "./pages/public/Explore";
 import About from "./pages/public/About";
+import Footer from "./components/common/Footer";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
         <Route path="/about" element={<About />} />
 
       </Routes>
+      <div className="my-10"></div>
+      <Footer />
     </BrowserRouter>
   );
 }

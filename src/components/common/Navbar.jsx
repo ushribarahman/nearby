@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import logo from "/logo.png";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
-  /*
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -17,7 +16,11 @@ function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  */
+
+  const navLinkClass = ({ isActive }) =>
+    `text-gray-700 transition underline-offset-7 hover:underline ${
+      isActive ? "text-black font-semibold underline" : ""
+    }`;
 
   return (
     <nav
@@ -31,51 +34,36 @@ function Navbar() {
         <div className="grid grid-cols-3 items-center">
 
           {/* Logo */}
-          <Link to="/" className="justify-self-start">
+          <NavLink to="/" className="justify-self-start">
             <img
               src={logo}
               alt="Nearby"
               className="h-8 w-auto"
             />
-          </Link>
+          </NavLink>
 
           {/* Navigation */}
           <div className="flex items-center justify-center gap-8">
 
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-black transition"
-            >
+            <NavLink to="/" className={navLinkClass}>
               Home
-            </Link>
+            </NavLink>
 
-            <Link
-              to="/events"
-              className="text-gray-700 hover:text-black transition"
-            >
+            <NavLink to="/events" className={navLinkClass}>
               Events
-            </Link>
+            </NavLink>
 
-            <Link
-              to="/offers"
-              className="text-gray-700 hover:text-black transition"
-            >
+            <NavLink to="/offers" className={navLinkClass}>
               Offers
-            </Link>
+            </NavLink>
 
-            <Link
-              to="/explore"
-              className="text-gray-700 hover:text-black transition"
-            >
+            <NavLink to="/explore" className={navLinkClass}>
               Explore
-            </Link>
+            </NavLink>
 
-            <Link
-              to="/about"
-              className="text-gray-700 hover:text-black transition"
-            >
+            <NavLink to="/about" className={navLinkClass}>
               About
-            </Link>
+            </NavLink>
 
           </div>
 
@@ -83,7 +71,7 @@ function Navbar() {
           <div className="flex items-center justify-self-end gap-3">
 
             {/* Login */}
-            <Link
+            <NavLink
               to="/login"
               className="
                 text-gray-700
@@ -98,10 +86,10 @@ function Navbar() {
               "
             >
               Login
-            </Link>
+            </NavLink>
 
             {/* Register */}
-            <Link
+            <NavLink
               to="/register"
               className="
                 bg-black
@@ -116,7 +104,7 @@ function Navbar() {
               "
             >
               Register
-            </Link>
+            </NavLink>
 
           </div>
 
