@@ -9,6 +9,7 @@ import About from "./pages/public/About";
 import Footer from "./components/common/Footer";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import EventDetails from "./components/events/EventDetails";
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+
+        <Route path="/event/:id" element={<EventDetails />} />
 
       </Routes>
 

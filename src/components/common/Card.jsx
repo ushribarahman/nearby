@@ -1,7 +1,9 @@
 import cardimage from "/event1.jpg";
+import { Link } from "react-router-dom";
 
 function Card({ data }) {
   return (
+    <Link to={`/event/${data.id}`} className="block">
     <div className="w-full overflow-hidden rounded-xl bg-white p-2 shadow-sm">
 
       {/* Event Image */}
@@ -90,6 +92,7 @@ function Card({ data }) {
         </div>
       </div>
     </div>
+    </Link>
   );
 }
 
