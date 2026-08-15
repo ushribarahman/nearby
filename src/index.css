@@ -2,8 +2,42 @@
 
 @import "tailwindcss";
 
-
 body {
   font-family: "Bricolage Grotesque", sans-serif;
 }
 
+
+/* ================= HOME SLIDERS ================= */
+
+@keyframes slide-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-33.333%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-left {
+  animation: slide-left 35s linear infinite;
+}
+
+.animate-slide-right {
+  animation: slide-right 35s linear infinite;
+}
+
+.animate-slide-left:hover,
+.animate-slide-right:hover {
+  animation-play-state: paused;
+}

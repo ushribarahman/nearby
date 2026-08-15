@@ -1,22 +1,29 @@
-import Card from "../../components/common/Card";
-import events from "../../data/Events";
+import Hero from "../../components/home/Hero";
+import NearbyEvents from "../../components/home/NearbyEvents";
+import WhyNearby from "../../components/home/WhyNearby";
+import FAQ from "../../components/common/FAQ";
+import HomeCTA from "../../components/home/HomeCTA";
 
 function Home() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <main className="w-full overflow-hidden bg-white">
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+      {/* Hero */}
+      <Hero />
 
-        {events.map((event) => (
-          <Card
-            key={event.id}
-            data={event}
-          />
-        ))}
+      {/* Nearby Events */}
+      <NearbyEvents />
 
-      </div>
+      {/* Why Nearby */}
+      <WhyNearby />
 
-    </div>
+      {/* FAQ */}
+      <FAQ />
+
+      {/* Final CTA */}
+      <HomeCTA />
+
+    </main>
   );
 }
 
