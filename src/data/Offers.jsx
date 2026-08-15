@@ -2,10 +2,10 @@ const offers = [
   {
     id: 1,
     type: "offer",
-    title: "50% Off Coffee & Desserts",
+    title: "BOGO - Buy One Get One Free",
     location: "Gulshan, Dhaka",
     date: "30 Sep",
-    image: "/offer1.jpg",
+    image: "/offer2.webp",
     category: "Food",
     status: "Active",
     discount: "50% OFF",

@@ -55,7 +55,9 @@ function Card({ data }) {
           <div className="flex flex-col gap-2 text-sm">
 
             <div className="flex items-center gap-1.5 text-gray-700">
-              <span>📍</span>
+              <span>
+                <img width="15" src="https://img.icons8.com/fluency-systems-filled/48/marker.png" alt="marker"/>
+              </span>
               <span>{data?.location || "Location"}</span>
             </div>
 
