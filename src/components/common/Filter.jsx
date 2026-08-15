@@ -6,15 +6,14 @@ function Filter({ selectedFilter, onFilterChange }) {
   ];
 
   return (
-    <div className="flex gap-2 mb-6">
+    <div className="flex items-center gap-2">
       {filters.map((filter) => (
         <button
           key={filter.id}
-          onClick={() => onFilterChange(filter.id)}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-            selectedFilter === filter.id
-              ? "bg-[#01BBC1] text-white"
-              : "bg-white text-gray-600 hover:bg-gray-200"
+         className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+            filter.id === "all"
+              ? "bg-black text-white"
+              : "bg-white text-gray-600"
           }`}
         >
           {filter.label}
