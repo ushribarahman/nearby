@@ -14,7 +14,7 @@ function About() {
 
           <h1 className="text-5xl font-bold leading-tight text-gray-900 md:text-6xl">
             Discover what's happening
-            <span className="block text-gray-400">
+            <span className="block text-[#01BBC1]">
               around you.
             </span>
           </h1>
@@ -88,7 +88,7 @@ function About() {
           {/* Events */}
           <div className="rounded-2xl bg-gray-50 p-7">
 
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-black text-xl text-white">
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#01BBC1] text-xl text-white">
               ✦
             </div>
 
@@ -114,7 +114,7 @@ function About() {
           {/* Offers */}
           <div className="rounded-2xl bg-gray-50 p-7">
 
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-black text-xl text-white">
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#01BBC1] text-xl text-white">
               %
             </div>
 
@@ -140,7 +140,7 @@ function About() {
           {/* Explore */}
           <div className="rounded-2xl bg-gray-50 p-7">
 
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-black text-xl text-white">
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#01BBC1] text-xl text-white">
               ◎
             </div>
 
