@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function HomeCTA() {
   return (
-    <section className="px-6 py-16 md:py-24">
+    <section className="px-6 py-16 md:py-12">
 
       <div className="mx-auto max-w-7xl">
 

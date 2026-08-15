@@ -3,7 +3,7 @@ import WhyNearbyCard from "./WhyNearbyCard";
 
 function WhyNearby() {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 md:py-20">
 
       <div className="mx-auto max-w-7xl px-6">
 

@@ -3,7 +3,7 @@ import EventSlider from "./EventSlider";
 
 function NearbyEvents() {
   return (
-    <section className="py-16 md:py-20">
+    <section className="py-16 md:py-10">
 
       {/* Heading */}
       <div className="mx-auto max-w-7xl px-6">

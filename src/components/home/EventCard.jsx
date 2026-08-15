@@ -7,8 +7,8 @@ function EventCard({ event }) {
       className="
         group
         relative
-        h-[190px]
-        w-[280px]
+        h-47.5
+        w-70
         shrink-0
         overflow-hidden
         rounded-xl
@@ -16,7 +16,7 @@ function EventCard({ event }) {
         duration-300
         hover:scale-[1.02]
         hover:shadow-[0_0_25px_rgba(0,0,0,0.25)]
-        md:h-[210px]
+        md:h-52.5
         md:w-[320px]
       "
     >
@@ -36,7 +36,7 @@ function EventCard({ event }) {
       />
 
       {/* Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4">

@@ -17,7 +17,7 @@ function Hero() {
   if (!events.length) {
     return (
       <section className="mx-auto max-w-7xl px-6 pt-8">
-        <div className="flex h-[420px] items-center justify-center rounded-2xl bg-gray-100 md:h-[520px]">
+        <div className="flex h-105 items-center justify-center rounded-2xl bg-gray-100 md:h-130">
           <p className="text-gray-500">
             No events available.
           </p>
@@ -29,7 +29,7 @@ function Hero() {
   return (
     <section className="mx-auto max-w-7xl px-6 pt-8">
 
-      <div className="relative h-[420px] overflow-hidden rounded-2xl md:h-[520px]">
+      <div className="relative h-105 overflow-hidden rounded-2xl md:h-130">
 
         {/* Slides */}
         {events.map((event, index) => (
@@ -49,7 +49,7 @@ function Hero() {
             />
 
             {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
             {/* Content */}
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">

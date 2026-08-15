@@ -7,7 +7,7 @@ function WhyNearbyCard({
   return (
     <div
       className={`
-        min-h-[225px]
+        min-h-56.25
         rounded-2xl
         bg-gray-100
         p-7
