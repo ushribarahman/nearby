@@ -1,4 +1,4 @@
-import cardimage from "/garden1.jpg";
+import { Link } from "react-router-dom";
 
 function ExploreCard({ data }) {
   return (
@@ -7,7 +7,7 @@ function ExploreCard({ data }) {
         
         <div className="relative sm:w-56 md:w-64 lg:w-72 h-48 sm:h-auto flex-shrink-0">
           <img
-            src={data?.image || cardimage}
+            src={data?.image}
             alt={data?.name || "Explore Place"}
             className="w-full h-52 object-cover"
           /> 
@@ -53,9 +53,11 @@ function ExploreCard({ data }) {
               )}
             </div>
             
-            <button className="rounded-lg bg-[#01BBC1] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#019aa0] transition-colors">
-              View Details
-            </button>
+            <Link to={`/explore/${data.id}`}>
+              <button className="rounded-lg bg-[#01BBC1] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#019aa0] transition-colors">
+                View Details
+              </button>
+            </Link>
           </div>
         </div>
       </div>

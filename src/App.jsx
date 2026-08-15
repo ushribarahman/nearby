@@ -10,6 +10,8 @@ import Footer from "./components/common/Footer";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import EventDetails from "./components/events/EventDetails";
+import OffersDetails from "./components/offers/OffersDetails";
+import ExploreDetails from "./components/explore/ExploreDetails";
 
 function App() {
   return (
@@ -31,7 +33,11 @@ function App() {
 
         <Route path="/register" element={<Register />} />
 
-        <Route path="/event/:id" element={<EventDetails />} />
+        <Route path="/events/:id" element={<EventDetails />} />
+
+        <Route path="/offers/:id" element={<OffersDetails />} />
+        
+        <Route path="/explore/:id" element={<ExploreDetails />} />
 
       </Routes>
 
