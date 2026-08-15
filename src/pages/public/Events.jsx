@@ -3,18 +3,14 @@ import Filter from "../../components/common/Filter";
 import Search from "../../components/common/Search";
 import CategoryFilter from "../../components/common/CategoryFilter";
 import events from "../../data/Events";
-import banner from "../../components/common/Events/banner.png";
+import EventHero from "../../components/events"
 
 function Events() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
 
       <div className="relative mb-8 overflow-hidden rounded-2xl">
-        <img
-          src={banner}
-          alt="Events Banner"
-          className="w-full h-auto"
-        />
+        <EventHero />
       </div>
 
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-gray-50 p-3">
