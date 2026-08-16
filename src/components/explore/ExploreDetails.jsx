@@ -33,9 +33,7 @@ function ExploreDetails() {
       <div className="mb-6">
         <h2 className="text-2xl font-bold">{place.name}</h2>
         <div className="flex items-center gap-2 mt-2">
-          <span className="text-sm text-gray-500">{place.city}</span>
-          <span className="text-sm text-gray-500">•</span>
-          <span className="text-sm text-gray-500">★ {place.rating}</span>
+          <span className="text-sm text-gray-500">{place.city}</span> 
         </div>
       </div>
 

@@ -10,7 +10,7 @@ function Filter({ selectedFilter, onFilterChange }) {
       {filters.map((filter) => (
         <button
           key={filter.id}
-         className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+          className={`rounded-full px-4 py-1.5 text-sm font-medium ${
             filter.id === "all"
               ? "bg-black text-white"
               : "bg-white text-gray-600"

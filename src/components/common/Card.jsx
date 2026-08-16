@@ -29,7 +29,7 @@ function Card({ data }) {
         )}
 
         {data?.status && (
-          <span className="absolute right-2 top-2 rounded-md bg-blue-500 px-2 py-1 text-xs font-semibold text-white">
+          <span className="absolute right-2 top-2 rounded-md bg-[#01BBC1] px-2 py-1 text-xs font-semibold text-white">
             {data.status}
           </span>
         )}
