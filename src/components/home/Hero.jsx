@@ -48,10 +48,8 @@ function Hero() {
               className="h-full w-full object-cover"
             />
 
-            {/* Overlay */}
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
-            {/* Content */}
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
 
               <span className="inline-block rounded-md bg-white px-3 py-1 text-xs font-semibold text-gray-900">
@@ -73,7 +71,6 @@ function Hero() {
           </div>
         ))}
 
-        {/* Indicators */}
         <div className="absolute bottom-6 right-6 z-20 flex gap-1.5">
           {events.map((_, index) => (
             <div

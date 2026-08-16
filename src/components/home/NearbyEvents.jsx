@@ -5,7 +5,6 @@ function NearbyEvents() {
   return (
     <section className="py-16 md:py-10">
 
-      {/* Heading */}
       <div className="mx-auto max-w-7xl px-6">
 
         <div className="mb-8">
@@ -22,13 +21,11 @@ function NearbyEvents() {
 
       </div>
 
-      {/* Top Slider */}
       <EventSlider
         events={events}
         direction="left"
       />
 
-      {/* Bottom Slider */}
       <div className="mt-4">
         <EventSlider
           events={events}

@@ -9,9 +9,6 @@ function WhyNearby() {
 
         <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
 
-          {/* =================================================
-              LEFT CONTENT
-          ================================================== */}
 
           <div>
 
@@ -50,10 +47,6 @@ function WhyNearby() {
 
           </div>
 
-
-          {/* =================================================
-              RIGHT CARDS
-          ================================================== */}
 
           <div className="grid grid-cols-2 gap-4">
 

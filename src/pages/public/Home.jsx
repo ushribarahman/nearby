@@ -8,19 +8,14 @@ function Home() {
   return (
     <main className="w-full overflow-hidden bg-white">
 
-      {/* Hero */}
       <Hero />
 
-      {/* Nearby Events */}
       <NearbyEvents />
 
-      {/* Why Nearby */}
       <WhyNearby />
 
-      {/* FAQ */}
       <FAQ />
 
-      {/* Final CTA */}
       <HomeCTA />
 
     </main>

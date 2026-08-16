@@ -168,7 +168,7 @@ function About() {
 
 
       {/* CTA */}
-      <section class="w-full bg-[url('/blank-banner.jpg')] bg-cover bg-center bg-no-repeat">
+      <section className="w-full bg-[url('/blank-banner.jpg')] bg-cover bg-center bg-no-repeat">
 
         <div className="mx-auto max-w-7xl px-6 py-16 text-center">
 

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 function EventCard({ event }) {
   return (
     <Link
-      to={`/event/${event.id}`}
+      to={`/events/${event.id}`}
       className="
         group
         relative
@@ -21,7 +21,6 @@ function EventCard({ event }) {
       "
     >
 
-      {/* Image */}
       <img
         src={event.image}
         alt={event.title}
@@ -35,10 +34,8 @@ function EventCard({ event }) {
         "
       />
 
-      {/* Gradient */}
       <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
-      {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
 
         <p className="mb-1 text-xs font-medium text-white/70">

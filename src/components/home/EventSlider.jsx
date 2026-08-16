@@ -1,7 +1,6 @@
 import EventCard from "./EventCard";
 
 function EventSlider({ events, direction = "left" }) {
-  // Duplicate events so the animation can loop
   const sliderItems = [...events, ...events];
 
   return (
