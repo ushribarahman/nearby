@@ -18,9 +18,9 @@ function OfferDetails() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-4 pb-8">
-      <div className="relative w-full h-[500px] rounded-xl overflow-hidden mb-6">
+      <div className="relative w-full h-125 rounded-xl overflow-hidden mb-6">
         <img src={offer.image} alt={offer.title} className="w-full h-full object-cover" />
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+        <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-6">
           <h1 className="text-3xl font-bold text-white">{offer.title}</h1>
           <div className="flex items-center gap-4 text-white/90 mt-2">
             <span>{offer.date}</span>
