@@ -5,17 +5,6 @@ function EventDetails() {
   const { id } = useParams();
   const event = events.find((e) => e.id === parseInt(id));
 
-  if (!event) {
-    return (
-      <div className="max-w-7xl mx-auto px-6 py-8 text-center">
-        <h2 className="text-2xl font-bold">Event not found</h2>
-        <Link to="/events" className="text-blue-600 hover:underline mt-4 inline-block">
-          Back to Events
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-4 pb-8">
       <div className="relative w-full h-125 rounded-xl overflow-hidden mb-6">
@@ -41,7 +30,7 @@ function EventDetails() {
         <div className="bg-white rounded-lg p-4 border">
           <div className="flex items-center gap-2 mb-1">
             <img src="https://img.icons8.com/?size=100&id=10053&format=png" alt="calendar" className="w-4 h-4" />
-            <p className="text-sm text-gray-500">Date</p>
+            <p className="text-sm text-gray-500">Dat</p>
           </div>
           <p className="font-semibold">{event.date}</p>
         </div>
