@@ -30,7 +30,7 @@ function EventDetails() {
         <div className="bg-white rounded-lg p-4 border">
           <div className="flex items-center gap-2 mb-1">
             <img src="https://img.icons8.com/?size=100&id=10053&format=png" alt="calendar" className="w-4 h-4" />
-            <p className="text-sm text-gray-500">Dat</p>
+            <p className="text-sm text-gray-500">Date</p>
           </div>
           <p className="font-semibold">{event.date}</p>
         </div>
