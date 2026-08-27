@@ -5,17 +5,6 @@ function EventDetails() {
   const { id } = useParams();
   const event = events.find((e) => e.id === parseInt(id));
 
-  if (!event) {
-    return (
-      <div className="max-w-7xl mx-auto px-6 py-8 text-center">
-        <h2 className="text-2xl font-bold">Event not found</h2>
-        <Link to="/events" className="text-blue-600 hover:underline mt-4 inline-block">
-          Back to Events
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-4 pb-8">
       <div className="relative w-full h-125 rounded-xl overflow-hidden mb-6">

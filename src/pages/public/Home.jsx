@@ -1,7 +1,7 @@
 import Hero from "../../components/home/Hero";
 import NearbyEvents from "../../components/home/NearbyEvents";
 import WhyNearby from "../../components/home/WhyNearby";
-import FAQ from "../../components/common/FAQ";
+import FAQ from "../../components/common/faq";
 import HomeCTA from "../../components/home/HomeCTA";
 
 function Home() {
