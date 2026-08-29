@@ -6,9 +6,7 @@ body {
   font-family: "Bricolage Grotesque", sans-serif;
 }
 
-
 /* ================= HOME SLIDERS ================= */
-
 @keyframes slide-left {
   from {
     transform: translateX(0);

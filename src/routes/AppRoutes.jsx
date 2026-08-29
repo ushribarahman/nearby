@@ -1,59 +1,38 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// ==========================================
-// Layouts
-// ==========================================
-
+//layouts
 import PublicLayout from "../layouts/PublicLayout";
 import OrganizerLayout from "../layouts/OrganizerLayout";
 import AdminLayout from "../layouts/AdminLayout";
 
-// ==========================================
-// Route Guards
-// ==========================================
-
+//route guards
 import ProtectedRoute from "./ProtectedRoute";
 import OrganizerRoute from "./OrganizerRoute";
 import AdminRoute from "./AdminRoute";
 
-// ==========================================
-// Public Pages
-// ==========================================
-
+//public pages
 import Home from "../pages/public/Home";
 import Events from "../pages/public/Events";
 import Offers from "../pages/public/Offers";
 import Explore from "../pages/public/Explore";
 import About from "../pages/public/About";
 
-// ==========================================
-// Public Detail Components
-// ==========================================
-
+//public detail components
 import EventDetails from "../components/events/EventDetails";
 import OfferDetails from "../components/offers/OffersDetails";
 import ExploreDetails from "../components/explore/ExploreDetails";
 
-// ==========================================
-// Authentication Pages
-// ==========================================
-
+//authentication pages
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
-// ==========================================
-// Organizer Pages
-// ==========================================
-
+//organizer pages
 import OrganizerDashboard from "../pages/organizer/Dashboard";
 import OrganizerEvent from "../pages/organizer/Event";
 import OrganizerOffers from "../pages/organizer/Offers";
 import OrganizerProfile from "../pages/organizer/Profile";
 
-// ==========================================
-// Admin Pages
-// ==========================================
-
+//admin pages
 import AdminDashboard from "../pages/admin/Dashboard";
 import AdminUsers from "../pages/admin/Users";
 import AdminOrganizers from "../pages/admin/Organizers";
@@ -61,83 +40,68 @@ import AdminEvents from "../pages/admin/Events";
 import AdminOffers from "../pages/admin/Offers";
 import AdminReports from "../pages/admin/Reports";
 
-// ==========================================
-// Common Components
-// ==========================================
-
+//common components
 import ScrollToTop from "../components/common/ScrollToTop";
-
 
 function AppRoutes() {
   return (
     <BrowserRouter>
-
-      {/* Scroll to top on route change */}
+      {/*scroll to top*/}
       <ScrollToTop />
 
       <Routes>
-
-        {/* ======================================
-            PUBLIC ROUTES
-        ====================================== */}
-
+        {/*public routes*/}
         <Route element={<PublicLayout />}>
-
-          {/* Home */}
+          {/*home*/}
           <Route
             path="/"
             element={<Home />}
           />
 
-          {/* Events */}
+          {/*events*/}
           <Route
             path="/events"
             element={<Events />}
           />
 
-          {/* Event Details */}
+          {/*event details*/}
           <Route
             path="/events/:id"
             element={<EventDetails />}
           />
 
-          {/* Offers */}
+          {/*offers*/}
           <Route
             path="/offers"
             element={<Offers />}
           />
 
-          {/* Offer Details */}
+          {/*offer details*/}
           <Route
             path="/offers/:id"
             element={<OfferDetails />}
           />
 
-          {/* Explore */}
+          {/*explore*/}
           <Route
             path="/explore"
             element={<Explore />}
           />
 
-          {/* Explore Details */}
+          {/*explore details*/}
           <Route
             path="/explore/:id"
             element={<ExploreDetails />}
           />
 
-          {/* About */}
+          {/*about*/}
           <Route
             path="/about"
             element={<About />}
           />
-
         </Route>
 
-
-        {/* ======================================
-            AUTH ROUTES
-        ====================================== */}
-
+        {/*auth routes*/}
         <Route
           path="/login"
           element={<Login />}
@@ -148,119 +112,89 @@ function AppRoutes() {
           element={<Register />}
         />
 
-
-        {/* ======================================
-            PROTECTED USER ROUTES
-        ====================================== */}
-
+        {/*protected user routes*/}
         <Route element={<ProtectedRoute />}>
-
-          {/* User profile route can be added
-              when the user Profile page exists. */}
-
+          {/*user profile route*/}
         </Route>
 
-
-        {/* ======================================
-            ORGANIZER ROUTES
-        ====================================== */}
-
+        {/*organizer routes*/}
         <Route element={<OrganizerRoute />}>
-
           <Route element={<OrganizerLayout />}>
-
-            {/* Organizer Dashboard */}
+            {/*organizer dashboard*/}
             <Route
               path="/organizer/dashboard"
               element={<OrganizerDashboard />}
             />
 
-            {/* Organizer Events */}
+            {/*organizer events*/}
             <Route
               path="/organizer/events"
               element={<OrganizerEvent />}
             />
 
-            {/* Organizer Offers */}
+            {/*organizer offers*/}
             <Route
               path="/organizer/offers"
               element={<OrganizerOffers />}
             />
 
-            {/* Organizer Profile */}
+            {/*organizer profile*/}
             <Route
               path="/organizer/profile"
               element={<OrganizerProfile />}
             />
-
           </Route>
-
         </Route>
 
-
-        {/* ======================================
-            ADMIN ROUTES
-        ====================================== */}
-
+        {/*admin routes*/}
         <Route element={<AdminRoute />}>
-
           <Route element={<AdminLayout />}>
-
-            {/* Admin Dashboard */}
+            {/*admin dashboard*/}
             <Route
               path="/admin/dashboard"
               element={<AdminDashboard />}
             />
 
-            {/* Users */}
+            {/*users*/}
             <Route
               path="/admin/users"
               element={<AdminUsers />}
             />
 
-            {/* Organizers */}
+            {/*organizers*/}
             <Route
               path="/admin/organizers"
               element={<AdminOrganizers />}
             />
 
-            {/* Events */}
+            {/*events*/}
             <Route
               path="/admin/events"
               element={<AdminEvents />}
             />
 
-            {/* Offers */}
+            {/*offers*/}
             <Route
               path="/admin/offers"
               element={<AdminOffers />}
             />
 
-            {/* Reports */}
+            {/*reports*/}
             <Route
               path="/admin/reports"
               element={<AdminReports />}
             />
-
           </Route>
-
         </Route>
 
-
-        {/* ======================================
-            FALLBACK
-        ====================================== */}
-
+        {/*fallback*/}
         <Route
           path="*"
           element={<Home />}
         />
-
       </Routes>
-
     </BrowserRouter>
   );
 }
 
 export default AppRoutes;
-

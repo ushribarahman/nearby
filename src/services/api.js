@@ -8,7 +8,7 @@ const apiRequest = async (endpoint, options = {}) => {
     ...(options.headers || {}),
   };
 
-  // Automatically attach JWT when available
+  //auto attach jwt when available
   if (token && !headers.Authorization) {
     headers.Authorization = `Bearer ${token}`;
   }

@@ -8,10 +8,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ==========================================
-  // Restore authentication when app starts
-  // ==========================================
-
+  //restore auth
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
 
@@ -41,10 +38,7 @@ export function AuthProvider({ children }) {
     restoreUser();
   }, []);
 
-  // ==========================================
-  // Login
-  // ==========================================
-
+  //login
   const login = async (credentials) => {
     const response = await authService.login(credentials);
 
@@ -56,20 +50,14 @@ export function AuthProvider({ children }) {
     return response;
   };
 
-  // ==========================================
-  // Register
-  // ==========================================
-
+  //register
   const register = async (userData) => {
     const response = await authService.register(userData);
 
     return response;
   };
 
-  // ==========================================
-  // Logout
-  // ==========================================
-
+  //logout
   const logout = () => {
     localStorage.removeItem("token");
 
@@ -77,16 +65,10 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  // ==========================================
-  // Authentication status
-  // ==========================================
-
+  //auth status
   const isAuthenticated = !!token;
 
-  // ==========================================
-  // Context value
-  // ==========================================
-
+  //context
   const value = {
     user,
     token,
@@ -103,10 +85,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
-// ==========================================
-// Custom hook
-// ==========================================
 
 export function useAuth() {
   const context = useContext(AuthContext);

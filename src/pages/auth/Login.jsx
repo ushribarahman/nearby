@@ -16,17 +16,10 @@ function Login() {
 
   const { login } = useAuth();
 
-  // ==========================================
-  // Login
-  // ==========================================
-
   const handleLogin = async () => {
     setError("");
 
-    // ------------------------------
-    // Basic validation
-    // ------------------------------
-
+    //validation
     if (!email.trim() || !password) {
       setError("Please enter your email and password.");
       return;
@@ -35,25 +28,16 @@ function Login() {
     try {
       setIsLoading(true);
 
-      // ------------------------------
-      // Send login request to backend
-      // ------------------------------
-
+      //send login request
       const response = await login({
         email: email.trim(),
         password,
       });
 
-      // ------------------------------
-      // Get authenticated user
-      // ------------------------------
-
+      //get user
       const loggedInUser = response.user;
 
-      // ------------------------------
-      // Verify selected login type
-      // ------------------------------
-
+      //check login type
       if (isOrganizer && loggedInUser.role !== "organizer") {
         setError(
           "This account is not registered as an organizer."
@@ -68,10 +52,7 @@ function Login() {
         return;
       }
 
-      // ------------------------------
-      // Redirect based on role
-      // ------------------------------
-
+      //redirect based on role
       if (loggedInUser.role === "organizer") {
         navigate("/organizer/dashboard");
       } else {
@@ -88,9 +69,7 @@ function Login() {
     }
   };
 
-  // ==========================================
-  // Back
-  // ==========================================
+  //back
 
   const handleBack = () => {
     navigate(-1);
@@ -98,12 +77,10 @@ function Login() {
 
   return (
     <div className="min-h-screen flex flex-col">
-
-      {/* Login Content */}
+      {/*login content*/}
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-6 py-8">
-
-          {/* Back Button */}
+          {/*back button*/}
           <button
             type="button"
             onClick={handleBack}
@@ -136,12 +113,10 @@ function Login() {
             Back
           </button>
 
-          {/* Login Container */}
+          {/*login container*/}
           <div className="flex items-center justify-center">
-
             <div className="w-full max-w-md">
-
-              {/* Logo */}
+              {/*logo*/}
               <div className="mb-4 flex justify-center">
                 <img
                   src="/logo.png"
@@ -150,7 +125,7 @@ function Login() {
                 />
               </div>
 
-              {/* Heading */}
+              {/*heading*/}
               <div className="mb-6 text-center">
                 <h1 className="text-3xl font-bold text-gray-900">
                   {isOrganizer
@@ -165,9 +140,8 @@ function Login() {
                 </p>
               </div>
 
-              {/* Organizer Toggle */}
+              {/*organizer toggle*/}
               <div className="mb-5 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-
                 <div>
                   <p className="text-sm font-medium text-gray-900">
                     Are you an organizer?
@@ -180,7 +154,7 @@ function Login() {
                   </p>
                 </div>
 
-                {/* Toggle */}
+                {/*toggle*/}
                 <button
                   type="button"
                   onClick={() => {
@@ -201,20 +175,18 @@ function Login() {
                     }`}
                   />
                 </button>
-
               </div>
 
-              {/* Form */}
+              {/*form*/}
               <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-md">
-
-                {/* Error */}
+                {/*error*/}
                 {error && (
                   <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                     {error}
                   </div>
                 )}
 
-                {/* Email */}
+                {/*email*/}
                 <div className="mb-5">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Email
@@ -238,9 +210,8 @@ function Login() {
                   />
                 </div>
 
-                {/* Password */}
+                {/*password*/}
                 <div className="mb-4">
-
                   <div className="mb-2 flex items-center justify-between">
                     <label className="text-sm font-medium text-gray-700">
                       Password
@@ -270,10 +241,9 @@ function Login() {
                     autoComplete="current-password"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
-
                 </div>
 
-                {/* Remember */}
+                {/*remember*/}
                 <div className="mb-6 flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -285,7 +255,7 @@ function Login() {
                   </span>
                 </div>
 
-                {/* Login */}
+                {/*login*/}
                 <button
                   type="button"
                   onClick={handleLogin}
@@ -311,7 +281,7 @@ function Login() {
                       : "Login"}
                 </button>
 
-                {/* Register */}
+                {/*register*/}
                 <p className="mt-6 text-center text-sm text-gray-500">
                   Don't have an account?{" "}
 
@@ -322,18 +292,14 @@ function Login() {
                     Register
                   </Link>
                 </p>
-
               </div>
-
             </div>
-
           </div>
         </div>
       </main>
 
-      {/* Footer */}
+      {/*footer*/}
       <Footer />
-
     </div>
   );
 }

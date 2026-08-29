@@ -21,18 +21,12 @@ function Register() {
 
   const { register } = useAuth();
 
-  // ==========================================
-  // Register
-  // ==========================================
-
+  //register
   const handleRegister = async () => {
     setError("");
     setSuccess("");
 
-    // ------------------------------
-    // Basic validation
-    // ------------------------------
-
+    //validation
     if (!name.trim()) {
       setError("Please enter your full name.");
       return;
@@ -58,10 +52,7 @@ function Register() {
       return;
     }
 
-    // ------------------------------
-    // Organizer validation
-    // ------------------------------
-
+    //organizer validation
     if (isOrganizer && !organizationName.trim()) {
       setError("Please enter your organization or business name.");
       return;
@@ -75,10 +66,7 @@ function Register() {
     try {
       setIsLoading(true);
 
-      // ------------------------------
-      // Prepare registration data
-      // ------------------------------
-
+      //prepare registration data
       const userData = {
         name: name.trim(),
         email: email.trim(),
@@ -86,59 +74,44 @@ function Register() {
         role: isOrganizer ? "organizer" : "user",
       };
 
-      // Add organizer-specific fields only for organizers
+      //add organizer fields
       if (isOrganizer) {
         userData.organizationName = organizationName.trim();
         userData.phone = phone.trim();
       }
 
-      // ------------------------------
-      // Send registration request
-      // ------------------------------
-
+      //send registration request
       await register(userData);
 
-      // ------------------------------
-      // Registration successful
-      // ------------------------------
+      //registration successful
+      setSuccess("Account created successfully. Redirecting to login...");
 
-      setSuccess(
-        "Account created successfully. Redirecting to login..."
-      );
-
-      // Give the user a moment to see success message
+      //redirect to login
       setTimeout(() => {
         navigate("/login");
       }, 1000);
-
     } catch (error) {
       console.error("Registration failed:", error);
 
       setError(
-        error.message ||
-          "Unable to create your account. Please try again."
+        error.message || "Unable to create your account. Please try again.",
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ==========================================
-  // Back
-  // ==========================================
-
+  //back
   const handleBack = () => {
     navigate(-1);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-
-      {/* Register Content */}
+      {/*register content*/}
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-6 py-8">
-
-          {/* Back Button */}
+          {/*back button*/}
           <button
             type="button"
             onClick={handleBack}
@@ -167,30 +140,21 @@ function Register() {
                 d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
               />
             </svg>
-
             Back
           </button>
 
-          {/* Register Container */}
+          {/*register container*/}
           <div className="flex items-center justify-center">
-
             <div className="w-full max-w-md">
-
-              {/* Logo */}
+              {/*logo*/}
               <div className="mb-4 flex justify-center">
-                <img
-                  src="/logo.png"
-                  alt="Nearby"
-                  className="h-10 w-auto"
-                />
+                <img src="/logo.png" alt="Nearby" className="h-10 w-auto" />
               </div>
 
-              {/* Heading */}
+              {/*heading*/}
               <div className="mb-6 text-center">
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {isOrganizer
-                    ? "Become an Organizer"
-                    : "Create an account"}
+                  {isOrganizer ? "Become an Organizer" : "Create an account"}
                 </h1>
 
                 <p className="mt-2 text-gray-500">
@@ -200,9 +164,8 @@ function Register() {
                 </p>
               </div>
 
-              {/* Organizer Toggle */}
+              {/*organizer toggle*/}
               <div className="mb-5 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-
                 <div>
                   <p className="text-sm font-medium text-gray-900">
                     Are you an organizer?
@@ -215,7 +178,7 @@ function Register() {
                   </p>
                 </div>
 
-                {/* Toggle */}
+                {/*toggle*/}
                 <button
                   type="button"
                   onClick={() => {
@@ -224,40 +187,34 @@ function Register() {
                     setSuccess("");
                   }}
                   className={`relative h-6 w-11 rounded-full transition ${
-                    isOrganizer
-                      ? "bg-black"
-                      : "bg-gray-300"
+                    isOrganizer ? "bg-black" : "bg-gray-300"
                   }`}
                 >
                   <span
                     className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition ${
-                      isOrganizer
-                        ? "left-5"
-                        : "left-0.5"
+                      isOrganizer ? "left-5" : "left-0.5"
                     }`}
                   />
                 </button>
-
               </div>
 
-              {/* Form */}
+              {/*form*/}
               <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-md">
-
-                {/* Error */}
+                {/*error*/}
                 {error && (
                   <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                     {error}
                   </div>
                 )}
 
-                {/* Success */}
+                {/*success*/}
                 {success && (
                   <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
                     {success}
                   </div>
                 )}
 
-                {/* Full Name */}
+                {/*full name*/}
                 <div className="mb-5">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Full Name
@@ -276,7 +233,7 @@ function Register() {
                   />
                 </div>
 
-                {/* Organization / Business Name */}
+                {/*organization name*/}
                 {isOrganizer && (
                   <div className="mb-5">
                     <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -296,7 +253,7 @@ function Register() {
                   </div>
                 )}
 
-                {/* Email */}
+                {/*email*/}
                 <div className="mb-5">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Email
@@ -315,7 +272,7 @@ function Register() {
                   />
                 </div>
 
-                {/* Phone - Organizer */}
+                {/*phone*/}
                 {isOrganizer && (
                   <div className="mb-5">
                     <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -336,7 +293,7 @@ function Register() {
                   </div>
                 )}
 
-                {/* Password */}
+                {/*password*/}
                 <div className="mb-5">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Password
@@ -355,7 +312,7 @@ function Register() {
                   />
                 </div>
 
-                {/* Confirm Password */}
+                {/*confirm password*/}
                 <div className="mb-6">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Confirm Password
@@ -374,7 +331,7 @@ function Register() {
                   />
                 </div>
 
-                {/* Register */}
+                {/*register*/}
                 <button
                   type="button"
                   onClick={handleRegister}
@@ -400,10 +357,9 @@ function Register() {
                       : "Create Account"}
                 </button>
 
-                {/* Login */}
+                {/*login*/}
                 <p className="mt-6 text-center text-sm text-gray-500">
                   Already have an account?{" "}
-
                   <Link
                     to="/login"
                     className="font-medium text-black hover:underline"
@@ -411,18 +367,14 @@ function Register() {
                     Login
                   </Link>
                 </p>
-
               </div>
-
             </div>
-
           </div>
         </div>
       </main>
 
-      {/* Footer */}
+      {/*footer*/}
       <Footer />
-
     </div>
   );
 }

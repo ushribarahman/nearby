@@ -5,10 +5,7 @@ function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
-  // ==========================================
-  // Wait until authentication is restored
-  // ==========================================
-
+  //wait for authentication restoration
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
@@ -23,10 +20,7 @@ function ProtectedRoute() {
     );
   }
 
-  // ==========================================
-  // Not authenticated
-  // ==========================================
-
+  //not authenticated
   if (!isAuthenticated) {
     return (
       <Navigate
@@ -37,10 +31,7 @@ function ProtectedRoute() {
     );
   }
 
-  // ==========================================
-  // Authenticated
-  // ==========================================
-
+  //authenticated
   return <Outlet />;
 }
 

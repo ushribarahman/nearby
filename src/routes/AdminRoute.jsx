@@ -4,10 +4,7 @@ import useAuth from "../hooks/useAuth";
 function AdminRoute() {
   const { user, loading } = useAuth();
 
-  // ==========================================
-  // Wait for authentication restoration
-  // ==========================================
-
+  // wait for auth restoration
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
@@ -22,26 +19,17 @@ function AdminRoute() {
     );
   }
 
-  // ==========================================
-  // Not logged in
-  // ==========================================
-
+  //not logged in
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // ==========================================
-  // Logged in but not an admin
-  // ==========================================
-
+  //logged in but not an admin
   if (user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
-
-  // ==========================================
-  // Admin
-  // ==========================================
-
+ 
+  //admin
   return <Outlet />;
 }
 
