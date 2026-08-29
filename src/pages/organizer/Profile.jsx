@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function OrganizerProfile() {
+function Profile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
@@ -514,4 +514,4 @@ function OrganizerProfile() {
   );
 }
 
-export default OrganizerProfile;
+export default Profile;

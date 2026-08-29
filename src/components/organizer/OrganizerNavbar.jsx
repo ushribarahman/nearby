@@ -6,6 +6,7 @@ function OrganizerNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  
   const [profile, setProfile] = useState({
     fullName: "",
     profileImage: "",
@@ -25,7 +26,6 @@ function OrganizerNavbar() {
     };
   }, []);
 
-  // Load profile from localStorage
   useEffect(() => {
     const savedProfile = localStorage.getItem("organizerProfile");
     if (savedProfile) {
@@ -37,7 +37,6 @@ function OrganizerNavbar() {
     }
   }, []);
 
-  // Listen for storage changes (when profile is updated)
   useEffect(() => {
     const handleStorageChange = () => {
       const savedProfile = localStorage.getItem("organizerProfile");
@@ -57,7 +56,6 @@ function OrganizerNavbar() {
     };
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -72,9 +70,8 @@ function OrganizerNavbar() {
   }, []);
 
   const navLinkClass = ({ isActive }) =>
-    `text-gray-700 transition underline-offset-7 hover:underline ${
-      isActive ? "text-black font-semibold underline" : ""
-    }`;
+    "text-gray-700 transition underline-offset-7 hover:underline " +
+    (isActive ? "text-black font-semibold underline" : "");
 
   const handleLogout = () => {
     setDropdownOpen(false);
@@ -86,7 +83,6 @@ function OrganizerNavbar() {
     navigate("/organizer/profile");
   };
 
-  // Get first letter for fallback
   const getInitial = () => {
     if (profile.fullName) {
       return profile.fullName.charAt(0).toUpperCase();
@@ -94,75 +90,48 @@ function OrganizerNavbar() {
     return "O";
   };
 
+  const getDisplayName = () => {
+    if (profile.fullName) {
+      return profile.fullName;
+    }
+    return "Organizer";
+  };
+
   return (
     <nav
-      className={`w-full bg-white sticky top-0 z-50 transition-shadow duration-300 ${
-        scrolled ? "shadow-sm" : "shadow-none"
-      }`}
+      className={"w-full bg-white sticky top-0 z-50 transition-shadow duration-300 " +
+        (scrolled ? "shadow-sm" : "shadow-none")}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
 
-        {/* Main Navbar */}
         <div className="grid grid-cols-3 items-center">
 
-          {/* Logo */}
           <Link to="/organizer/dashboard" className="justify-self-start">
-            <img
-              src={logo}
-              alt="Nearby"
-              className="h-8 w-auto"
-            />
+            <img src={logo} alt="Nearby" className="h-8 w-auto" />
           </Link>
 
-          {/* Navigation - Removed Profile link */}
           <div className="flex items-center justify-center gap-8">
-
-            <NavLink
-              to="/organizer/dashboard"
-              className={navLinkClass}
-            >
+            <NavLink to="/organizer/dashboard" className={navLinkClass}>
               Dashboard
             </NavLink>
-
-            <NavLink
-              to="/organizer/events"
-              className={navLinkClass}
-            >
+            <NavLink to="/organizer/events" className={navLinkClass}>
               Events
             </NavLink>
-
-            <NavLink
-              to="/organizer/offers"
-              className={navLinkClass}
-            >
+            <NavLink to="/organizer/offers" className={navLinkClass}>
               Offers
             </NavLink>
-
           </div>
 
-          {/* Right side - Profile Circle with Dropdown */}
           <div className="flex items-center justify-self-end gap-3 relative" ref={dropdownRef}>
 
-            {/* Profile Circle */}
+            <span className="text-sm font-medium text-gray-700 hidden sm:block">
+              {getDisplayName()}
+            </span>
+
             <button
               type="button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="
-                w-11 h-11
-                rounded-full
-                bg-black
-                text-white
-                font-semibold
-                text-sm
-                flex items-center justify-center
-                hover:bg-gray-800
-                transition
-                focus:outline-none
-                focus:ring-2
-                focus:ring-offset-2
-                focus:ring-gray-300
-                overflow-hidden
-              "
+              className="w-11 h-11 rounded-full bg-black text-white font-semibold text-sm flex items-center justify-center hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 overflow-hidden"
             >
               {profile.profileImage ? (
                 <img
@@ -175,20 +144,11 @@ function OrganizerNavbar() {
               )}
             </button>
 
-            {/* Dropdown Menu */}
             {dropdownOpen && (
               <div className="absolute right-0 top-12 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                 <button
                   onClick={handleEditProfile}
-                  className="
-                    w-full
-                    text-left
-                    px-4 py-2.5
-                    text-sm
-                    transition
-                    flex items-center gap-3
-                    hover:bg-gray-50
-                  "
+                  className="w-full text-left px-4 py-2.5 text-sm transition flex items-center gap-3 hover:bg-gray-50"
                 >
                   <img 
                     src="https://img.icons8.com/?size=100&id=12438&format=png&color=000000" 
@@ -202,15 +162,7 @@ function OrganizerNavbar() {
 
                 <button
                   onClick={handleLogout}
-                  className="
-                    w-full
-                    text-left
-                    px-4 py-2.5
-                    text-sm
-                    transition
-                    flex items-center gap-3
-                    hover:bg-gray-50
-                  "
+                  className="w-full text-left px-4 py-2.5 text-sm transition flex items-center gap-3 hover:bg-gray-50"
                 >
                   <img 
                     src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000" 
