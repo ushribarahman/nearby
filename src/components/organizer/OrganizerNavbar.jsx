@@ -1,19 +1,23 @@
 import { useEffect, useState, useRef } from "react";
-import { NavLink, Link } from "react-router-dom";
+import {
+  NavLink,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import logo from "/logo_organizer.png";
 import useAuth from "../../hooks/useAuth";
 
 function OrganizerNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const { user, logout } = useAuth();
 
-  // ==========================================
-  // Scroll shadow
-  // ==========================================
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,10 +31,6 @@ function OrganizerNavbar() {
     };
   }, []);
 
-  // ==========================================
-  // Close dropdown when clicking outside
-  // ==========================================
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -38,6 +38,13 @@ function OrganizerNavbar() {
         !dropdownRef.current.contains(event.target)
       ) {
         setDropdownOpen(false);
+      }
+
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setMobileMenuOpen(false);
       }
     };
 
@@ -54,9 +61,9 @@ function OrganizerNavbar() {
     };
   }, []);
 
-  // ==========================================
-  // Navigation link style
-  // ==========================================
+  const handleMobileNavigation = () => {
+    setMobileMenuOpen(false);
+  };
 
   const navLinkClass = ({ isActive }) =>
     "text-gray-700 transition underline-offset-7 hover:underline " +
@@ -64,28 +71,21 @@ function OrganizerNavbar() {
       ? "text-black font-semibold underline"
       : "");
 
-  // ==========================================
-  // Logout
-  // ==========================================
 
   const handleLogout = () => {
-    setDropdownOpen(false);
+  setDropdownOpen(false);
 
-    // Clear authentication state + JWT
-    logout();
-  };
+  //clear authentication state + JWT
+  logout();
 
-  // ==========================================
-  // Edit / Profile
-  // ==========================================
+  window.location.replace("/");
+};
 
   const handleProfile = () => {
     setDropdownOpen(false);
-  };
 
-  // ==========================================
-  // Get user initial
-  // ==========================================
+    navigate("/organizer/profile");
+  };
 
   const getInitial = () => {
     if (user?.name) {
@@ -97,10 +97,6 @@ function OrganizerNavbar() {
     return "O";
   };
 
-  // ==========================================
-  // Get display name
-  // ==========================================
-
   const getDisplayName = () => {
     if (user?.name) {
       return user.name;
@@ -108,10 +104,6 @@ function OrganizerNavbar() {
 
     return "Organizer";
   };
-
-  // ==========================================
-  // Render
-  // ==========================================
 
   return (
     <nav
@@ -122,17 +114,13 @@ function OrganizerNavbar() {
           : "shadow-none")
       }
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
 
-        <div className="grid grid-cols-3 items-center">
-
-          {/* ==========================================
-              Logo
-          =========================================== */}
+        <div className="flex items-center justify-between">
 
           <Link
             to="/organizer/dashboard"
-            className="justify-self-start"
+            className="shrink-0"
           >
             <img
               src={logo}
@@ -141,11 +129,7 @@ function OrganizerNavbar() {
             />
           </Link>
 
-          {/* ==========================================
-              Navigation
-          =========================================== */}
-
-          <div className="flex items-center justify-center gap-8">
+          <div className="hidden md:flex items-center justify-center gap-8">
 
             <NavLink
               to="/organizer/dashboard"
@@ -170,153 +154,306 @@ function OrganizerNavbar() {
 
           </div>
 
-          {/* ==========================================
-              Organizer Profile
-          =========================================== */}
+          <div className="flex items-center gap-2 sm:gap-3">
 
-          <div
-            ref={dropdownRef}
-            className="relative flex items-center justify-self-end gap-3"
-          >
-
-            {/* Organizer Name */}
-
-            <span className="hidden text-sm font-medium text-gray-700 sm:block">
+            <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-32 truncate">
               {getDisplayName()}
             </span>
 
-            {/* Avatar */}
-
-            <button
-              type="button"
-              onClick={() =>
-                setDropdownOpen(
-                  (previous) => !previous
-                )
-              }
-              aria-label="Open organizer menu"
-              aria-expanded={dropdownOpen}
-              className="
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                overflow-hidden
-                rounded-full
-                bg-black
-                text-sm
-                font-semibold
-                text-white
-                transition
-                hover:bg-gray-800
-                focus:outline-none
-                focus:ring-2
-                focus:ring-gray-300
-                focus:ring-offset-2
-              "
+            <div
+              ref={dropdownRef}
+              className="relative"
             >
-              {user?.profileImage ? (
-                <img
-                  src={user.profileImage}
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                getInitial()
-              )}
-            </button>
 
-            {/* ==========================================
-                Dropdown
-            =========================================== */}
-
-            {dropdownOpen && (
-              <div
+              <button
+                type="button"
+                onClick={() =>
+                  setDropdownOpen(
+                    (previous) => !previous
+                  )
+                }
+                aria-label="Open organizer menu"
+                aria-expanded={dropdownOpen}
                 className="
-                  absolute
-                  right-0
-                  top-14
-                  z-50
-                  w-48
+                  flex
+                  h-10
+                  w-10
+                  sm:h-11
+                  sm:w-11
+                  cursor-pointer
+                  items-center
+                  justify-center
                   overflow-hidden
+                  rounded-full
+                  bg-black
+                  text-sm
+                  font-semibold
+                  text-white
+                  transition
+                  hover:bg-gray-800
+                  focus:outline-none
+                  focus:ring-2
+                  focus:ring-gray-300
+                  focus:ring-offset-2
+                "
+              >
+                {user?.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  getInitial()
+                )}
+              </button>
+
+              {dropdownOpen && (
+                <div
+                  className="
+                    absolute
+                    right-0
+                    top-12
+                    sm:top-14
+                    z-50
+                    w-48
+                    overflow-hidden
+                    rounded-lg
+                    border
+                    border-gray-200
+                    bg-white
+                    py-2
+                    shadow-lg
+                  "
+                >
+
+                  <button
+                    type="button"
+                    onClick={handleProfile}
+                    className="
+                      flex
+                      w-full
+                      cursor-pointer
+                      items-center
+                      gap-3
+                      px-4
+                      py-2.5
+                      text-left
+                      text-sm
+                      transition
+                      hover:bg-gray-50
+                    "
+                  >
+                    <img
+                      src="https://img.icons8.com/?size=100&id=12438&format=png&color=000000"
+                      alt="Profile"
+                      className="h-4 w-4"
+                    />
+
+                    <span>
+                      Profile
+                    </span>
+                  </button>
+
+                  <div className="my-1 border-t border-gray-200" />
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="
+                      flex
+                      w-full
+                      cursor-pointer
+                      items-center
+                      gap-3
+                      px-4
+                      py-2.5
+                      text-left
+                      text-sm
+                      transition
+                      hover:bg-gray-50
+                    "
+                  >
+                    <img
+                      src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000"
+                      alt="Logout"
+                      className="h-4 w-4"
+                    />
+
+                    <span>
+                      Logout
+                    </span>
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+
+            {/*Hamburger*/}
+
+            <div
+              ref={mobileMenuRef}
+              className="relative md:hidden"
+            >
+
+              <button
+                type="button"
+                onClick={() =>
+                  setMobileMenuOpen(
+                    (previous) => !previous
+                  )
+                }
+                aria-label="Open navigation menu"
+                aria-expanded={mobileMenuOpen}
+                className="
+                  flex
+                  h-10
+                  w-10
+                  cursor-pointer
+                  items-center
+                  justify-center
                   rounded-lg
                   border
                   border-gray-200
-                  bg-white
-                  py-2
-                  shadow-lg
+                  text-gray-700
+                  transition
+                  hover:bg-gray-50
+                  hover:text-black
+                  focus:outline-none
                 "
               >
 
-                {/* ======================================
-                    Profile
-                ======================================= */}
+                {mobileMenuOpen ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.8}
+                    stroke="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                ) : (
+                  /* Hamburger icon */
 
-                <button
-                  type="button"
-                  onClick={handleProfile}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.8}
+                    stroke="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                )}
+
+              </button>
+
+              {mobileMenuOpen && (
+                <div
                   className="
-                    flex
-                    w-full
-                    items-center
-                    gap-3
-                    px-4
-                    py-2.5
-                    text-left
-                    text-sm
-                    transition
-                    hover:bg-gray-50
+                    absolute
+                    right-0
+                    top-12
+                    z-50
+                    w-52
+                    overflow-hidden
+                    rounded-xl
+                    border
+                    border-gray-200
+                    bg-white
+                    py-2
+                    shadow-lg
                   "
                 >
-                  <img
-                    src="https://img.icons8.com/?size=100&id=12438&format=png&color=000000"
-                    alt="Profile"
-                    className="h-4 w-4"
-                  />
 
-                  <span>
-                    Profile
-                  </span>
-                </button>
+                  <NavLink
+                    to="/organizer/dashboard"
+                    onClick={handleMobileNavigation}
+                    className={({
+                      isActive,
+                    }) =>
+                      `
+                        block
+                        px-4
+                        py-3
+                        text-sm
+                        transition
+                        hover:bg-gray-50
+                        ${
+                          isActive
+                            ? "font-semibold text-black bg-gray-50"
+                            : "text-gray-700"
+                        }
+                      `
+                    }
+                  >
+                    Dashboard
+                  </NavLink>
 
-                {/* Divider */}
+                  <NavLink
+                    to="/organizer/events"
+                    onClick={handleMobileNavigation}
+                    className={({
+                      isActive,
+                    }) =>
+                      `
+                        block
+                        px-4
+                        py-3
+                        text-sm
+                        transition
+                        hover:bg-gray-50
+                        ${
+                          isActive
+                            ? "font-semibold text-black bg-gray-50"
+                            : "text-gray-700"
+                        }
+                      `
+                    }
+                  >
+                    Events
+                  </NavLink>
 
-                <div className="my-1 border-t border-gray-200" />
+                  <NavLink
+                    to="/organizer/offers"
+                    onClick={handleMobileNavigation}
+                    className={({
+                      isActive,
+                    }) =>
+                      `
+                        block
+                        px-4
+                        py-3
+                        text-sm
+                        transition
+                        hover:bg-gray-50
+                        ${
+                          isActive
+                            ? "font-semibold text-black bg-gray-50"
+                            : "text-gray-700"
+                        }
+                      `
+                    }
+                  >
+                    Offers
+                  </NavLink>
 
-                {/* ======================================
-                    Logout
-                ======================================= */}
+                </div>
+              )}
 
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="
-                    flex
-                    w-full
-                    items-center
-                    gap-3
-                    px-4
-                    py-2.5
-                    text-left
-                    text-sm
-                    transition
-                    hover:bg-gray-50
-                  "
-                >
-                  <img
-                    src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000"
-                    alt="Logout"
-                    className="h-4 w-4"
-                  />
-
-                  <span>
-                    Logout
-                  </span>
-                </button>
-
-              </div>
-            )}
+            </div>
 
           </div>
 

@@ -19,55 +19,54 @@ function Login() {
   const handleLogin = async () => {
     setError("");
 
-    //validation
     if (!email.trim() || !password) {
-      setError("Please enter your email and password.");
-      return;
+        setError(
+            "Please enter your email and password."
+        );
+
+        return;
     }
 
     try {
-      setIsLoading(true);
+        setIsLoading(true);
 
-      //send login request
-      const response = await login({
-        email: email.trim(),
-        password,
-      });
-
-      //get user
-      const loggedInUser = response.user;
-
-      //check login type
-      if (isOrganizer && loggedInUser.role !== "organizer") {
-        setError(
-          "This account is not registered as an organizer."
+        const response = await login(
+            {
+                email: email.trim(),
+                password,
+            },
+            isOrganizer
+                ? "organizer"
+                : "user"
         );
-        return;
-      }
 
-      if (!isOrganizer && loggedInUser.role !== "user") {
-        setError(
-          "Please use the organizer login option for this account."
-        );
-        return;
-      }
+        const loggedInUser = response.user;
 
-      //redirect based on role
-      if (loggedInUser.role === "organizer") {
-        navigate("/organizer/dashboard");
-      } else {
-        navigate("/");
-      }
+        if (
+            loggedInUser.role === "organizer"
+        ) {
+            navigate(
+                "/organizer/dashboard"
+            );
+        } else {
+            navigate("/");
+        }
+
     } catch (error) {
-      console.error("Login failed:", error);
+        console.error(
+            "Login failed:",
+            error
+        );
 
-      setError(
-        error.message || "Unable to login. Please try again."
-      );
+        setError(
+            error.message ||
+            "Unable to login. Please try again."
+        );
+
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
 
   //back
 
