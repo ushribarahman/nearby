@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "/logo.png";
+import useAuth from "../../hooks/useAuth";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +25,23 @@ function Navbar() {
     `text-gray-700 transition underline-offset-7 hover:underline ${
       isActive ? "text-black font-semibold underline" : ""
     }`;
+
+  // ==========================================
+  // Logout
+  // ==========================================
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
+  };
+
+  // ==========================================
+  // Avatar Letter
+  // ==========================================
+
+  const avatarLetter = user?.name
+    ? user.name.charAt(0).toUpperCase()
+    : "U";
 
   return (
     <nav
@@ -67,44 +88,129 @@ function Navbar() {
 
           </div>
 
-          {/* Buttons */}
+          {/* Right Side */}
           <div className="flex items-center justify-self-end gap-3">
 
-            {/* Login */}
-            <NavLink
-              to="/login"
-              className="
-                text-gray-700
-                px-5
-                py-2
-                rounded-lg
-                outline-1
-                outline-gray-300
-                hover:bg-gray-100
-                hover:text-black
-                transition
-              "
-            >
-              Login
-            </NavLink>
+            {!isAuthenticated ? (
+              <>
+                {/* Login */}
+                <NavLink
+                  to="/login"
+                  className="
+                    text-gray-700
+                    px-5
+                    py-2
+                    rounded-lg
+                    outline-1
+                    outline-gray-300
+                    hover:bg-gray-100
+                    hover:text-black
+                    transition
+                  "
+                >
+                  Login
+                </NavLink>
 
-            {/* Register */}
-            <NavLink
-              to="/register"
-              className="
-                bg-black
-                text-white
-                px-5
-                py-2
-                rounded-lg
-                outline-1
-                outline-gray-300
-                hover:bg-gray-800
-                transition
-              "
-            >
-              Register
-            </NavLink>
+                {/* Register */}
+                <NavLink
+                  to="/register"
+                  className="
+                    bg-black
+                    text-white
+                    px-5
+                    py-2
+                    rounded-lg
+                    outline-1
+                    outline-gray-300
+                    hover:bg-gray-800
+                    transition
+                  "
+                >
+                  Register
+                </NavLink>
+              </>
+            ) : (
+              /* Logged In User */
+              <div className="relative">
+
+                {/* Avatar */}
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black
+                    text-sm
+                    font-semibold
+                    text-white
+                    transition
+                    hover:bg-gray-800
+                    focus:outline-none
+                  "
+                  aria-label="Open user menu"
+                >
+                  {avatarLetter}
+                </button>
+
+                {/* Dropdown */}
+                {isMenuOpen && (
+                  <div
+                    className="
+                      absolute
+                      right-0
+                      top-12
+                      z-50
+                      w-48
+                      overflow-hidden
+                      rounded-xl
+                      border
+                      border-gray-200
+                      bg-white
+                      shadow-lg
+                    "
+                  >
+
+                    {/* User Information */}
+                    <div className="border-b border-gray-100 px-4 py-3">
+                      <p className="truncate text-sm font-medium text-gray-900">
+                        {user?.name || "User"}
+                      </p>
+
+                      <p className="mt-0.5 truncate text-xs text-gray-500">
+                        {user?.email || ""}
+                      </p>
+                    </div>
+
+                    {/* Logout */}
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="
+                        w-full
+                        px-4
+                        py-3
+                        text-left
+                        text-sm
+                        font-medium
+                        text-gray-700
+                        transition
+                        hover:bg-gray-50
+                        hover:text-black
+                      "
+                    >
+                      Logout
+                    </button>
+
+                  </div>
+                )}
+
+              </div>
+            )}
 
           </div>
 

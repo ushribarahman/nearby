@@ -1,19 +1,96 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/common/Footer";
+import useAuth from "../../hooks/useAuth";
 
 function Login() {
   const [isOrganizer, setIsOrganizer] = useState(false);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (isOrganizer) {
-      navigate("/organizer/dashboard");
-    } else {
-      navigate("/");
+  const { login } = useAuth();
+
+  // ==========================================
+  // Login
+  // ==========================================
+
+  const handleLogin = async () => {
+    setError("");
+
+    // ------------------------------
+    // Basic validation
+    // ------------------------------
+
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // ------------------------------
+      // Send login request to backend
+      // ------------------------------
+
+      const response = await login({
+        email: email.trim(),
+        password,
+      });
+
+      // ------------------------------
+      // Get authenticated user
+      // ------------------------------
+
+      const loggedInUser = response.user;
+
+      // ------------------------------
+      // Verify selected login type
+      // ------------------------------
+
+      if (isOrganizer && loggedInUser.role !== "organizer") {
+        setError(
+          "This account is not registered as an organizer."
+        );
+        return;
+      }
+
+      if (!isOrganizer && loggedInUser.role !== "user") {
+        setError(
+          "Please use the organizer login option for this account."
+        );
+        return;
+      }
+
+      // ------------------------------
+      // Redirect based on role
+      // ------------------------------
+
+      if (loggedInUser.role === "organizer") {
+        navigate("/organizer/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      setError(
+        error.message || "Unable to login. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // ==========================================
+  // Back
+  // ==========================================
 
   const handleBack = () => {
     navigate(-1);
@@ -76,7 +153,9 @@ function Login() {
               {/* Heading */}
               <div className="mb-6 text-center">
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {isOrganizer ? "Organizer Login" : "Welcome back"}
+                  {isOrganizer
+                    ? "Organizer Login"
+                    : "Welcome back"}
                 </h1>
 
                 <p className="mt-2 text-gray-500">
@@ -104,7 +183,10 @@ function Login() {
                 {/* Toggle */}
                 <button
                   type="button"
-                  onClick={() => setIsOrganizer(!isOrganizer)}
+                  onClick={() => {
+                    setIsOrganizer(!isOrganizer);
+                    setError("");
+                  }}
                   className={`relative h-6 w-11 rounded-full transition ${
                     isOrganizer
                       ? "bg-black"
@@ -125,6 +207,13 @@ function Login() {
               {/* Form */}
               <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-md">
 
+                {/* Error */}
+                {error && (
+                  <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {error}
+                  </div>
+                )}
+
                 {/* Email */}
                 <div className="mb-5">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -133,13 +222,25 @@ function Login() {
 
                   <input
                     type="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      setError("");
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        handleLogin();
+                      }
+                    }}
                     placeholder="Enter your email"
+                    autoComplete="email"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
                 </div>
 
                 {/* Password */}
                 <div className="mb-4">
+
                   <div className="mb-2 flex items-center justify-between">
                     <label className="text-sm font-medium text-gray-700">
                       Password
@@ -155,9 +256,21 @@ function Login() {
 
                   <input
                     type="password"
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      setError("");
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        handleLogin();
+                      }
+                    }}
                     placeholder="Enter your password"
+                    autoComplete="current-password"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
+
                 </div>
 
                 {/* Remember */}
@@ -176,9 +289,26 @@ function Login() {
                 <button
                   type="button"
                   onClick={handleLogin}
-                  className="w-full rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800"
+                  disabled={isLoading}
+                  className="
+                    w-full
+                    rounded-lg
+                    bg-black
+                    px-5
+                    py-3
+                    font-medium
+                    text-white
+                    transition
+                    hover:bg-gray-800
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
+                  "
                 >
-                  {isOrganizer ? "Login as Organizer" : "Login"}
+                  {isLoading
+                    ? "Logging in..."
+                    : isOrganizer
+                      ? "Login as Organizer"
+                      : "Login"}
                 </button>
 
                 {/* Register */}

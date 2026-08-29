@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import logoAdmin from "/logo_admin.png";
+import useAuth from "../../hooks/useAuth";
 
 function AdminNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   const profileRef = useRef(null);
+
+  // ==========================================
+  // Scroll shadow
+  // ==========================================
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,7 +27,10 @@ function AdminNavbar() {
     };
   }, []);
 
+  // ==========================================
   // Close dropdown when clicking outside
+  // ==========================================
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -42,6 +51,10 @@ function AdminNavbar() {
     };
   }, []);
 
+  // ==========================================
+  // Navigation link styles
+  // ==========================================
+
   const navLinkClass = ({ isActive }) =>
     `text-gray-700 transition underline-offset-7 hover:underline ${
       isActive
@@ -49,10 +62,18 @@ function AdminNavbar() {
         : ""
     }`;
 
+  // ==========================================
+  // Logout
+  // ==========================================
+
   const handleLogout = () => {
     setIsProfileOpen(false);
-    navigate("/");
+    logout();
   };
+
+  // ==========================================
+  // Render
+  // ==========================================
 
   return (
     <nav
@@ -77,7 +98,6 @@ function AdminNavbar() {
               className="h-13 w-auto"
             />
           </Link>
-
 
           {/* =====================================================
               NAVIGATION
@@ -129,7 +149,6 @@ function AdminNavbar() {
 
           </div>
 
-
           {/* =====================================================
               ADMIN AVATAR
           ====================================================== */}
@@ -144,7 +163,7 @@ function AdminNavbar() {
             <button
               type="button"
               onClick={() =>
-                setIsProfileOpen(!isProfileOpen)
+                setIsProfileOpen((prev) => !prev)
               }
               aria-label="Open admin menu"
               aria-expanded={isProfileOpen}
@@ -167,11 +186,9 @@ function AdminNavbar() {
                 focus:ring-offset-2
               "
             >
-
               {/* Avatar Icon */}
 
               <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-200">
-
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -186,18 +203,14 @@ function AdminNavbar() {
                     d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a7.5 7.5 0 0 1 15 0"
                   />
                 </svg>
-
               </div>
-
             </button>
-
 
             {/* =================================================
                 DROPDOWN
             ================================================== */}
 
             {isProfileOpen && (
-
               <div
                 className="
                   absolute
@@ -236,7 +249,6 @@ function AdminNavbar() {
                     hover:text-black
                   "
                 >
-
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -261,11 +273,9 @@ function AdminNavbar() {
                   <span>
                     Logout
                   </span>
-
                 </button>
 
               </div>
-
             )}
 
           </div>

@@ -1,19 +1,131 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/common/Footer";
+import useAuth from "../../hooks/useAuth";
 
 function Register() {
   const [isOrganizer, setIsOrganizer] = useState(false);
 
+  const [name, setName] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleRegister = () => {
-    if (isOrganizer) {
-      navigate("/organizer/dashboard");
-    } else {
-      navigate("/");
+  const { register } = useAuth();
+
+  // ==========================================
+  // Register
+  // ==========================================
+
+  const handleRegister = async () => {
+    setError("");
+    setSuccess("");
+
+    // ------------------------------
+    // Basic validation
+    // ------------------------------
+
+    if (!name.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    if (!password) {
+      setError("Please create a password.");
+      return;
+    }
+
+    if (!confirmPassword) {
+      setError("Please confirm your password.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    // ------------------------------
+    // Organizer validation
+    // ------------------------------
+
+    if (isOrganizer && !organizationName.trim()) {
+      setError("Please enter your organization or business name.");
+      return;
+    }
+
+    if (isOrganizer && !phone.trim()) {
+      setError("Please enter your phone number.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // ------------------------------
+      // Prepare registration data
+      // ------------------------------
+
+      const userData = {
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        role: isOrganizer ? "organizer" : "user",
+      };
+
+      // Add organizer-specific fields only for organizers
+      if (isOrganizer) {
+        userData.organizationName = organizationName.trim();
+        userData.phone = phone.trim();
+      }
+
+      // ------------------------------
+      // Send registration request
+      // ------------------------------
+
+      await register(userData);
+
+      // ------------------------------
+      // Registration successful
+      // ------------------------------
+
+      setSuccess(
+        "Account created successfully. Redirecting to login..."
+      );
+
+      // Give the user a moment to see success message
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+
+    } catch (error) {
+      console.error("Registration failed:", error);
+
+      setError(
+        error.message ||
+          "Unable to create your account. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // ==========================================
+  // Back
+  // ==========================================
 
   const handleBack = () => {
     navigate(-1);
@@ -106,7 +218,11 @@ function Register() {
                 {/* Toggle */}
                 <button
                   type="button"
-                  onClick={() => setIsOrganizer(!isOrganizer)}
+                  onClick={() => {
+                    setIsOrganizer(!isOrganizer);
+                    setError("");
+                    setSuccess("");
+                  }}
                   className={`relative h-6 w-11 rounded-full transition ${
                     isOrganizer
                       ? "bg-black"
@@ -127,6 +243,20 @@ function Register() {
               {/* Form */}
               <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-md">
 
+                {/* Error */}
+                {error && (
+                  <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {error}
+                  </div>
+                )}
+
+                {/* Success */}
+                {success && (
+                  <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
+                    {success}
+                  </div>
+                )}
+
                 {/* Full Name */}
                 <div className="mb-5">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -135,7 +265,13 @@ function Register() {
 
                   <input
                     type="text"
+                    value={name}
+                    onChange={(event) => {
+                      setName(event.target.value);
+                      setError("");
+                    }}
                     placeholder="Enter your full name"
+                    autoComplete="name"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
                 </div>
@@ -149,6 +285,11 @@ function Register() {
 
                     <input
                       type="text"
+                      value={organizationName}
+                      onChange={(event) => {
+                        setOrganizationName(event.target.value);
+                        setError("");
+                      }}
                       placeholder="Enter organization or business name"
                       className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                     />
@@ -163,7 +304,13 @@ function Register() {
 
                   <input
                     type="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      setError("");
+                    }}
                     placeholder="Enter your email"
+                    autoComplete="email"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
                 </div>
@@ -177,7 +324,13 @@ function Register() {
 
                     <input
                       type="tel"
+                      value={phone}
+                      onChange={(event) => {
+                        setPhone(event.target.value);
+                        setError("");
+                      }}
                       placeholder="Enter your phone number"
+                      autoComplete="tel"
                       className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                     />
                   </div>
@@ -191,7 +344,13 @@ function Register() {
 
                   <input
                     type="password"
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      setError("");
+                    }}
                     placeholder="Create a password"
+                    autoComplete="new-password"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
                 </div>
@@ -204,7 +363,13 @@ function Register() {
 
                   <input
                     type="password"
+                    value={confirmPassword}
+                    onChange={(event) => {
+                      setConfirmPassword(event.target.value);
+                      setError("");
+                    }}
                     placeholder="Confirm your password"
+                    autoComplete="new-password"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
                   />
                 </div>
@@ -213,11 +378,26 @@ function Register() {
                 <button
                   type="button"
                   onClick={handleRegister}
-                  className="w-full rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800"
+                  disabled={isLoading}
+                  className="
+                    w-full
+                    rounded-lg
+                    bg-black
+                    px-5
+                    py-3
+                    font-medium
+                    text-white
+                    transition
+                    hover:bg-gray-800
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
+                  "
                 >
-                  {isOrganizer
-                    ? "Create Organizer Account"
-                    : "Create Account"}
+                  {isLoading
+                    ? "Creating Account..."
+                    : isOrganizer
+                      ? "Create Organizer Account"
+                      : "Create Account"}
                 </button>
 
                 {/* Login */}
