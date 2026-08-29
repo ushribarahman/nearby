@@ -23,6 +23,9 @@ import ExploreDetails from "./components/explore/ExploreDetails";
 
 // Organizer
 import OrganizerDashboard from "./pages/organizer/Dashboard";
+import OrganizerEvent from "./pages/organizer/Event"
+import OrganizerOffer from "./pages/organizer/Offers"
+import OrganizerProfile from "./pages/organizer/Profile"
 
 // Admin
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -101,52 +104,13 @@ function App() {
 
         <Route element={<OrganizerLayoutWrapper />}>
 
-          <Route
-            path="/organizer/dashboard"
-            element={<OrganizerDashboard />}
-          />
+          <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
 
-          <Route
-            path="/organizer/events"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Organizer Events
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage your events here.
-                </p>
-              </div>
-            }
-          />
+          <Route path="/organizer/events" element={<OrganizerEvent />} />
 
-          <Route
-            path="/organizer/offers"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Organizer Offers
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage your offers here.
-                </p>
-              </div>
-            }
-          />
+          <Route path="/organizer/offers" element={<OrganizerOffer />}/>
 
-          <Route
-            path="/organizer/profile"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Organizer Profile
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage your organizer profile here.
-                </p>
-              </div>
-            }
-          />
+          <Route path="/organizer/profile" element={<OrganizerProfile />}/>
 
         </Route>
 
