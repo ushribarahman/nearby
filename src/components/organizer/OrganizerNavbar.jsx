@@ -1,18 +1,19 @@
 import { useEffect, useState, useRef } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import logo from "/logo_organizer.png";
+import useAuth from "../../hooks/useAuth";
 
 function OrganizerNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  
-  const [profile, setProfile] = useState({
-    fullName: "",
-    profileImage: "",
-  });
 
-  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  const { user, logout } = useAuth();
+
+  // ==========================================
+  // Scroll shadow
+  // ==========================================
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,116 +27,198 @@ function OrganizerNavbar() {
     };
   }, []);
 
-  useEffect(() => {
-    const savedProfile = localStorage.getItem("organizerProfile");
-    if (savedProfile) {
-      const parsedProfile = JSON.parse(savedProfile);
-      setProfile({
-        fullName: parsedProfile.fullName || "",
-        profileImage: parsedProfile.profileImage || "",
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedProfile = localStorage.getItem("organizerProfile");
-      if (savedProfile) {
-        const parsedProfile = JSON.parse(savedProfile);
-        setProfile({
-          fullName: parsedProfile.fullName || "",
-          profileImage: parsedProfile.profileImage || "",
-        });
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  // ==========================================
+  // Close dropdown when clicking outside
+  // ==========================================
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setDropdownOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
     };
   }, []);
 
+  // ==========================================
+  // Navigation link style
+  // ==========================================
+
   const navLinkClass = ({ isActive }) =>
     "text-gray-700 transition underline-offset-7 hover:underline " +
-    (isActive ? "text-black font-semibold underline" : "");
+    (isActive
+      ? "text-black font-semibold underline"
+      : "");
+
+  // ==========================================
+  // Logout
+  // ==========================================
 
   const handleLogout = () => {
     setDropdownOpen(false);
-    navigate("/");
+
+    // Clear authentication state + JWT
+    logout();
   };
 
-  const handleEditProfile = () => {
+  // ==========================================
+  // Edit / Profile
+  // ==========================================
+
+  const handleProfile = () => {
     setDropdownOpen(false);
-    navigate("/organizer/profile");
   };
+
+  // ==========================================
+  // Get user initial
+  // ==========================================
 
   const getInitial = () => {
-    if (profile.fullName) {
-      return profile.fullName.charAt(0).toUpperCase();
+    if (user?.name) {
+      return user.name
+        .charAt(0)
+        .toUpperCase();
     }
+
     return "O";
   };
 
+  // ==========================================
+  // Get display name
+  // ==========================================
+
   const getDisplayName = () => {
-    if (profile.fullName) {
-      return profile.fullName;
+    if (user?.name) {
+      return user.name;
     }
+
     return "Organizer";
   };
 
+  // ==========================================
+  // Render
+  // ==========================================
+
   return (
     <nav
-      className={"w-full bg-white sticky top-0 z-50 transition-shadow duration-300 " +
-        (scrolled ? "shadow-sm" : "shadow-none")}
+      className={
+        "w-full bg-white sticky top-0 z-50 transition-shadow duration-300 " +
+        (scrolled
+          ? "shadow-sm"
+          : "shadow-none")
+      }
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
 
         <div className="grid grid-cols-3 items-center">
 
-          <Link to="/organizer/dashboard" className="justify-self-start">
-            <img src={logo} alt="Nearby" className="h-8 w-auto" />
+          {/* ==========================================
+              Logo
+          =========================================== */}
+
+          <Link
+            to="/organizer/dashboard"
+            className="justify-self-start"
+          >
+            <img
+              src={logo}
+              alt="Nearby"
+              className="h-8 w-auto"
+            />
           </Link>
 
+          {/* ==========================================
+              Navigation
+          =========================================== */}
+
           <div className="flex items-center justify-center gap-8">
-            <NavLink to="/organizer/dashboard" className={navLinkClass}>
+
+            <NavLink
+              to="/organizer/dashboard"
+              className={navLinkClass}
+            >
               Dashboard
             </NavLink>
-            <NavLink to="/organizer/events" className={navLinkClass}>
+
+            <NavLink
+              to="/organizer/events"
+              className={navLinkClass}
+            >
               Events
             </NavLink>
-            <NavLink to="/organizer/offers" className={navLinkClass}>
+
+            <NavLink
+              to="/organizer/offers"
+              className={navLinkClass}
+            >
               Offers
             </NavLink>
+
           </div>
 
-          <div className="flex items-center justify-self-end gap-3 relative" ref={dropdownRef}>
+          {/* ==========================================
+              Organizer Profile
+          =========================================== */}
 
-            <span className="text-sm font-medium text-gray-700 hidden sm:block">
+          <div
+            ref={dropdownRef}
+            className="relative flex items-center justify-self-end gap-3"
+          >
+
+            {/* Organizer Name */}
+
+            <span className="hidden text-sm font-medium text-gray-700 sm:block">
               {getDisplayName()}
             </span>
 
+            {/* Avatar */}
+
             <button
               type="button"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-11 h-11 rounded-full bg-black text-white font-semibold text-sm flex items-center justify-center hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 overflow-hidden"
+              onClick={() =>
+                setDropdownOpen(
+                  (previous) => !previous
+                )
+              }
+              aria-label="Open organizer menu"
+              aria-expanded={dropdownOpen}
+              className="
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                overflow-hidden
+                rounded-full
+                bg-black
+                text-sm
+                font-semibold
+                text-white
+                transition
+                hover:bg-gray-800
+                focus:outline-none
+                focus:ring-2
+                focus:ring-gray-300
+                focus:ring-offset-2
+              "
             >
-              {profile.profileImage ? (
+              {user?.profileImage ? (
                 <img
-                  src={profile.profileImage}
+                  src={user.profileImage}
                   alt="Profile"
                   className="h-full w-full object-cover"
                 />
@@ -144,33 +227,94 @@ function OrganizerNavbar() {
               )}
             </button>
 
+            {/* ==========================================
+                Dropdown
+            =========================================== */}
+
             {dropdownOpen && (
-              <div className="absolute right-0 top-12 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+              <div
+                className="
+                  absolute
+                  right-0
+                  top-14
+                  z-50
+                  w-48
+                  overflow-hidden
+                  rounded-lg
+                  border
+                  border-gray-200
+                  bg-white
+                  py-2
+                  shadow-lg
+                "
+              >
+
+                {/* ======================================
+                    Profile
+                ======================================= */}
+
                 <button
-                  onClick={handleEditProfile}
-                  className="w-full text-left px-4 py-2.5 text-sm transition flex items-center gap-3 hover:bg-gray-50"
+                  type="button"
+                  onClick={handleProfile}
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    gap-3
+                    px-4
+                    py-2.5
+                    text-left
+                    text-sm
+                    transition
+                    hover:bg-gray-50
+                  "
                 >
-                  <img 
-                    src="https://img.icons8.com/?size=100&id=12438&format=png&color=000000" 
-                    alt="edit profile" 
+                  <img
+                    src="https://img.icons8.com/?size=100&id=12438&format=png&color=000000"
+                    alt="Profile"
                     className="h-4 w-4"
                   />
-                  Profile
+
+                  <span>
+                    Profile
+                  </span>
                 </button>
 
-                <div className="border-t border-gray-200 my-1"></div>
+                {/* Divider */}
+
+                <div className="my-1 border-t border-gray-200" />
+
+                {/* ======================================
+                    Logout
+                ======================================= */}
 
                 <button
+                  type="button"
                   onClick={handleLogout}
-                  className="w-full text-left px-4 py-2.5 text-sm transition flex items-center gap-3 hover:bg-gray-50"
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    gap-3
+                    px-4
+                    py-2.5
+                    text-left
+                    text-sm
+                    transition
+                    hover:bg-gray-50
+                  "
                 >
-                  <img 
-                    src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000" 
-                    alt="logout" 
+                  <img
+                    src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000"
+                    alt="Logout"
                     className="h-4 w-4"
                   />
-                  Logout
+
+                  <span>
+                    Logout
+                  </span>
                 </button>
+
               </div>
             )}
 
