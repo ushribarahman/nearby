@@ -1,0 +1,71 @@
+const dashboardStats = {
+  totalEvents: 12,
+  totalOffers: 8,
+  waitingEvents: 3,
+  waitingOffers: 2,
+};
+
+const recentActivities = [
+  {
+    id: 1,
+    type: "event",
+    title: "Carpe Diem: The Takeover",
+    status: "Waiting for Approval",
+    date: "2026-10-17",
+    time: "7:00 PM - 10:00 PM",
+    location: "Aloki, Dhaka",
+    image: "https://floral-mountain-2867.fly.storage.tigris.dev/media/events/banner/EVENT-COVER-s1-v2_-_Lovan_Ilya.jpg",
+  },
+  {
+    id: 2,
+    type: "offer",
+    title: "Weekend Buffet Special",
+    status: "Waiting for Approval",
+    date: "2026-10-15",
+    time: "12:00 PM - 10:00 PM",
+    location: "Banani, Dhaka",
+    image: "/offer1.jpg",
+  },
+  {
+    id: 3,
+    type: "event",
+    title: "Dhaka Makers presents Crafted By Makers: Workshop Series",
+    status: "Published",
+    date: "2026-11-13",
+    time: "10:00 AM - 4:00 PM",
+    location: "Shala neighborhood art space, Aloki",
+    image: "https://floral-mountain-2867.fly.storage.tigris.dev/media/events/banner/1200x630_-_Dhaka_Makers.jpg",
+  },
+  {
+    id: 4,
+    type: "offer",
+    title: "BOGO - Buy One Get One Free",
+    status: "Waiting for Approval",
+    date: "2026-09-30",
+    time: "11:00 AM - 9:00 PM",
+    location: "Gulshan, Dhaka",
+    image: "/offer2.webp",
+  },
+  {
+    id: 5,
+    type: "event",
+    title: "X Force presents Indie Fest: Chapter One",
+    status: "Published",
+    date: "2026-08-03",
+    time: "6:00 PM - 11:00 PM",
+    location: "Chefs Table Courtside, Dhaka",
+    image: "https://floral-mountain-2867.fly.storage.tigris.dev/media/events/banner/Tickify_1_-_Micdrop_Experiential.png",
+  },
+  {
+    id: 6,
+    type: "event",
+    title: "1st National Literature Festival 2026",
+    status: "Published",
+    date: "2026-10-06",
+    time: "9:00 AM - 6:00 PM",
+    location: "St Joseph international School campus",
+    image: "https://floral-mountain-2867.fly.storage.tigris.dev/media/events/slider_banner/WhatsApp_Image_2025-12-22_at_22.30.01_-_Abrar_Khan.jpeg",
+  },
+];
+
+export { dashboardStats, recentActivities };

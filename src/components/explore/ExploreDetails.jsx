@@ -5,17 +5,6 @@ function ExploreDetails() {
   const { id } = useParams();
   const place = exploreData.find((p) => p.id === parseInt(id));
 
-  if (!place) {
-    return (
-      <div className="max-w-7xl mx-auto px-6 py-8 text-center">
-        <h2 className="text-2xl font-bold">Place not found</h2>
-        <Link to="/explore" className="text-blue-600 hover:underline mt-4 inline-block">
-          Back to Explore
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-4 pb-8">
       <div className="relative w-full h-[500px] rounded-xl overflow-hidden mb-6">
@@ -75,7 +64,7 @@ function ExploreDetails() {
         </div>
         <div className="bg-gray-50 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-3">
-            <img src="https://img.icons8.com/?size=100&id=Hh5ONdvsAI4P&format=png&color=01BBC1" alt="location" className="w-5 h-5" />
+            <img src="https://img.icons8.com/?size=100&id=Hh5ONdvsAI4P&format=png&color=000000" alt="location" className="w-5 h-5" />
             <h3 className="text-lg font-semibold">Location</h3>
           </div>
           <p className="font-medium">{place.location}</p>
