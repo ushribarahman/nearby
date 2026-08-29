@@ -26,8 +26,15 @@ import OrganizerDashboard from "./pages/organizer/Dashboard";
 
 // Admin
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUsers from "./pages/admin/Users";
+import AdminOrganizers from "./pages/admin/Organizers";
+import AdminEvents from "./pages/admin/Events";
+import AdminOffers from "./pages/admin/Offers";
+import AdminReports from "./pages/admin/Reports";
 
+// Scroll
 import ScrollToTop from "./components/common/ScrollToTop";
+
 
 function PublicLayoutWrapper() {
   return (
@@ -37,6 +44,7 @@ function PublicLayoutWrapper() {
   );
 }
 
+
 function OrganizerLayoutWrapper() {
   return (
     <OrganizerLayout>
@@ -44,6 +52,7 @@ function OrganizerLayoutWrapper() {
     </OrganizerLayout>
   );
 }
+
 
 function AdminLayoutWrapper() {
   return (
@@ -53,12 +62,14 @@ function AdminLayoutWrapper() {
   );
 }
 
+
 function App() {
   return (
     <BrowserRouter>
 
-    <ScrollToTop />
-    
+      {/* Reset scroll position whenever route changes */}
+      <ScrollToTop />
+
       <Routes>
 
         {/* ==========================================
@@ -67,21 +78,45 @@ function App() {
 
         <Route element={<PublicLayoutWrapper />}>
 
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-          <Route path="/events" element={<Events />} />
+          <Route
+            path="/events"
+            element={<Events />}
+          />
 
-          <Route path="/events/:id" element={<EventDetails />} />
+          <Route
+            path="/events/:id"
+            element={<EventDetails />}
+          />
 
-          <Route path="/offers" element={<Offers />} />
+          <Route
+            path="/offers"
+            element={<Offers />}
+          />
 
-          <Route path="/offers/:id" element={<OffersDetails />} />
+          <Route
+            path="/offers/:id"
+            element={<OffersDetails />}
+          />
 
-          <Route path="/explore" element={<Explore />} />
+          <Route
+            path="/explore"
+            element={<Explore />}
+          />
 
-          <Route path="/explore/:id" element={<ExploreDetails />} />
+          <Route
+            path="/explore/:id"
+            element={<ExploreDetails />}
+          />
 
-          <Route path="/about" element={<About />} />
+          <Route
+            path="/about"
+            element={<About />}
+          />
 
         </Route>
 
@@ -90,9 +125,15 @@ function App() {
             AUTH SECTION
         ========================================== */}
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
 
 
         {/* ==========================================
@@ -113,6 +154,7 @@ function App() {
                 <h1 className="text-3xl font-bold">
                   Organizer Events
                 </h1>
+
                 <p className="mt-2 text-gray-500">
                   Manage your events here.
                 </p>
@@ -127,6 +169,7 @@ function App() {
                 <h1 className="text-3xl font-bold">
                   Organizer Offers
                 </h1>
+
                 <p className="mt-2 text-gray-500">
                   Manage your offers here.
                 </p>
@@ -141,6 +184,7 @@ function App() {
                 <h1 className="text-3xl font-bold">
                   Organizer Profile
                 </h1>
+
                 <p className="mt-2 text-gray-500">
                   Manage your organizer profile here.
                 </p>
@@ -157,70 +201,46 @@ function App() {
 
         <Route element={<AdminLayoutWrapper />}>
 
+          {/* Dashboard */}
           <Route
             path="/admin/dashboard"
             element={<AdminDashboard />}
           />
 
+          {/* Users */}
           <Route
             path="/admin/users"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Users
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage users here.
-                </p>
-              </div>
-            }
+            element={<AdminUsers />}
           />
 
+          {/* Organizers */}
           <Route
             path="/admin/organizers"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Organizers
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage organizers here.
-                </p>
-              </div>
-            }
+            element={<AdminOrganizers />}
           />
 
+          {/* Events */}
           <Route
             path="/admin/events"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Events
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage events here.
-                </p>
-              </div>
-            }
+            element={<AdminEvents />}
           />
 
+          {/* Offers */}
           <Route
             path="/admin/offers"
-            element={
-              <div className="mx-auto max-w-7xl px-6 py-10">
-                <h1 className="text-3xl font-bold">
-                  Offers
-                </h1>
-                <p className="mt-2 text-gray-500">
-                  Manage offers here.
-                </p>
-              </div>
-            }
+            element={<AdminOffers />}
+          />
+
+          {/* Reports */}
+          <Route
+            path="/admin/reports"
+            element={<AdminReports />}
           />
 
         </Route>
 
       </Routes>
+
     </BrowserRouter>
   );
 }
