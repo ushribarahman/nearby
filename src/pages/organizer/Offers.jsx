@@ -135,7 +135,7 @@ function Offers() {
       discount: "",
       about: "",
       organizer: {
-        name: "Your Organization",
+        name: "",
         description: "",
         email: "",
         phone: "",

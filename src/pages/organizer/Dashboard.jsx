@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { dashboardStats, recentActivities } from "../../data/Dashboard";
 
 function StatCard({ title, count, icon, linkTo, linkText }) {
