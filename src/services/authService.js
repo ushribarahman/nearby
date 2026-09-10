@@ -23,6 +23,15 @@ const getProfile = async () => {
   });
 };
 
+// Text-only profile fields for now (no image upload yet). Called by both
+// the regular user and organizer profile pages.
+const updateProfile = async (profileData) => {
+  return await apiRequest("/auth/profile", {
+    method: "PUT",
+    body: JSON.stringify(profileData),
+  });
+};
+
 const logout = async () => {
   return await apiRequest("/auth/logout", {
     method: "POST",
@@ -33,6 +42,7 @@ const authService = {
   register,
   login,
   getProfile,
+  updateProfile,
   logout,
 };
 

@@ -1,515 +1,485 @@
 import { useEffect, useState } from "react";
+import useAuth from "../../hooks/useAuth";
 
 function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
+  const { user, updateProfile } = useAuth();
 
-  const [profile, setProfile] = useState({
-    fullName: "",
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [fields, setFields] = useState({
+    name: "",
     username: "",
     organizationName: "",
     email: "",
     phone: "",
-
-    profileImage: "",
-    organizationLogo: "",
-
     establishedYear: "",
     about: "",
-
     website: "",
-
     address: "",
     area: "",
     city: "",
     division: "",
-
     facebook: "",
     instagram: "",
   });
 
+  // Keep the form in sync with the logged-in organizer (e.g. right after
+  // the profile is restored from the session cookie on page load).
   useEffect(() => {
-    const savedProfile = localStorage.getItem("organizerProfile");
-
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
+    if (user) {
+      setFields({
+        name: user.name || "",
+        username: user.username || "",
+        organizationName: user.organizationName || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        establishedYear: user.establishedYear || "",
+        about: user.about || "",
+        website: user.website || "",
+        address: user.address || "",
+        area: user.area || "",
+        city: user.city || "",
+        division: user.division || "",
+        facebook: user.facebook || "",
+        instagram: user.instagram || "",
+      });
     }
-  }, []);
+  }, [user]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const avatarLetter = user?.organizationName
+    ? user.organizationName.charAt(0).toUpperCase()
+    : user?.name
+    ? user.name.charAt(0).toUpperCase()
+    : "O";
 
-    setProfile({
-      ...profile,
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFields((current) => ({
+      ...current,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSave = () => {
-    localStorage.setItem(
-      "organizerProfile",
-      JSON.stringify(profile)
-    );
-
-    window.dispatchEvent(new Event("storage"));
-
-    setIsEditing(false);
+  const resetFieldsFromUser = () => {
+    if (user) {
+      setFields({
+        name: user.name || "",
+        username: user.username || "",
+        organizationName: user.organizationName || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        establishedYear: user.establishedYear || "",
+        about: user.about || "",
+        website: user.website || "",
+        address: user.address || "",
+        area: user.area || "",
+        city: user.city || "",
+        division: user.division || "",
+        facebook: user.facebook || "",
+        instagram: user.instagram || "",
+      });
+    }
   };
 
   const handleCancel = () => {
-    const savedProfile = localStorage.getItem("organizerProfile");
-
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
-    }
-
+    resetFieldsFromUser();
+    setError("");
     setIsEditing(false);
   };
 
-  return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <div className="mx-auto max-w-7xl px-6 py-8">
+  const handleSave = async () => {
+    setError("");
+    setSuccessMessage("");
 
-        <div className="mb-8 flex items-center justify-between">
+    if (!fields.name.trim()) {
+      setError("Your name cannot be empty.");
+      return;
+    }
+
+    if (!fields.organizationName.trim()) {
+      setError("Organization name cannot be empty.");
+      return;
+    }
+
+    if (!fields.email.trim()) {
+      setError("Email cannot be empty.");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+
+      await updateProfile({
+        name: fields.name.trim(),
+        username: fields.username.trim(),
+        organizationName: fields.organizationName.trim(),
+        email: fields.email.trim(),
+        phone: fields.phone.trim(),
+        establishedYear: fields.establishedYear.trim(),
+        about: fields.about.trim(),
+        website: fields.website.trim(),
+        address: fields.address.trim(),
+        area: fields.area.trim(),
+        city: fields.city.trim(),
+        division: fields.division.trim(),
+        facebook: fields.facebook.trim(),
+        instagram: fields.instagram.trim(),
+      });
+
+      setSuccessMessage("Profile updated successfully.");
+      setIsEditing(false);
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const displayOrPlaceholder = (value) => value || "Not available";
+
+  return (
+    <main className="min-h-[calc(100vh-72px)] bg-gray-50">
+      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
+
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Profile
+            <p className="mb-2 text-sm font-medium text-gray-500">
+              Organizer Account
+            </p>
+
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Organization Profile
             </h1>
+
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">
+              Manage how your organization appears on Nearby.
+            </p>
           </div>
 
           {!isEditing && (
             <button
-              onClick={() => setIsEditing(true)}
-              className="rounded-lg bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+              type="button"
+              onClick={() => {
+                setSuccessMessage("");
+                setIsEditing(true);
+              }}
+              className="inline-flex items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
             >
               Edit Profile
             </button>
           )}
         </div>
 
-        <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        {successMessage && (
+          <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {successMessage}
+          </div>
+        )}
 
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+        {error && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
-            <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
-              {profile.profileImage ? (
-                <img
-                  src={profile.profileImage}
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <span className="text-2xl font-semibold text-gray-400">
-                  {profile.fullName
-                    ? profile.fullName.charAt(0).toUpperCase()
-                    : "O"}
+          {/* Header */}
+          <div className="border-b border-gray-100 px-6 py-7 sm:px-8">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black text-2xl font-semibold text-white">
+                {avatarLetter}
+              </div>
+
+              <div className="min-w-0">
+                <h2 className="truncate text-2xl font-semibold text-gray-900">
+                  {displayOrPlaceholder(user?.organizationName)}
+                </h2>
+
+                <p className="mt-1 truncate text-sm text-gray-500">
+                  {displayOrPlaceholder(user?.email)}
+                </p>
+
+                <span className="mt-2 inline-flex rounded-full bg-[#01BBC1]/10 px-3 py-1 text-xs font-semibold text-[#01BBC1]">
+                  Organizer
                 </span>
-              )}
-
+              </div>
             </div>
-
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                {profile.organizationName || "Your Organization"}
-              </h2>
-
-              <p className="mt-1 text-sm text-gray-500">
-                {profile.fullName || "Organizer Name"}
-              </p>
-
-              <p className="mt-0.5 text-sm text-[#01BBC1]">
-                @{profile.username || "username"}
-              </p>
-            </div>
-
           </div>
 
-          {isEditing && (
-            <div className="mt-6">
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Profile Image URL
-              </label>
+          {/* Organization Info */}
+          <div className="px-6 py-7 sm:px-8">
+            <h3 className="mb-6 text-lg font-semibold text-gray-900">
+              Organization Information
+            </h3>
 
-              <input
-                type="text"
-                name="profileImage"
-                value={profile.profileImage}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <Field
+                label="Organization Name"
+                name="organizationName"
+                value={fields.organizationName}
+                displayValue={user?.organizationName}
+                isEditing={isEditing}
                 onChange={handleChange}
-                placeholder="Enter image URL"
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
+                placeholder="Enter organization name"
+              />
+
+              <Field
+                label="Contact Person Name"
+                name="name"
+                value={fields.name}
+                displayValue={user?.name}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="Enter your name"
+              />
+
+              <Field
+                label="Username"
+                name="username"
+                value={fields.username}
+                displayValue={
+                  user?.username ? `@${user.username}` : ""
+                }
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="Choose a username"
+              />
+
+              <Field
+                label="Established Year"
+                name="establishedYear"
+                value={fields.establishedYear}
+                displayValue={user?.establishedYear}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="e.g. 2019"
               />
             </div>
-          )}
 
-        </div>
-
-        <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-
-          <h2 className="mb-5 text-lg font-semibold text-gray-900">
-            Personal Information
-          </h2>
-
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="fullName"
-                  value={profile.fullName}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.fullName || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Username
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="username"
-                  value={profile.username}
-                  onChange={handleChange}
-                  placeholder="Enter your username"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  @{profile.username || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Email
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={profile.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.email || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="number"
-                  name="phone"
-                  value={profile.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  inputMode="numeric"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.phone || "Not added"}
-                </p>
-              )}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-
-          <h2 className="mb-5 text-lg font-semibold text-gray-900">
-            Organization Information
-          </h2>
-
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Organization / Business Name
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="organizationName"
-                  value={profile.organizationName}
-                  onChange={handleChange}
-                  placeholder="Enter organization name"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.organizationName || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Established Year
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="number"
-                  name="establishedYear"
-                  value={profile.establishedYear}
-                  onChange={handleChange}
-                  placeholder="e.g., 2020"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  min="1900"
-                  max="2099"
-                  inputMode="numeric"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.establishedYear || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Website
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="website"
-                  value={profile.website}
-                  onChange={handleChange}
-                  placeholder="https://example.com"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.website || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                About Organization
+            <div className="mt-6">
+              <label className="mb-2 block text-sm font-medium text-gray-500">
+                About
               </label>
 
               {isEditing ? (
                 <textarea
                   name="about"
-                  value={profile.about}
+                  value={fields.about}
                   onChange={handleChange}
-                  rows="5"
-                  placeholder="Tell people about your organization..."
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white resize-y"
+                  rows={4}
+                  placeholder="Tell people what your organization does"
+                  className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
                 />
               ) : (
-                <p className="text-sm text-gray-900 whitespace-pre-line leading-6">
-                  {profile.about || "No description added yet."}
-                </p>
-              )}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-
-          <h2 className="mb-5 text-lg font-semibold text-gray-900">
-            Location
-          </h2>
-
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Address
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="address"
-                  value={profile.address}
-                  onChange={handleChange}
-                  placeholder="Enter your organization address"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.address || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Area
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="area"
-                  value={profile.area}
-                  onChange={handleChange}
-                  placeholder="e.g. Dhanmondi"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.area || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                City
-              </label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="city"
-                  value={profile.city}
-                  onChange={handleChange}
-                  placeholder="e.g. Dhaka"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                />
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.city || "Not added"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Division
-              </label>
-
-              {isEditing ? (
-                <select
-                  name="division"
-                  value={profile.division}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                >
-                  <option value="">Select division</option>
-                  <option value="Dhaka">Dhaka</option>
-                  <option value="Chattogram">Chattogram</option>
-                  <option value="Rajshahi">Rajshahi</option>
-                  <option value="Khulna">Khulna</option>
-                  <option value="Barishal">Barishal</option>
-                  <option value="Sylhet">Sylhet</option>
-                  <option value="Rangpur">Rangpur</option>
-                  <option value="Mymensingh">Mymensingh</option>
-                </select>
-              ) : (
-                <p className="text-sm text-gray-900">
-                  {profile.division || "Not added"}
-                </p>
-              )}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-
-          <h2 className="mb-2 text-lg font-semibold text-gray-900">
-            Social Media
-          </h2>
-
-          <p className="mb-5 text-sm text-gray-500">
-            Add your organization's social media profiles.
-          </p>
-
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-            {[
-              ["facebook", "Facebook", "https://facebook.com/..."],
-              ["instagram", "Instagram", "https://instagram.com/..."],
-            ].map(([name, label, placeholder]) => (
-
-              <div key={name}>
-
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  {label}
-                </label>
-
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name={name}
-                    value={profile[name]}
-                    onChange={handleChange}
-                    placeholder={placeholder}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                  />
-                ) : (
-                  <p className="text-sm text-gray-900">
-                    {profile[name] || "Not added"}
+                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                  <p className="whitespace-pre-line text-sm text-gray-900">
+                    {displayOrPlaceholder(user?.about)}
                   </p>
-                )}
+                </div>
+              )}
+            </div>
+          </div>
 
-              </div>
+          {/* Contact Info */}
+          <div className="border-t border-gray-100 px-6 py-7 sm:px-8">
+            <h3 className="mb-6 text-lg font-semibold text-gray-900">
+              Contact Information
+            </h3>
 
-            ))}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <Field
+                label="Email Address"
+                name="email"
+                type="email"
+                value={fields.email}
+                displayValue={user?.email}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="Enter your email"
+              />
 
+              <Field
+                label="Phone Number"
+                name="phone"
+                type="tel"
+                value={fields.phone}
+                displayValue={user?.phone}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="Enter phone number"
+              />
+
+              <Field
+                label="Website"
+                name="website"
+                value={fields.website}
+                displayValue={user?.website}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="https://yourorganization.com"
+              />
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="border-t border-gray-100 px-6 py-7 sm:px-8">
+            <h3 className="mb-6 text-lg font-semibold text-gray-900">
+              Location
+            </h3>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <Field
+                label="Address"
+                name="address"
+                value={fields.address}
+                displayValue={user?.address}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="Street address"
+              />
+
+              <Field
+                label="Area"
+                name="area"
+                value={fields.area}
+                displayValue={user?.area}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="e.g. Dhanmondi"
+              />
+
+              <Field
+                label="City"
+                name="city"
+                value={fields.city}
+                displayValue={user?.city}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="e.g. Dhaka"
+              />
+
+              <Field
+                label="Division"
+                name="division"
+                value={fields.division}
+                displayValue={user?.division}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="e.g. Dhaka Division"
+              />
+            </div>
+          </div>
+
+          {/* Social Links */}
+          <div className="border-t border-gray-100 px-6 py-7 sm:px-8">
+            <h3 className="mb-6 text-lg font-semibold text-gray-900">
+              Social Links
+            </h3>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <Field
+                label="Facebook"
+                name="facebook"
+                value={fields.facebook}
+                displayValue={user?.facebook}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="https://facebook.com/yourpage"
+              />
+
+              <Field
+                label="Instagram"
+                name="instagram"
+                value={fields.instagram}
+                displayValue={user?.instagram}
+                isEditing={isEditing}
+                onChange={handleChange}
+                placeholder="https://instagram.com/yourpage"
+              />
+            </div>
+          </div>
+
+          {/* Footer / Actions */}
+          <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+            {isEditing ? (
+              <>
+                <p className="text-sm text-gray-500">
+                  Make sure your details are correct before saving.
+                </p>
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-gray-500">
+                This is how your organization appears to visitors.
+              </p>
+            )}
           </div>
 
         </div>
-
-        {isEditing && (
-          <div className="flex justify-end gap-3">
-
-            <button
-              onClick={handleCancel}
-              className="rounded-lg border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-
-            <button
-              onClick={handleSave}
-              className="rounded-lg bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
-            >
-              Save Changes
-            </button>
-
-          </div>
-        )}
-
       </div>
+    </main>
+  );
+}
+
+// Small local helper so every field doesn't repeat the same
+// edit-vs-display markup. Kept in this file since it's only ever used
+// here (unlike the shared components under src/components).
+function Field({
+  label,
+  name,
+  value,
+  displayValue,
+  isEditing,
+  onChange,
+  placeholder,
+  type = "text",
+}) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-medium text-gray-500">
+        {label}
+      </label>
+
+      {isEditing ? (
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
+        />
+      ) : (
+        <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+          <p className="truncate text-sm font-medium text-gray-900">
+            {displayValue || "Not available"}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

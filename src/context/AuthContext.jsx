@@ -72,6 +72,18 @@ export function AuthProvider({ children }) {
         return response;
     };
 
+    // Update profile (text fields only — no image upload yet). Used by
+    // both the regular user and organizer profile pages.
+    const updateProfile = async (profileData) => {
+        const response = await authService.updateProfile(
+            profileData
+        );
+
+        setUser(response.user);
+
+        return response;
+    };
+
     // Logout
     const logout = async () => {
         try {
@@ -93,6 +105,7 @@ export function AuthProvider({ children }) {
         isAuthenticated,
         login,
         register,
+        updateProfile,
         logout,
     };
 

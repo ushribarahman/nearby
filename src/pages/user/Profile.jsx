@@ -1,8 +1,34 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 function Profile() {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [fields, setFields] = useState({
+    name: "",
+    email: "",
+    username: "",
+    phone: "",
+  });
+
+  // Keep the form in sync with the logged-in user (e.g. right after the
+  // profile is restored from the session cookie on page load).
+  useEffect(() => {
+    if (user) {
+      setFields({
+        name: user.name || "",
+        email: user.email || "",
+        username: user.username || "",
+        phone: user.phone || "",
+      });
+    }
+  }, [user]);
 
   const avatarLetter = user?.name
     ? user.name.charAt(0).toUpperCase()
@@ -12,23 +38,106 @@ function Profile() {
     ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
     : "User";
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFields((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setFields({
+        name: user.name || "",
+        email: user.email || "",
+        username: user.username || "",
+        phone: user.phone || "",
+      });
+    }
+
+    setError("");
+    setIsEditing(false);
+  };
+
+  const handleSave = async () => {
+    setError("");
+    setSuccessMessage("");
+
+    if (!fields.name.trim()) {
+      setError("Name cannot be empty.");
+      return;
+    }
+
+    if (!fields.email.trim()) {
+      setError("Email cannot be empty.");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+
+      await updateProfile({
+        name: fields.name.trim(),
+        email: fields.email.trim(),
+        username: fields.username.trim(),
+        phone: fields.phone.trim(),
+      });
+
+      setSuccessMessage("Profile updated successfully.");
+      setIsEditing(false);
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <main className="min-h-[calc(100vh-72px)] bg-gray-50">
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
 
-        <div className="mb-8">
-          <p className="mb-2 text-sm font-medium text-gray-500">
-            Account
-          </p>
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-2 text-sm font-medium text-gray-500">
+              Account
+            </p>
 
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            My Profile
-          </h1>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              My Profile
+            </h1>
 
-          <p className="mt-2 text-sm text-gray-500 sm:text-base">
-            Manage and view your account information.
-          </p>
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">
+              Manage and view your account information.
+            </p>
+          </div>
+
+          {!isEditing && (
+            <button
+              type="button"
+              onClick={() => {
+                setSuccessMessage("");
+                setIsEditing(true);
+              }}
+              className="inline-flex items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
+            >
+              Edit Profile
+            </button>
+          )}
         </div>
+
+        {successMessage && (
+          <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {successMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
@@ -38,15 +147,7 @@ function Profile() {
 
               {/* Avatar */}
               <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black text-2xl font-semibold text-white">
-                {user?.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt={user?.name || "User"}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  avatarLetter
-                )}
+                {avatarLetter}
               </div>
 
               {/* User Name */}
@@ -77,56 +178,100 @@ function Profile() {
 
               {/* Full Name */}
               <div>
-                <p className="mb-2 text-sm font-medium text-gray-500">
+                <label className="mb-2 block text-sm font-medium text-gray-500">
                   Full Name
-                </p>
+                </label>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                  <p className="text-sm font-medium text-gray-900">
-                    {user?.name || "Not available"}
-                  </p>
-                </div>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="name"
+                    value={fields.name}
+                    onChange={handleChange}
+                    placeholder="Enter your full name"
+                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
+                  />
+                ) : (
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user?.name || "Not available"}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Email */}
               <div>
-                <p className="mb-2 text-sm font-medium text-gray-500">
+                <label className="mb-2 block text-sm font-medium text-gray-500">
                   Email Address
-                </p>
+                </label>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                  <p className="truncate text-sm font-medium text-gray-900">
-                    {user?.email || "Not available"}
-                  </p>
-                </div>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={fields.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email"
+                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
+                  />
+                ) : (
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                    <p className="truncate text-sm font-medium text-gray-900">
+                      {user?.email || "Not available"}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Username */}
               <div>
-                <p className="mb-2 text-sm font-medium text-gray-500">
+                <label className="mb-2 block text-sm font-medium text-gray-500">
                   Username
-                </p>
+                </label>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                  <p className="text-sm font-medium text-gray-900">
-                    {user?.username
-                      ? `@${user.username}`
-                      : "Not available"}
-                  </p>
-                </div>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="username"
+                    value={fields.username}
+                    onChange={handleChange}
+                    placeholder="Choose a username"
+                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
+                  />
+                ) : (
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user?.username
+                        ? `@${user.username}`
+                        : "Not available"}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Phone */}
               <div>
-                <p className="mb-2 text-sm font-medium text-gray-500">
+                <label className="mb-2 block text-sm font-medium text-gray-500">
                   Phone Number
-                </p>
+                </label>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                  <p className="text-sm font-medium text-gray-900">
-                    {user?.phone || "Not available"}
-                  </p>
-                </div>
+                {isEditing ? (
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={fields.phone}
+                    onChange={handleChange}
+                    placeholder="Enter your phone number"
+                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
+                  />
+                ) : (
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user?.phone || "Not available"}
+                    </p>
+                  </div>
+                )}
               </div>
 
             </div>
@@ -173,16 +318,46 @@ function Profile() {
 
           <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
 
-            <p className="text-sm text-gray-500">
-              Want to explore more?
-            </p>
+            {isEditing ? (
+              <>
+                <p className="text-sm text-gray-500">
+                  Make sure your details are correct before saving.
+                </p>
 
-            <Link
-              to="/"
-              className="inline-flex items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
-            >
-              Back to Home
-            </Link>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-gray-500">
+                  Want to explore more?
+                </p>
+
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
+                >
+                  Back to Home
+                </Link>
+              </>
+            )}
 
           </div>
 
