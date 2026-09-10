@@ -2,10 +2,16 @@ import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { getRoleHome } from "../utils/roleHome";
 
-function AdminRoute() {
+// Wraps the public site (Home, Events, Offers, Explore, About), the
+// login/register pages, and the logged-in user's own pages (e.g. /profile).
+//
+// An organizer or admin session should never render any of that — they
+// live in their own dashboard area. If one of them lands here (typed the
+// URL, clicked an old bookmark, etc.) we send them straight to their own
+// dashboard instead of showing the regular user's site.
+function RestrictToUserRoute() {
   const { user, loading } = useAuth();
 
-  // wait for auth restoration
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
@@ -20,19 +26,11 @@ function AdminRoute() {
     );
   }
 
-  //not logged in
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  //logged in but not an admin — send them to their own area,
-  //not the public homepage (e.g. an organizer shouldn't land on "/").
-  if (user.role !== "admin") {
+  if (user && user.role !== "user") {
     return <Navigate to={getRoleHome(user.role)} replace />;
   }
 
-  //admin
   return <Outlet />;
 }
 
-export default AdminRoute;
+export default RestrictToUserRoute;

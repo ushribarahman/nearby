@@ -6,6 +6,7 @@ import OrganizerLayout from "../layouts/OrganizerLayout";
 import AdminLayout from "../layouts/AdminLayout";
 
 // Route Guards
+import RestrictToUserRoute from "./RestrictToUserRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import OrganizerRoute from "./OrganizerRoute";
 import AdminRoute from "./AdminRoute";
@@ -53,88 +54,106 @@ function AppRoutes() {
 
       <Routes>
 
-        <Route element={<PublicLayout />}>
-
-          {/* Home */}
-          <Route
-            path="/"
-            element={<Home />}
-          />
-
-          {/* Events */}
-          <Route
-            path="/events"
-            element={<Events />}
-          />
-
-          {/* Event Details */}
-          <Route
-            path="/events/:id"
-            element={<EventDetails />}
-          />
-
-          {/* Offers */}
-          <Route
-            path="/offers"
-            element={<Offers />}
-          />
-
-          {/* Offer Details */}
-          <Route
-            path="/offers/:id"
-            element={<OfferDetails />}
-          />
-
-          {/* Explore */}
-          <Route
-            path="/explore"
-            element={<Explore />}
-          />
-
-          {/* Explore Details */}
-          <Route
-            path="/explore/:id"
-            element={<ExploreDetails />}
-          />
-
-          {/* About */}
-          <Route
-            path="/about"
-            element={<About />}
-          />
-
-        </Route>
-
         {/* ==========================================
-            AUTH ROUTES
+            USER-ZONE ROUTES
+            (public site + auth pages + logged-in user
+            pages). An organizer or admin session is
+            never allowed to render anything in here —
+            RestrictToUserRoute sends them straight to
+            their own dashboard instead.
         =========================================== */}
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route element={<RestrictToUserRoute />}>
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
-        {/* ==========================================
-            PROTECTED USER ROUTES
-        =========================================== */}
-
-        <Route element={<ProtectedRoute />}>
-
-          {/* User Profile uses the normal public
-              Navbar + Footer layout */}
           <Route element={<PublicLayout />}>
 
+            {/* Home */}
             <Route
-              path="/profile"
-              element={<UserProfile />}
+              path="/"
+              element={<Home />}
+            />
+
+            {/* Events */}
+            <Route
+              path="/events"
+              element={<Events />}
+            />
+
+            {/* Event Details */}
+            <Route
+              path="/events/:id"
+              element={<EventDetails />}
+            />
+
+            {/* Offers */}
+            <Route
+              path="/offers"
+              element={<Offers />}
+            />
+
+            {/* Offer Details */}
+            <Route
+              path="/offers/:id"
+              element={<OfferDetails />}
+            />
+
+            {/* Explore */}
+            <Route
+              path="/explore"
+              element={<Explore />}
+            />
+
+            {/* Explore Details */}
+            <Route
+              path="/explore/:id"
+              element={<ExploreDetails />}
+            />
+
+            {/* About */}
+            <Route
+              path="/about"
+              element={<About />}
             />
 
           </Route>
+
+          {/* AUTH ROUTES */}
+
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+
+          <Route
+            path="/register"
+            element={<Register />}
+          />
+
+          {/* PROTECTED USER ROUTES */}
+
+          <Route element={<ProtectedRoute />}>
+
+            {/* User Profile uses the normal public
+                Navbar + Footer layout */}
+            <Route element={<PublicLayout />}>
+
+              <Route
+                path="/profile"
+                element={<UserProfile />}
+              />
+
+            </Route>
+
+          </Route>
+
+          {/* Unknown routes fall back to Home for regular
+              visitors, but organizers/admins are still
+              redirected to their own dashboard by the
+              guard above before this ever renders. */}
+          <Route
+            path="*"
+            element={<Home />}
+          />
 
         </Route>
 
@@ -221,11 +240,6 @@ function AppRoutes() {
           </Route>
 
         </Route>
-
-        <Route
-          path="*"
-          element={<Home />}
-        />
 
       </Routes>
     </BrowserRouter>

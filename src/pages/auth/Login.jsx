@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/common/Footer";
 import useAuth from "../../hooks/useAuth";
+import { getRoleHome } from "../../utils/roleHome";
 
 function Login() {
   const [isOrganizer, setIsOrganizer] = useState(false);
@@ -34,6 +35,13 @@ function Login() {
             {
                 email: email.trim(),
                 password,
+                // Send the toggle state to the backend so it can be
+                // enforced there BEFORE a session cookie is ever issued.
+                // Checking the role only after login (client-side) is too
+                // late: the cookie would already be set by then.
+                role: isOrganizer
+                    ? "organizer"
+                    : "user",
             },
             isOrganizer
                 ? "organizer"
@@ -42,15 +50,7 @@ function Login() {
 
         const loggedInUser = response.user;
 
-        if (
-            loggedInUser.role === "organizer"
-        ) {
-            navigate(
-                "/organizer/dashboard"
-            );
-        } else {
-            navigate("/");
-        }
+        navigate(getRoleHome(loggedInUser.role));
 
     } catch (error) {
         console.error(

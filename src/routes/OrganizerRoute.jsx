@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { getRoleHome } from "../utils/roleHome";
 
 function OrganizerRoute() {
   const { user, loading } = useAuth();
@@ -24,9 +25,10 @@ function OrganizerRoute() {
     return <Navigate to="/login" replace />;
   }
 
-  //check organizer role
+  //logged in but as a different role — send them to their own area,
+  //not the public homepage (e.g. an admin shouldn't land on "/").
   if (user.role !== "organizer") {
-    return <Navigate to="/" replace />;
+    return <Navigate to={getRoleHome(user.role)} replace />;
   }
 
   //organizer

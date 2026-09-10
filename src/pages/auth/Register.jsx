@@ -37,8 +37,24 @@ function Register() {
       return;
     }
 
+    //keep this in sync with the email format check in
+    //nearby-backend/controllers/authController.js
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     if (!password) {
       setError("Please create a password.");
+      return;
+    }
+
+    //keep this in sync with the minimum length check in
+    //nearby-backend/controllers/authController.js
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
       return;
     }
 
