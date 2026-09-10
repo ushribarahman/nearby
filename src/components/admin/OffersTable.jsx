@@ -1,0 +1,85 @@
+import StatusBadge from "./StatusBadge";
+
+function OffersTable({ offers, onReview }) {
+  if (offers.length === 0) {
+    return (
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+        <div className="px-6 py-16 text-center">
+          <p className="font-medium text-gray-900">No offers found</p>
+          <p className="mt-1 text-sm text-gray-500">
+            Try changing your search or filter.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[1000px] text-left">
+          <thead className="border-b border-gray-200 bg-gray-50">
+            <tr className="text-xs uppercase tracking-wide text-gray-500">
+              <th className="px-6 py-4 font-medium">Offer</th>
+              <th className="px-6 py-4 font-medium">Organizer</th>
+              <th className="px-6 py-4 font-medium">Category</th>
+              <th className="px-6 py-4 font-medium">Discount</th>
+              <th className="px-6 py-4 font-medium">Valid Until</th>
+              <th className="px-6 py-4 font-medium">Status</th>
+              <th className="px-6 py-4 text-right font-medium">Action</th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-gray-100">
+            {offers.map((offer) => (
+              <tr key={offer.id} className="transition hover:bg-gray-50">
+                <td className="px-6 py-4">
+                  <p className="font-medium text-gray-900">{offer.title}</p>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Offer #{offer.id}
+                  </p>
+                </td>
+
+                <td className="px-6 py-4 text-sm text-gray-700">
+                  {offer.organizer}
+                </td>
+
+                <td className="px-6 py-4">
+                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                    {offer.category}
+                  </span>
+                </td>
+
+                <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                  {offer.discount}
+                </td>
+
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {offer.validUntil}
+                </td>
+
+                <td className="px-6 py-4">
+                  <StatusBadge status={offer.status} />
+                </td>
+
+                <td className="px-6 py-4">
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => onReview(offer)}
+                      className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+                    >
+                      Review
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export default OffersTable;

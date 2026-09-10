@@ -22,7 +22,7 @@ function AdminRoute() {
 
   //not logged in
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
   //logged in but not an admin — send them to their own area,

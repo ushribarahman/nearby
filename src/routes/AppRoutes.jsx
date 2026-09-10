@@ -37,6 +37,7 @@ import OrganizerOffers from "../pages/organizer/Offers";
 import OrganizerProfile from "../pages/organizer/Profile";
 
 // Admin Pages
+import AdminLogin from "../pages/admin/Login";
 import AdminDashboard from "../pages/admin/Dashboard";
 import AdminUsers from "../pages/admin/Users";
 import AdminOrganizers from "../pages/admin/Organizers";
@@ -192,6 +193,25 @@ function AppRoutes() {
           </Route>
 
         </Route>
+
+        {/* ==========================================
+            ADMIN LOGIN
+            Deliberately its own standalone route — not
+            nested under RestrictToUserRoute (which is
+            for the public/user zone) and not nested
+            under AdminRoute (which requires already
+            being an admin, which would make a login
+            page unreachable). The page itself redirects
+            away anyone who's already signed in, of any
+            role. There is no link to this route
+            anywhere in the UI — it's reached only by
+            typing the URL directly.
+        =========================================== */}
+
+        <Route
+          path="/admin/login"
+          element={<AdminLogin />}
+        />
 
         {/* ==========================================
             ADMIN ROUTES
