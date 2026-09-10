@@ -66,9 +66,9 @@ function AdminNavbar() {
   // Logout
   // ==========================================
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsProfileOpen(false);
-    logout();
+    await logout();
   };
 
   // ==========================================

@@ -74,13 +74,13 @@ function Navbar() {
   };
 
   // Logout
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Close menus immediately
     setIsUserMenuOpen(false);
     setIsMenuOpen(false);
 
-    // Clear authentication state + token
-    logout();
+    // Clear authentication state (this also clears the httpOnly auth cookie)
+    await logout();
 
     // Go to public home page
     navigate("/", {

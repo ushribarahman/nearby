@@ -14,12 +14,18 @@ const login = async (credentials) => {
   });
 };
 
-const getProfile = async (token) => {
+// The JWT lives in an httpOnly cookie now, so the browser attaches it
+// automatically (via credentials: "include" in apiRequest) — no token
+// argument needed here anymore.
+const getProfile = async () => {
   return await apiRequest("/auth/profile", {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  });
+};
+
+const logout = async () => {
+  return await apiRequest("/auth/logout", {
+    method: "POST",
   });
 };
 
@@ -27,6 +33,7 @@ const authService = {
   register,
   login,
   getProfile,
+  logout,
 };
 
 export default authService;

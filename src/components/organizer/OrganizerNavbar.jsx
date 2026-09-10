@@ -72,11 +72,11 @@ function OrganizerNavbar() {
       : "");
 
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
   setDropdownOpen(false);
 
-  //clear authentication state + JWT
-  logout();
+  //clear authentication state (also clears the httpOnly auth cookie)
+  await logout();
 
   window.location.replace("/");
 };

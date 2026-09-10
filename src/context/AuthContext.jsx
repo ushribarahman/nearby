@@ -5,33 +5,21 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Restore authentication
+    // Restore authentication.
+    // The JWT lives in an httpOnly cookie set by the backend, so the browser
+    // sends it automatically with every request — we just ask the API who
+    // we are, instead of reading a token out of localStorage.
     useEffect(() => {
-        const savedToken = localStorage.getItem("token");
-
-        if (!savedToken) {
-            setLoading(false);
-            return;
-        }
-
         const restoreUser = async () => {
             try {
-                const response = await authService.getProfile(savedToken);
+                const response = await authService.getProfile();
 
-                setToken(savedToken);
                 setUser(response.user);
             } catch (error) {
-                console.error(
-                    "Failed to restore authentication:",
-                    error
-                );
-
-                localStorage.removeItem("token");
-
-                setToken(null);
+                // No valid session cookie (or it expired) — that's fine,
+                // it just means the user isn't logged in.
                 setUser(null);
             } finally {
                 setLoading(false);
@@ -52,7 +40,7 @@ export function AuthProvider({ children }) {
 
         const loggedInUser = response.user;
 
-        // Validate role BEFORE saving JWT
+        // Validate role BEFORE saving the session
         if (
             expectedRole &&
             loggedInUser.role !== expectedRole
@@ -67,15 +55,10 @@ export function AuthProvider({ children }) {
 
             throw error;
         }
-        // Save authentication ONLY after validation
 
-        localStorage.setItem(
-            "token",
-            response.token
-        );
-
-        setToken(response.token);
-        setUser(response.user);
+        // The backend already set the httpOnly auth cookie on this response;
+        // we only need to keep the user info in memory.
+        setUser(loggedInUser);
 
         return response;
     };
@@ -90,20 +73,22 @@ export function AuthProvider({ children }) {
     };
 
     // Logout
-    const logout = () => {
-        localStorage.removeItem("token");
-
-        setToken(null);
-        setUser(null);
+    const logout = async () => {
+        try {
+            await authService.logout();
+        } catch (error) {
+            console.error("Logout failed:", error);
+        } finally {
+            setUser(null);
+        }
     };
 
     // Auth Status
-    const isAuthenticated = !!token;
+    const isAuthenticated = !!user;
 
     // Context
     const value = {
         user,
-        token,
         loading,
         isAuthenticated,
         login,

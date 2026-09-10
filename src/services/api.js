@@ -1,21 +1,17 @@
 const API_BASE_URL = "http://localhost:5000/api";
 
 const apiRequest = async (endpoint, options = {}) => {
-  const token = localStorage.getItem("token");
-
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
 
-  //auto attach jwt when available
-  if (token && !headers.Authorization) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
+    // Send the httpOnly auth cookie set by the backend on every request
+    // instead of attaching a JWT from localStorage as a Bearer header.
+    credentials: "include",
   });
 
   let data = {};
