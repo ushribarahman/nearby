@@ -39,9 +39,9 @@ function ReportsSummaryCards({
           key={card.status}
           type="button"
           onClick={() => onSelectStatus(card.status)}
-          className={`rounded-2xl border bg-white p-5 text-left transition hover:shadow-sm ${
+          className={`rounded-2xl border bg-white p-5 text-left shadow-sm transition hover:shadow-md ${
             statusFilter === card.status
-              ? "border-black"
+              ? "border-[#01BBC1] ring-1 ring-[#01BBC1]/30"
               : "border-gray-200"
           }`}
         >

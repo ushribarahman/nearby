@@ -35,29 +35,27 @@ function Events() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <AdminPageHeader
-          title="Events"
-          description="Review, approve and manage submitted events."
-          right={
-            <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-              {events.length} total events
-            </div>
-          }
-        />
+    <div className="px-8 py-10">
+      <AdminPageHeader
+        title="Events"
+        description="Review, approve and manage submitted events."
+        right={
+          <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
+            {events.length} total events
+          </div>
+        }
+      />
 
-        <SearchFilterBar
-          searchTerm={search}
-          onSearchChange={setSearch}
-          searchPlaceholder="Search events..."
-          filters={["All", "Pending", "Approved", "Rejected"]}
-          activeFilter={filter}
-          onFilterChange={setFilter}
-        />
+      <SearchFilterBar
+        searchTerm={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search events..."
+        filters={["All", "Pending", "Approved", "Rejected"]}
+        activeFilter={filter}
+        onFilterChange={setFilter}
+      />
 
-        <EventsTable events={filteredEvents} onReview={setSelectedEvent} />
-      </div>
+      <EventsTable events={filteredEvents} onReview={setSelectedEvent} />
 
       {selectedEvent && (
         <EventReviewModal

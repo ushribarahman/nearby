@@ -32,7 +32,7 @@ function SearchFilterBar({
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder={searchPlaceholder}
-          className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-black focus:bg-white"
+          className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-[#01BBC1] focus:bg-white"
         />
       </div>
 
@@ -44,7 +44,7 @@ function SearchFilterBar({
             onClick={() => onFilterChange(item)}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
               activeFilter === item
-                ? "bg-black text-white"
+                ? "bg-[#01BBC1] text-black"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >

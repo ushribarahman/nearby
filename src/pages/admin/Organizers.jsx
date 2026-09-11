@@ -68,48 +68,46 @@ function Organizers() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <AdminPageHeader
-          title="Organizers"
-          description="Review and manage organizer accounts."
-          right={
-            <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-              {organizers.length} organizers
-            </div>
-          }
+    <div className="px-8 py-10">
+      <AdminPageHeader
+        title="Organizers"
+        description="Review and manage organizer accounts."
+        right={
+          <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
+            {organizers.length} organizers
+          </div>
+        }
+      />
+
+      {actionError && (
+        <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {actionError}
+        </div>
+      )}
+
+      <SearchFilterBar
+        searchTerm={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search organizers..."
+        filters={["All", "Approved", "Pending", "Suspended"]}
+        activeFilter={filter}
+        onFilterChange={setFilter}
+      />
+
+      {isLoading ? (
+        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center text-sm text-gray-500">
+          Loading organizers...
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center text-sm text-red-600">
+          {error}
+        </div>
+      ) : (
+        <OrganizersTable
+          organizers={filteredOrganizers}
+          onReview={setSelectedOrganizer}
         />
-
-        {actionError && (
-          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {actionError}
-          </div>
-        )}
-
-        <SearchFilterBar
-          searchTerm={search}
-          onSearchChange={setSearch}
-          searchPlaceholder="Search organizers..."
-          filters={["All", "Approved", "Pending", "Suspended"]}
-          activeFilter={filter}
-          onFilterChange={setFilter}
-        />
-
-        {isLoading ? (
-          <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center text-sm text-gray-500">
-            Loading organizers...
-          </div>
-        ) : error ? (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center text-sm text-red-600">
-            {error}
-          </div>
-        ) : (
-          <OrganizersTable
-            organizers={filteredOrganizers}
-            onReview={setSelectedOrganizer}
-          />
-        )}
-      </div>
+      )}
 
       {selectedOrganizer && (
         <OrganizerReviewModal

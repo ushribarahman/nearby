@@ -1,22 +1,16 @@
 import { Outlet } from "react-router-dom";
-import AdminNavbar from "../components/admin/AdminNavbar";
-import AdminFooter from "../components/admin/AdminFooter";
+import AdminSidebar from "../components/admin/AdminSidebar";
 
 function AdminLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
+      {/* Persistent sidebar (see AdminSidebar.jsx) */}
+      <AdminSidebar />
 
-      {/* Admin Navbar */}
-      <AdminNavbar />
-
-      {/* Page Content */}
-      <main className="flex-1">
+      {/* Content area — offset by the sidebar's fixed width (16rem) */}
+      <main className="min-h-screen pl-64">
         <Outlet />
       </main>
-
-      {/* Admin Footer */}
-      <AdminFooter />
-
     </div>
   );
 }

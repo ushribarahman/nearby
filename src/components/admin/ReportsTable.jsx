@@ -25,7 +25,7 @@ function ReportsTable({ reports, onReview, onClearFilters }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
         <div>
           <h2 className="font-semibold text-gray-900">Reported Content</h2>

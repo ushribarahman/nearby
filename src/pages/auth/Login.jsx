@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Footer from "../../components/common/Footer";
 import PasswordInput from "../../components/common/PasswordInput";
 import useAuth from "../../hooks/useAuth";
@@ -15,6 +15,7 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { login } = useAuth();
 
@@ -51,7 +52,18 @@ function Login() {
 
         const loggedInUser = response.user;
 
-        navigate(getRoleHome(loggedInUser.role));
+        // If ProtectedRoute sent them here from a page they tried to
+        // reach while logged out (e.g. Buy Ticket), send them back
+        // there instead of their role's default home — but only for
+        // regular users, since that "from" page lives in the user
+        // zone and an organizer/admin would just get bounced out of
+        // it again anyway.
+        const redirectTo =
+            loggedInUser.role === "user" && location.state?.from
+                ? `${location.state.from.pathname}${location.state.from.search || ""}`
+                : getRoleHome(loggedInUser.role);
+
+        navigate(redirectTo, { replace: true });
 
     } catch (error) {
         console.error(

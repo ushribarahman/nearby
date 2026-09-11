@@ -142,9 +142,12 @@ function EventDetails() {
       </div>
 
       <div className="mt-8 pb-4">
-        <button className="w-full max-w-md mx-auto block bg-[#000000] text-white py-4 px-6 rounded-full text-base font-semibold hover:bg-gray-600 transition-colors">
+        <Link
+          to={`/events/${event.id}/buy-ticket`}
+          className="w-full max-w-md mx-auto block bg-[#000000] text-white py-4 px-6 rounded-full text-base font-semibold hover:bg-gray-600 transition-colors text-center"
+        >
           Buy Ticket
-        </button>
+        </Link>
       </div>
     </div>
   );

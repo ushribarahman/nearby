@@ -1,27 +1,28 @@
 import { Link } from "react-router-dom";
+import { UsersIcon, OrganizersIcon, EventsIcon, OffersIcon } from "./icons";
 
 const ACTIONS = [
   {
     to: "/admin/users",
-    icon: "U",
+    Icon: UsersIcon,
     title: "Manage Users",
     description: "View and manage platform users.",
   },
   {
     to: "/admin/organizers",
-    icon: "O",
+    Icon: OrganizersIcon,
     title: "Organizers",
     description: "Review organizer accounts.",
   },
   {
     to: "/admin/events",
-    icon: "E",
+    Icon: EventsIcon,
     title: "Review Events",
     description: "Approve and manage events.",
   },
   {
     to: "/admin/offers",
-    icon: "O",
+    Icon: OffersIcon,
     title: "Review Offers",
     description: "Approve and manage offers.",
   },
@@ -39,10 +40,10 @@ function QuickActions() {
           <Link
             key={action.to}
             to={action.to}
-            className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-sm"
+            className="group rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#01BBC1]/40 hover:shadow-md"
           >
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100">
-              <span className="text-lg">{action.icon}</span>
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-600 transition group-hover:bg-[#01BBC1]/10 group-hover:text-[#01BBC1]">
+              <action.Icon />
             </div>
 
             <h3 className="font-semibold text-gray-900">{action.title}</h3>

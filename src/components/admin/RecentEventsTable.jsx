@@ -3,7 +3,7 @@ import StatusBadge from "./StatusBadge";
 
 function RecentEventsTable({ events }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white lg:col-span-2">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm lg:col-span-2">
       <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
         <div>
           <h2 className="font-semibold text-gray-900">Recent Events</h2>
@@ -14,7 +14,7 @@ function RecentEventsTable({ events }) {
 
         <Link
           to="/admin/events"
-          className="text-sm font-medium text-gray-600 transition hover:text-black"
+          className="text-sm font-medium text-[#01BBC1] transition hover:text-[#01a5aa]"
         >
           View all →
         </Link>

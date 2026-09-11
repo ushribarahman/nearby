@@ -8,6 +8,7 @@ function PasswordInput({
   onChange,
   onKeyDown,
   placeholder,
+  name,
   autoComplete = "current-password",
   className = "",
   iconClassName = "text-gray-400 hover:text-gray-600",
@@ -18,6 +19,7 @@ function PasswordInput({
     <div className="relative">
       <input
         type={showPassword ? "text" : "password"}
+        name={name}
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}

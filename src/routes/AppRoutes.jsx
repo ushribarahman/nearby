@@ -29,6 +29,8 @@ import Register from "../pages/auth/Register";
 
 // User Pages
 import UserProfile from "../pages/user/Profile";
+import BuyTicket from "../pages/user/BuyTicket";
+import PurchaseSuccess from "../pages/user/PurchaseSuccess";
 
 // Organizer Pages
 import OrganizerDashboard from "../pages/organizer/Dashboard";
@@ -143,7 +145,24 @@ function AppRoutes() {
                 element={<UserProfile />}
               />
 
+              {/* Buy Ticket — must be logged in as a regular user.
+                  Uses dummy ticket data for now; no real
+                  payment/order backend yet. */}
+              <Route
+                path="/events/:id/buy-ticket"
+                element={<BuyTicket />}
+              />
+
             </Route>
+
+            {/* Purchase confirmation is a standalone full-screen
+                page (no navbar/footer) so the confirmation +
+                auto-redirect reads cleanly, same idea as the
+                admin login page being standalone. */}
+            <Route
+              path="/purchase-success"
+              element={<PurchaseSuccess />}
+            />
 
           </Route>
 

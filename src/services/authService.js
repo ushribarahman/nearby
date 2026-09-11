@@ -24,11 +24,21 @@ const getProfile = async () => {
 };
 
 // Text-only profile fields for now (no image upload yet). Called by both
-// the regular user and organizer profile pages.
+// the regular user and organizer profile pages. Note: email is never
+// accepted here — the backend silently ignores it even if sent.
 const updateProfile = async (profileData) => {
   return await apiRequest("/auth/profile", {
     method: "PUT",
     body: JSON.stringify(profileData),
+  });
+};
+
+// Separate from updateProfile since it requires proving identity with
+// the current password first.
+const changePassword = async (currentPassword, newPassword) => {
+  return await apiRequest("/auth/password", {
+    method: "PUT",
+    body: JSON.stringify({ currentPassword, newPassword }),
   });
 };
 
@@ -43,6 +53,7 @@ const authService = {
   login,
   getProfile,
   updateProfile,
+  changePassword,
   logout,
 };
 

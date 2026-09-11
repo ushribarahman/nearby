@@ -15,16 +15,14 @@ function OrganizersTable({ organizers, onReview }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1000px] text-left">
+        <table className="w-full min-w-[850px] text-left">
           <thead className="border-b border-gray-200 bg-gray-50">
             <tr className="text-xs uppercase tracking-wide text-gray-500">
               <th className="px-6 py-4 font-medium">Organization</th>
               <th className="px-6 py-4 font-medium">Owner</th>
               <th className="px-6 py-4 font-medium">Contact</th>
-              <th className="px-6 py-4 font-medium">Events</th>
-              <th className="px-6 py-4 font-medium">Offers</th>
               <th className="px-6 py-4 font-medium">Status</th>
               <th className="px-6 py-4 text-right font-medium">Action</th>
             </tr>
@@ -35,7 +33,7 @@ function OrganizersTable({ organizers, onReview }) {
               <tr key={organizer.id} className="transition hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 font-bold text-gray-700">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#01BBC1]/10 font-bold text-[#01BBC1]">
                       {organizer.name.charAt(0)}
                     </div>
 
@@ -59,14 +57,6 @@ function OrganizersTable({ organizers, onReview }) {
                   <p className="mt-1 text-xs text-gray-400">
                     {organizer.phone}
                   </p>
-                </td>
-
-                <td className="px-6 py-4 text-sm text-gray-700">
-                  {organizer.events}
-                </td>
-
-                <td className="px-6 py-4 text-sm text-gray-700">
-                  {organizer.offers}
                 </td>
 
                 <td className="px-6 py-4">

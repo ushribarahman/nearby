@@ -15,15 +15,14 @@ function UsersTable({ users, onView, onToggleStatus }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] text-left">
+        <table className="w-full min-w-[850px] text-left">
           <thead className="border-b border-gray-200 bg-gray-50">
             <tr className="text-xs uppercase tracking-wide text-gray-500">
               <th className="px-6 py-4 font-medium">User</th>
               <th className="px-6 py-4 font-medium">Contact</th>
               <th className="px-6 py-4 font-medium">Joined</th>
-              <th className="px-6 py-4 font-medium">Events</th>
               <th className="px-6 py-4 font-medium">Status</th>
               <th className="px-6 py-4 text-right font-medium">Action</th>
             </tr>
@@ -34,7 +33,7 @@ function UsersTable({ users, onView, onToggleStatus }) {
               <tr key={user.id} className="transition hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-semibold text-gray-700">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#01BBC1]/10 font-semibold text-[#01BBC1]">
                       {user.name.charAt(0)}
                     </div>
 
@@ -58,10 +57,6 @@ function UsersTable({ users, onView, onToggleStatus }) {
                   {user.joined}
                 </td>
 
-                <td className="px-6 py-4 text-sm text-gray-700">
-                  {user.events}
-                </td>
-
                 <td className="px-6 py-4">
                   <StatusBadge status={user.status} />
                 </td>
@@ -82,7 +77,7 @@ function UsersTable({ users, onView, onToggleStatus }) {
                       className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                         user.status === "Active"
                           ? "bg-red-50 text-red-600 hover:bg-red-100"
-                          : "bg-black text-white hover:bg-gray-800"
+                          : "bg-[#01BBC1] text-black hover:bg-[#01a5aa]"
                       }`}
                     >
                       {user.status === "Active" ? "Suspend" : "Activate"}

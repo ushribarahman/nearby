@@ -62,44 +62,42 @@ function Reports() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <AdminPageHeader
-          title="Reports"
-          description="Review reports submitted about events and offers and take appropriate action."
-          right={
-            <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-              {reports.length} total reports
-            </div>
-          }
-        />
+    <div className="px-8 py-10">
+      <AdminPageHeader
+        title="Reports"
+        description="Review reports submitted about events and offers and take appropriate action."
+        right={
+          <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
+            {reports.length} total reports
+          </div>
+        }
+      />
 
-        <ReportsSummaryCards
-          pendingCount={pendingCount}
-          reviewCount={reviewCount}
-          resolvedCount={resolvedCount}
-          statusFilter={statusFilter}
-          onSelectStatus={(status) => {
-            setStatusFilter(status);
-            setTypeFilter("All");
-          }}
-        />
+      <ReportsSummaryCards
+        pendingCount={pendingCount}
+        reviewCount={reviewCount}
+        resolvedCount={resolvedCount}
+        statusFilter={statusFilter}
+        onSelectStatus={(status) => {
+          setStatusFilter(status);
+          setTypeFilter("All");
+        }}
+      />
 
-        <ReportsFilterBar
-          search={search}
-          onSearchChange={setSearch}
-          typeFilter={typeFilter}
-          onTypeChange={setTypeFilter}
-          statusFilter={statusFilter}
-          onStatusChange={setStatusFilter}
-        />
+      <ReportsFilterBar
+        search={search}
+        onSearchChange={setSearch}
+        typeFilter={typeFilter}
+        onTypeChange={setTypeFilter}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+      />
 
-        <ReportsTable
-          reports={filteredReports}
-          onReview={setSelectedReport}
-          onClearFilters={clearFilters}
-        />
-      </div>
+      <ReportsTable
+        reports={filteredReports}
+        onReview={setSelectedReport}
+        onClearFilters={clearFilters}
+      />
 
       {selectedReport && (
         <ReportReviewModal

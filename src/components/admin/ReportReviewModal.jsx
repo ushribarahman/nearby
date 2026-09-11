@@ -27,7 +27,7 @@ function ReportReviewModal({
           <button
             type="button"
             onClick={() => onResolve(report.id)}
-            className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+            className="flex-1 rounded-lg bg-[#01BBC1] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#01a5aa]"
           >
             Resolve Report
           </button>

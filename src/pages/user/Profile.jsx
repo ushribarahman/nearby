@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import authService from "../../services/authService";
+import { getTicketHistory } from "../../utils/ticketHistory";
+import PasswordInput from "../../components/common/PasswordInput";
 
 function Profile() {
   const { user, updateProfile } = useAuth();
 
+  // ---- Personal info editing ----
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -12,27 +16,40 @@ function Profile() {
 
   const [fields, setFields] = useState({
     name: "",
-    email: "",
     username: "",
     phone: "",
   });
 
-  // Keep the form in sync with the logged-in user (e.g. right after the
-  // profile is restored from the session cookie on page load).
   useEffect(() => {
     if (user) {
       setFields({
         name: user.name || "",
-        email: user.email || "",
         username: user.username || "",
         phone: user.phone || "",
       });
     }
   }, [user]);
 
-  const avatarLetter = user?.name
-    ? user.name.charAt(0).toUpperCase()
-    : "U";
+  // ---- Password change ----
+  const [passwordFields, setPasswordFields] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+
+  // ---- Ticket history ----
+  const [ticketHistory, setTicketHistory] = useState([]);
+
+  useEffect(() => {
+    if (user?.email) {
+      setTicketHistory(getTicketHistory(user.email));
+    }
+  }, [user]);
+
+  const avatarLetter = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   const roleLabel = user?.role
     ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
@@ -51,7 +68,6 @@ function Profile() {
     if (user) {
       setFields({
         name: user.name || "",
-        email: user.email || "",
         username: user.username || "",
         phone: user.phone || "",
       });
@@ -70,17 +86,11 @@ function Profile() {
       return;
     }
 
-    if (!fields.email.trim()) {
-      setError("Email cannot be empty.");
-      return;
-    }
-
     try {
       setIsSaving(true);
 
       await updateProfile({
         name: fields.name.trim(),
-        email: fields.email.trim(),
         username: fields.username.trim(),
         phone: fields.phone.trim(),
       });
@@ -91,6 +101,57 @@ function Profile() {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handlePasswordFieldChange = (event) => {
+    const { name, value } = event.target;
+
+    setPasswordFields((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  const handleChangePassword = async () => {
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    const { currentPassword, newPassword, confirmNewPassword } =
+      passwordFields;
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      setPasswordError("Please fill in all password fields.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters long.");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+
+      await authService.changePassword(currentPassword, newPassword);
+
+      setPasswordSuccess("Password updated successfully.");
+      setPasswordFields({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
+    } catch (err) {
+      setPasswordError(
+        err.message || "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -109,7 +170,7 @@ function Profile() {
             </h1>
 
             <p className="mt-2 text-sm text-gray-500 sm:text-base">
-              Manage and view your account information.
+              Manage your account and view your ticket history.
             </p>
           </div>
 
@@ -139,18 +200,16 @@ function Profile() {
           </div>
         )}
 
+        {/* Profile card */}
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
           {/* Profile Header */}
           <div className="border-b border-gray-100 px-6 py-7 sm:px-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-
-              {/* Avatar */}
               <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black text-2xl font-semibold text-white">
                 {avatarLetter}
               </div>
 
-              {/* User Name */}
               <div className="min-w-0">
                 <h2 className="truncate text-2xl font-semibold text-gray-900">
                   {user?.name || "User"}
@@ -164,12 +223,10 @@ function Profile() {
                   {roleLabel}
                 </span>
               </div>
-
             </div>
           </div>
 
           <div className="px-6 py-7 sm:px-8">
-
             <h3 className="mb-6 text-lg font-semibold text-gray-900">
               Personal Information
             </h3>
@@ -200,28 +257,21 @@ function Profile() {
                 )}
               </div>
 
-              {/* Email */}
+              {/* Email — always read-only */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-500">
                   Email Address
                 </label>
 
-                {isEditing ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={fields.email}
-                    onChange={handleChange}
-                    placeholder="Enter your email"
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                  />
-                ) : (
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p className="truncate text-sm font-medium text-gray-900">
-                      {user?.email || "Not available"}
-                    </p>
-                  </div>
-                )}
+                <div className="rounded-lg border border-gray-200 bg-gray-100 px-4 py-3">
+                  <p className="truncate text-sm font-medium text-gray-500">
+                    {user?.email || "Not available"}
+                  </p>
+                </div>
+
+                <p className="mt-1.5 text-xs text-gray-400">
+                  Your email can't be changed — it's tied to your account.
+                </p>
               </div>
 
               {/* Username */}
@@ -277,91 +327,186 @@ function Profile() {
             </div>
           </div>
 
-          <div className="border-t border-gray-100 px-6 py-7 sm:px-8">
+          {isEditing && (
+            <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+              <p className="text-sm text-gray-500">
+                Make sure your details are correct before saving.
+              </p>
 
-            <h3 className="mb-6 text-lg font-semibold text-gray-900">
-              Account Information
-            </h3>
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-
-              {/* Account Type */}
-              <div>
-                <p className="mb-2 text-sm font-medium text-gray-500">
-                  Account Type
-                </p>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                  <p className="text-sm font-medium text-gray-900">
-                    {roleLabel}
-                  </p>
-                </div>
-              </div>
-
-              {/* Account Status */}
-              <div>
-                <p className="mb-2 text-sm font-medium text-gray-500">
-                  Account Status
-                </p>
-
-                <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                  <span className="h-2 w-2 rounded-full bg-green-500" />
-
-                  <p className="text-sm font-medium text-gray-900">
-                    Active
-                  </p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-
-            {isEditing ? (
-              <>
-                <p className="text-sm text-gray-500">
-                  Make sure your details are correct before saving.
-                </p>
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    disabled={isSaving}
-                    className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isSaving ? "Saving..." : "Save Changes"}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p className="text-sm text-gray-500">
-                  Want to explore more?
-                </p>
-
-                <Link
-                  to="/"
-                  className="inline-flex items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Back to Home
-                </Link>
-              </>
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Change Password */}
+        <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <div className="px-6 py-7 sm:px-8">
+            <h3 className="mb-1 text-lg font-semibold text-gray-900">
+              Change Password
+            </h3>
+            <p className="mb-6 text-sm text-gray-500">
+              You'll need your current password to set a new one.
+            </p>
+
+            {passwordSuccess && (
+              <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                {passwordSuccess}
+              </div>
             )}
 
+            {passwordError && (
+              <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                {passwordError}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="mb-2 block text-sm font-medium text-gray-500">
+                  Current Password
+                </label>
+                <PasswordInput
+                  value={passwordFields.currentPassword}
+                  onChange={handlePasswordFieldChange}
+                  name="currentPassword"
+                  placeholder="Enter your current password"
+                  autoComplete="current-password"
+                  className="border-gray-200 bg-gray-50 focus:border-black focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-500">
+                  New Password
+                </label>
+                <PasswordInput
+                  value={passwordFields.newPassword}
+                  onChange={handlePasswordFieldChange}
+                  name="newPassword"
+                  placeholder="At least 6 characters"
+                  autoComplete="new-password"
+                  className="border-gray-200 bg-gray-50 focus:border-black focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-500">
+                  Confirm New Password
+                </label>
+                <PasswordInput
+                  value={passwordFields.confirmNewPassword}
+                  onChange={handlePasswordFieldChange}
+                  name="confirmNewPassword"
+                  placeholder="Re-enter new password"
+                  autoComplete="new-password"
+                  className="border-gray-200 bg-gray-50 focus:border-black focus:bg-white"
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleChangePassword}
+              disabled={isChangingPassword}
+              className="mt-6 rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isChangingPassword ? "Updating..." : "Update Password"}
+            </button>
+          </div>
+        </div>
+
+        {/* Ticket History */}
+        <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-100 px-6 py-6 sm:px-8">
+            <h3 className="text-lg font-semibold text-gray-900">
+              My Tickets
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Events you've bought tickets for.
+            </p>
           </div>
 
+          {ticketHistory.length === 0 ? (
+            <div className="px-6 py-12 text-center sm:px-8">
+              <p className="text-sm text-gray-500">
+                You haven't bought any tickets yet.
+              </p>
+              <Link
+                to="/events"
+                className="mt-4 inline-block rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800"
+              >
+                Browse Events
+              </Link>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {ticketHistory.map((ticket) => (
+                <div
+                  key={ticket.id}
+                  className="flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:px-8"
+                >
+                  <img
+                    src={ticket.eventImage}
+                    alt={ticket.eventTitle}
+                    className="h-16 w-24 shrink-0 rounded-lg object-cover"
+                  />
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-gray-900">
+                      {ticket.eventTitle}
+                    </p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {ticket.eventDate}
+                      {ticket.eventLocation
+                        ? ` • ${ticket.eventLocation}`
+                        : ""}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400">
+                      Purchased{" "}
+                      {new Date(ticket.purchasedAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="text-right sm:shrink-0">
+                    <p className="text-sm text-gray-500">
+                      {ticket.quantity} ticket
+                      {ticket.quantity > 1 ? "s" : ""}
+                    </p>
+                    <p className="font-semibold text-gray-900">
+                      {ticket.total === 0 ? "Free" : `${ticket.total} BDT`}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+
       </div>
     </main>
   );

@@ -15,7 +15,7 @@ function EventsTable({ events, onReview }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[1000px] text-left">
           <thead className="border-b border-gray-200 bg-gray-50">

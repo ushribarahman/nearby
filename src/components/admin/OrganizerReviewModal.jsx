@@ -1,4 +1,5 @@
 import AdminModal from "./AdminModal";
+import StatusBadge from "./StatusBadge";
 
 function OrganizerReviewModal({ organizer, onClose, onApprove, onSuspend }) {
   return (
@@ -12,7 +13,7 @@ function OrganizerReviewModal({ organizer, onClose, onApprove, onSuspend }) {
             <button
               type="button"
               onClick={() => onApprove(organizer.id)}
-              className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+              className="flex-1 rounded-lg bg-[#01BBC1] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#01a5aa]"
             >
               Approve
             </button>
@@ -48,23 +49,9 @@ function OrganizerReviewModal({ organizer, onClose, onApprove, onSuspend }) {
 
         <div className="rounded-xl bg-gray-50 p-4">
           <p className="text-xs text-gray-400">Status</p>
-          <p className="mt-1 text-sm font-medium text-gray-900">
-            {organizer.status}
-          </p>
-        </div>
-
-        <div className="rounded-xl bg-gray-50 p-4">
-          <p className="text-xs text-gray-400">Events</p>
-          <p className="mt-1 text-sm font-medium text-gray-900">
-            {organizer.events}
-          </p>
-        </div>
-
-        <div className="rounded-xl bg-gray-50 p-4">
-          <p className="text-xs text-gray-400">Offers</p>
-          <p className="mt-1 text-sm font-medium text-gray-900">
-            {organizer.offers}
-          </p>
+          <div className="mt-1">
+            <StatusBadge status={organizer.status} />
+          </div>
         </div>
       </div>
 

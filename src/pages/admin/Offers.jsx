@@ -35,29 +35,27 @@ function Offers() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <AdminPageHeader
-          title="Offers"
-          description="Review and manage promotional offers."
-          right={
-            <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-              {offers.length} total offers
-            </div>
-          }
-        />
+    <div className="px-8 py-10">
+      <AdminPageHeader
+        title="Offers"
+        description="Review and manage promotional offers."
+        right={
+          <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
+            {offers.length} total offers
+          </div>
+        }
+      />
 
-        <SearchFilterBar
-          searchTerm={search}
-          onSearchChange={setSearch}
-          searchPlaceholder="Search offers..."
-          filters={["All", "Pending", "Approved", "Rejected"]}
-          activeFilter={filter}
-          onFilterChange={setFilter}
-        />
+      <SearchFilterBar
+        searchTerm={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search offers..."
+        filters={["All", "Pending", "Approved", "Rejected"]}
+        activeFilter={filter}
+        onFilterChange={setFilter}
+      />
 
-        <OffersTable offers={filteredOffers} onReview={setSelectedOffer} />
-      </div>
+      <OffersTable offers={filteredOffers} onReview={setSelectedOffer} />
 
       {selectedOffer && (
         <OfferReviewModal

@@ -4,6 +4,7 @@ import DashboardStats from "../../components/admin/DashboardStats";
 import RecentEventsTable from "../../components/admin/RecentEventsTable";
 import RecentUsersList from "../../components/admin/RecentUsersList";
 import QuickActions from "../../components/admin/QuickActions";
+import { UsersIcon, OrganizersIcon, EventsIcon, OffersIcon } from "../../components/admin/icons";
 import adminService from "../../services/adminService";
 import { eventOfferStats, recentEvents } from "../../data/admin/dashboard";
 
@@ -23,6 +24,8 @@ const formatJoinedDate = (isoDate) => {
     year: "numeric",
   });
 };
+
+const EVENT_OFFER_ICONS = [EventsIcon, OffersIcon];
 
 function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -70,46 +73,52 @@ function Dashboard() {
     {
       label: "Total Users",
       value: isLoading ? "…" : userStats.totalUsers,
-      change: "",
       description: "registered users",
+      Icon: UsersIcon,
     },
     {
       label: "Organizers",
       value: isLoading ? "…" : userStats.totalOrganizers,
-      change: "",
       description: "registered organizers",
+      Icon: OrganizersIcon,
     },
-    ...eventOfferStats,
+    ...eventOfferStats.map((stat, index) => ({
+      ...stat,
+      Icon: EVENT_OFFER_ICONS[index],
+    })),
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <AdminPageHeader
-          title="Dashboard"
-          description="Overview of everything happening across Nearby."
-          right={
-            <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-              Friday, August 28, 2026
-            </div>
-          }
-        />
-
-        {error && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
+    <div className="px-8 py-10">
+      <AdminPageHeader
+        title="Dashboard"
+        description="Overview of everything happening across Nearby."
+        right={
+          <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
+            {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
           </div>
-        )}
+        }
+      />
 
-        <DashboardStats stats={stats} />
-
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <RecentEventsTable events={recentEvents} />
-          <RecentUsersList users={recentUsers} />
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {error}
         </div>
+      )}
 
-        <QuickActions />
+      <DashboardStats stats={stats} />
+
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <RecentEventsTable events={recentEvents} />
+        <RecentUsersList users={recentUsers} />
       </div>
+
+      <QuickActions />
     </div>
   );
 }
