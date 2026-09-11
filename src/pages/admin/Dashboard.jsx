@@ -1,87 +1,87 @@
+import { useEffect, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import DashboardStats from "../../components/admin/DashboardStats";
 import RecentEventsTable from "../../components/admin/RecentEventsTable";
 import RecentUsersList from "../../components/admin/RecentUsersList";
 import QuickActions from "../../components/admin/QuickActions";
+import adminService from "../../services/adminService";
+import { eventOfferStats, recentEvents } from "../../data/admin/dashboard";
 
-const stats = [
-  {
-    label: "Total Users",
-    value: "1,284",
-    change: "+12.5%",
-    description: "from last month",
-  },
-  {
-    label: "Organizers",
-    value: "86",
-    change: "+8.2%",
-    description: "from last month",
-  },
-  {
-    label: "Total Events",
-    value: "342",
-    change: "+18.4%",
-    description: "from last month",
-  },
-  {
-    label: "Total Offers",
-    value: "198",
-    change: "+9.7%",
-    description: "from last month",
-  },
-];
+const formatJoinedDate = (isoDate) => {
+  if (!isoDate) return "Unknown";
 
-const recentEvents = [
-  {
-    name: "Dhaka Art Festival",
-    organizer: "Dhaka Art Club",
-    date: "Aug 30, 2026",
-    status: "Pending",
-  },
-  {
-    name: "Food & Culture Fest",
-    organizer: "Taste Bangladesh",
-    date: "Sep 02, 2026",
-    status: "Approved",
-  },
-  {
-    name: "Tech Meetup 2026",
-    organizer: "Tech Community BD",
-    date: "Sep 05, 2026",
-    status: "Pending",
-  },
-  {
-    name: "Night Music Festival",
-    organizer: "Live Nation BD",
-    date: "Sep 08, 2026",
-    status: "Approved",
-  },
-];
+  const diffMs = Date.now() - new Date(isoDate).getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-const recentUsers = [
-  {
-    name: "Arif Rahman",
-    email: "arif@example.com",
-    joined: "Today",
-  },
-  {
-    name: "Nusrat Jahan",
-    email: "nusrat@example.com",
-    joined: "Yesterday",
-  },
-  {
-    name: "Sakib Hasan",
-    email: "sakib@example.com",
-    joined: "2 days ago",
-  },
-  {
-    name: "Mim Akter",
-    email: "mim@example.com",
-    joined: "3 days ago",
-  },
-];
+  if (diffDays <= 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+
+  return new Date(isoDate).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 function Dashboard() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [userStats, setUserStats] = useState({
+    totalUsers: null,
+    totalOrganizers: null,
+  });
+  const [recentUsers, setRecentUsers] = useState([]);
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const [statsResponse, usersResponse] = await Promise.all([
+          adminService.getStats(),
+          adminService.getUsers(),
+        ]);
+
+        setUserStats(statsResponse);
+
+        setRecentUsers(
+          usersResponse.users.slice(0, 4).map((user) => ({
+            name: user.name,
+            email: user.email,
+            joined: formatJoinedDate(user.joined),
+          }))
+        );
+      } catch (err) {
+        setError(err.message || "Failed to load dashboard data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, []);
+
+  // Total Users / Organizers come straight from MongoDB. Total Events
+  // and Total Offers are still mocked — there's no Event/Offer backend
+  // yet — so they're merged in from the (clearly labeled) mock file.
+  const stats = [
+    {
+      label: "Total Users",
+      value: isLoading ? "…" : userStats.totalUsers,
+      change: "",
+      description: "registered users",
+    },
+    {
+      label: "Organizers",
+      value: isLoading ? "…" : userStats.totalOrganizers,
+      change: "",
+      description: "registered organizers",
+    },
+    ...eventOfferStats,
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl px-6 py-10">
@@ -89,11 +89,17 @@ function Dashboard() {
           title="Dashboard"
           description="Overview of everything happening across Nearby."
           right={
-            <div className="text-sm text-gray-500">
+            <div className="rounded-lg bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
               Friday, August 28, 2026
             </div>
           }
         />
+
+        {error && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
         <DashboardStats stats={stats} />
 

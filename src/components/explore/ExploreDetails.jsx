@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import exploreData from "../../data/Explore";
+import exploreData from "../../data/explore";
 
 function ExploreDetails() {
   const { id } = useParams();

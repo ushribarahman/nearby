@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/common/Footer";
+import PasswordInput from "../../components/common/PasswordInput";
 import useAuth from "../../hooks/useAuth";
 import { getRoleHome } from "../../utils/roleHome";
 
@@ -224,8 +225,7 @@ function Login() {
                     </button>
                   </div>
 
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={password}
                     onChange={(event) => {
                       setPassword(event.target.value);
@@ -238,7 +238,7 @@ function Login() {
                     }}
                     placeholder="Enter your password"
                     autoComplete="current-password"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
+                    className="border-gray-300 focus:border-black"
                   />
                 </div>
 

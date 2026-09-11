@@ -13,9 +13,11 @@ function DashboardStats({ stats }) {
               {stat.value}
             </h2>
 
-            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
-              {stat.change}
-            </span>
+            {stat.change && (
+              <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
+                {stat.change}
+              </span>
+            )}
           </div>
 
           <p className="mt-2 text-xs text-gray-400">{stat.description}</p>

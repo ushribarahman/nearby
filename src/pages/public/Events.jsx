@@ -2,7 +2,7 @@ import Card from "../../components/common/Card";
 import Filter from "../../components/common/Filter";
 import Search from "../../components/common/Search";
 import CategoryFilter from "../../components/common/CategoryFilter";
-import events from "../../data/Events";
+import events from "../../data/events";
 import EventHero from "../../components/events/EventHero"
 
 function Events() {

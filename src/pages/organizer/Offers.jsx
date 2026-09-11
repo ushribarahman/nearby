@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import offersData from "../../data/Offers";
+import offersData from "../../data/offers";
 import OfferForm from "../../components/organizer/OfferForm";
 import OfferTable from "../../components/organizer/OfferTable";
 

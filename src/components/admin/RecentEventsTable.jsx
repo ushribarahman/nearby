@@ -22,7 +22,7 @@ function RecentEventsTable({ events }) {
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[650px] text-left">
-          <thead className="bg-gray-50">
+          <thead className="border-b border-gray-200 bg-gray-50">
             <tr className="text-xs uppercase tracking-wide text-gray-500">
               <th className="px-6 py-3 font-medium">Event</th>
               <th className="px-6 py-3 font-medium">Organizer</th>

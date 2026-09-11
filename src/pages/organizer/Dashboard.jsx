@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { dashboardStats, recentActivities } from "../../data/Dashboard";
+import { dashboardStats, recentActivities } from "../../data/organizer/dashboard";
 
 function StatCard({ title, count, icon, linkTo, linkText }) {
   return (

@@ -578,6 +578,27 @@ function Navbar() {
                 About
               </NavLink>
             </div>
+
+            {/* Login / Register — shown here so they're reachable even
+                on the smallest screens, where the buttons next to the
+                hamburger (below) are hidden until the sm breakpoint. */}
+            {!isAuthenticated && (
+              <div className="mt-3 flex flex-col gap-2 border-t border-gray-100 pt-3">
+                <NavLink
+                  to="/login"
+                  className="rounded-lg px-4 py-3 text-center text-sm font-medium text-gray-700 outline-1 outline-gray-300 transition hover:bg-gray-100 hover:text-black"
+                >
+                  Login
+                </NavLink>
+
+                <NavLink
+                  to="/register"
+                  className="rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+                >
+                  Register
+                </NavLink>
+              </div>
+            )}
           </div>
         )}
       </div>

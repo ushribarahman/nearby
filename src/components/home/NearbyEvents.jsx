@@ -1,4 +1,4 @@
-import events from "../../data/Events";
+import events from "../../data/events";
 import EventSlider from "./EventSlider";
 
 function NearbyEvents() {

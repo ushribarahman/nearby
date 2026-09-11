@@ -3,63 +3,7 @@ import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
 import OffersTable from "../../components/admin/OffersTable";
 import OfferReviewModal from "../../components/admin/OfferReviewModal";
-
-const initialOffers = [
-  {
-    id: 1,
-    title: "20% Off Weekend Dining",
-    organizer: "Taste Bangladesh",
-    category: "Food",
-    discount: "20%",
-    validUntil: "Sep 10, 2026",
-    status: "Approved",
-  },
-  {
-    id: 2,
-    title: "Early Bird Event Tickets",
-    organizer: "Live Nation BD",
-    category: "Entertainment",
-    discount: "15%",
-    validUntil: "Sep 05, 2026",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    title: "Free Coffee with Breakfast",
-    organizer: "Grand Dining",
-    category: "Food",
-    discount: "Free",
-    validUntil: "Sep 15, 2026",
-    status: "Approved",
-  },
-  {
-    id: 4,
-    title: "Photography Workshop Deal",
-    organizer: "City Walk Dhaka",
-    category: "Photography",
-    discount: "25%",
-    validUntil: "Sep 20, 2026",
-    status: "Pending",
-  },
-  {
-    id: 5,
-    title: "Student Tech Pass",
-    organizer: "Tech Community BD",
-    category: "Technology",
-    discount: "30%",
-    validUntil: "Sep 25, 2026",
-    status: "Rejected",
-  },
-  {
-    id: 6,
-    title: "Creative Market Special",
-    organizer: "Creative Hub",
-    category: "Shopping",
-    discount: "10%",
-    validUntil: "Sep 30, 2026",
-    status: "Approved",
-  },
-];
+import initialOffers from "../../data/admin/offers";
 
 function Offers() {
   const [search, setSearch] = useState("");

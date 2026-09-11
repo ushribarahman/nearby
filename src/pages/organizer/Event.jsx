@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import eventsData from "../../data/Events";
+import eventsData from "../../data/events";
 import EventForm from "../../components/organizer/EventForm";
 import EventTable from "../../components/organizer/EventTable";
 

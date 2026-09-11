@@ -1,6 +1,6 @@
 import Card from "../../components/common/Card";
 import OfferHero from "../../components/offers/OfferHero";
-import offers from "../../data/Offers";
+import offers from "../../data/offers";
 import Filter from "../../components/common/Filter";
 import Search from "../../components/common/Search";
 import CategoryFilter from "../../components/common/CategoryFilter";

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/common/Footer";
+import PasswordInput from "../../components/common/PasswordInput";
 import useAuth from "../../hooks/useAuth";
 
 function Register() {
@@ -315,8 +316,7 @@ function Register() {
                     Password
                   </label>
 
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={password}
                     onChange={(event) => {
                       setPassword(event.target.value);
@@ -324,7 +324,7 @@ function Register() {
                     }}
                     placeholder="Create a password"
                     autoComplete="new-password"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
+                    className="border-gray-300 focus:border-black"
                   />
                 </div>
 
@@ -334,8 +334,7 @@ function Register() {
                     Confirm Password
                   </label>
 
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={confirmPassword}
                     onChange={(event) => {
                       setConfirmPassword(event.target.value);
@@ -343,7 +342,7 @@ function Register() {
                     }}
                     placeholder="Confirm your password"
                     autoComplete="new-password"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-black"
+                    className="border-gray-300 focus:border-black"
                   />
                 </div>
 

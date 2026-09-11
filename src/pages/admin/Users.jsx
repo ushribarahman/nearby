@@ -1,89 +1,55 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
 import UsersTable from "../../components/admin/UsersTable";
 import UserDetailsModal from "../../components/admin/UserDetailsModal";
+import adminService from "../../services/adminService";
 
-const initialUsers = [
-  {
-    id: 1,
-    name: "Arif Rahman",
-    email: "arif.rahman@example.com",
-    phone: "+880 1712-345678",
-    joined: "Aug 28, 2026",
-    status: "Active",
-    events: 4,
-  },
-  {
-    id: 2,
-    name: "Nusrat Jahan",
-    email: "nusrat.jahan@example.com",
-    phone: "+880 1812-456789",
-    joined: "Aug 27, 2026",
-    status: "Active",
-    events: 7,
-  },
-  {
-    id: 3,
-    name: "Sakib Hasan",
-    email: "sakib.hasan@example.com",
-    phone: "+880 1912-567890",
-    joined: "Aug 26, 2026",
-    status: "Active",
-    events: 2,
-  },
-  {
-    id: 4,
-    name: "Mim Akter",
-    email: "mim.akter@example.com",
-    phone: "+880 1612-678901",
-    joined: "Aug 25, 2026",
-    status: "Suspended",
-    events: 1,
-  },
-  {
-    id: 5,
-    name: "Tanvir Ahmed",
-    email: "tanvir.ahmed@example.com",
-    phone: "+880 1512-789012",
-    joined: "Aug 24, 2026",
-    status: "Active",
-    events: 5,
-  },
-  {
-    id: 6,
-    name: "Farhana Islam",
-    email: "farhana.islam@example.com",
-    phone: "+880 1312-890123",
-    joined: "Aug 23, 2026",
-    status: "Active",
-    events: 3,
-  },
-  {
-    id: 7,
-    name: "Rakib Hossain",
-    email: "rakib.hossain@example.com",
-    phone: "+880 1412-901234",
-    joined: "Aug 22, 2026",
-    status: "Suspended",
-    events: 0,
-  },
-  {
-    id: 8,
-    name: "Samia Chowdhury",
-    email: "samia.chowdhury@example.com",
-    phone: "+880 1212-123456",
-    joined: "Aug 21, 2026",
-    status: "Active",
-    events: 6,
-  },
-];
+// The backend sends createdAt as an ISO date string — format it the
+// same way the rest of the admin panel displays dates.
+const formatJoinedDate = (isoDate) => {
+  if (!isoDate) return "Unknown";
+
+  return new Date(isoDate).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 function Users() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [users, setUsers] = useState(initialUsers);
+
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const response = await adminService.getUsers();
+
+        setUsers(
+          response.users.map((user) => ({
+            ...user,
+            joined: formatJoinedDate(user.joined),
+          }))
+        );
+      } catch (err) {
+        setError(err.message || "Failed to load users.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -97,17 +63,32 @@ function Users() {
     });
   }, [users, search, filter]);
 
-  const toggleStatus = (id) => {
-    setUsers((current) =>
-      current.map((user) =>
-        user.id === id
-          ? {
-              ...user,
-              status: user.status === "Active" ? "Suspended" : "Active",
-            }
-          : user
-      )
-    );
+  const toggleStatus = async (id) => {
+    setActionError("");
+
+    const target = users.find((user) => user.id === id);
+
+    if (!target) return;
+
+    const nextStatus = target.status === "Active" ? "Suspended" : "Active";
+
+    try {
+      const response = await adminService.updateUserStatus(id, nextStatus);
+
+      setUsers((current) =>
+        current.map((user) =>
+          user.id === id
+            ? {
+                ...user,
+                ...response.user,
+                joined: formatJoinedDate(response.user.joined),
+              }
+            : user
+        )
+      );
+    } catch (err) {
+      setActionError(err.message || "Failed to update user status.");
+    }
   };
 
   return (
@@ -123,6 +104,12 @@ function Users() {
           }
         />
 
+        {actionError && (
+          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {actionError}
+          </div>
+        )}
+
         <SearchFilterBar
           searchTerm={search}
           onSearchChange={setSearch}
@@ -132,11 +119,21 @@ function Users() {
           onFilterChange={setFilter}
         />
 
-        <UsersTable
-          users={filteredUsers}
-          onView={setSelectedUser}
-          onToggleStatus={toggleStatus}
-        />
+        {isLoading ? (
+          <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center text-sm text-gray-500">
+            Loading users...
+          </div>
+        ) : error ? (
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center text-sm text-red-600">
+            {error}
+          </div>
+        ) : (
+          <UsersTable
+            users={filteredUsers}
+            onView={setSelectedUser}
+            onToggleStatus={toggleStatus}
+          />
+        )}
       </div>
 
       {selectedUser && (

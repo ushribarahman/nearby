@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import events from "../../data/Events";
+import events from "../../data/events";
 
 function EventDetails() {
   const { id } = useParams();

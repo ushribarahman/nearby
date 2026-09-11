@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import PasswordInput from "../../components/common/PasswordInput";
 import useAuth from "../../hooks/useAuth";
 import { getRoleHome } from "../../utils/roleHome";
 
@@ -119,8 +120,7 @@ function AdminLogin() {
               Password
             </label>
 
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(event) => {
                 setPassword(event.target.value);
@@ -133,7 +133,8 @@ function AdminLogin() {
               }}
               placeholder="Enter your password"
               autoComplete="current-password"
-              className="w-full rounded-lg border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none transition focus:border-[#01BBC1]"
+              className="border-gray-700 bg-gray-950 text-white focus:border-[#01BBC1]"
+              iconClassName="text-gray-500 hover:text-gray-300"
             />
           </div>
 

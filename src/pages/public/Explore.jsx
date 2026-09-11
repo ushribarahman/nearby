@@ -1,7 +1,7 @@
 import SearchBar from "../../components/explore/SearchBar";
 import ExploreHero from "../../components/explore/ExploreHero";
 import ExploreCard from "../../components/explore/ExploreCard";
-import exploreData from "../../data/Explore"; 
+import exploreData from "../../data/explore"; 
 
 function Explore() {
   return (

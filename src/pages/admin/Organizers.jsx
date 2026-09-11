@@ -1,77 +1,38 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
 import OrganizersTable from "../../components/admin/OrganizersTable";
 import OrganizerReviewModal from "../../components/admin/OrganizerReviewModal";
-
-const initialOrganizers = [
-  {
-    id: 1,
-    name: "Dhaka Art Club",
-    owner: "Arif Rahman",
-    email: "hello@dhakaartclub.com",
-    phone: "+880 1712-345678",
-    events: 18,
-    offers: 5,
-    status: "Approved",
-  },
-  {
-    id: 2,
-    name: "Taste Bangladesh",
-    owner: "Nusrat Jahan",
-    email: "hello@tastebd.com",
-    phone: "+880 1812-456789",
-    events: 12,
-    offers: 8,
-    status: "Approved",
-  },
-  {
-    id: 3,
-    name: "Tech Community BD",
-    owner: "Sakib Hasan",
-    email: "contact@techbd.com",
-    phone: "+880 1912-567890",
-    events: 9,
-    offers: 2,
-    status: "Pending",
-  },
-  {
-    id: 4,
-    name: "Live Nation BD",
-    owner: "Tanvir Ahmed",
-    email: "info@livenationbd.com",
-    phone: "+880 1512-789012",
-    events: 21,
-    offers: 4,
-    status: "Approved",
-  },
-  {
-    id: 5,
-    name: "City Walk Dhaka",
-    owner: "Farhana Islam",
-    email: "hello@citywalk.com",
-    phone: "+880 1312-890123",
-    events: 6,
-    offers: 3,
-    status: "Pending",
-  },
-  {
-    id: 6,
-    name: "Creative Hub",
-    owner: "Mim Akter",
-    email: "contact@creativehub.com",
-    phone: "+880 1612-678901",
-    events: 4,
-    offers: 1,
-    status: "Suspended",
-  },
-];
+import adminService from "../../services/adminService";
 
 function Organizers() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
-  const [organizers, setOrganizers] = useState(initialOrganizers);
+
+  const [organizers, setOrganizers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
+
+  useEffect(() => {
+    const loadOrganizers = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const response = await adminService.getOrganizers();
+
+        setOrganizers(response.organizers);
+      } catch (err) {
+        setError(err.message || "Failed to load organizers.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOrganizers();
+  }, []);
 
   const filteredOrganizers = useMemo(() => {
     return organizers.filter((organizer) => {
@@ -86,14 +47,24 @@ function Organizers() {
     });
   }, [organizers, search, filter]);
 
-  const updateStatus = (id, status) => {
-    setOrganizers((current) =>
-      current.map((organizer) =>
-        organizer.id === id ? { ...organizer, status } : organizer
-      )
-    );
+  const updateStatus = async (id, status) => {
+    setActionError("");
 
-    setSelectedOrganizer(null);
+    try {
+      const response = await adminService.updateOrganizerStatus(id, status);
+
+      setOrganizers((current) =>
+        current.map((organizer) =>
+          organizer.id === id
+            ? { ...organizer, ...response.organizer }
+            : organizer
+        )
+      );
+
+      setSelectedOrganizer(null);
+    } catch (err) {
+      setActionError(err.message || "Failed to update organizer status.");
+    }
   };
 
   return (
@@ -109,6 +80,12 @@ function Organizers() {
           }
         />
 
+        {actionError && (
+          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {actionError}
+          </div>
+        )}
+
         <SearchFilterBar
           searchTerm={search}
           onSearchChange={setSearch}
@@ -118,10 +95,20 @@ function Organizers() {
           onFilterChange={setFilter}
         />
 
-        <OrganizersTable
-          organizers={filteredOrganizers}
-          onReview={setSelectedOrganizer}
-        />
+        {isLoading ? (
+          <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center text-sm text-gray-500">
+            Loading organizers...
+          </div>
+        ) : error ? (
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center text-sm text-red-600">
+            {error}
+          </div>
+        ) : (
+          <OrganizersTable
+            organizers={filteredOrganizers}
+            onReview={setSelectedOrganizer}
+          />
+        )}
       </div>
 
       {selectedOrganizer && (

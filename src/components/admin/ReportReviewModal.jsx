@@ -15,37 +15,31 @@ function ReportReviewModal({
       onClose={onClose}
       maxWidthClassName="max-w-2xl"
       footer={
-        <>
-          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-gray-400">
-            Take Action
-          </p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => onMarkUnderReview(report.id)}
+            className="flex-1 rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            Mark Under Review
+          </button>
 
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => onMarkUnderReview(report.id)}
-              className="flex-1 rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-            >
-              Mark Under Review
-            </button>
+          <button
+            type="button"
+            onClick={() => onResolve(report.id)}
+            className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+          >
+            Resolve Report
+          </button>
 
-            <button
-              type="button"
-              onClick={() => onResolve(report.id)}
-              className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
-            >
-              Resolve Report
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onDismiss(report.id)}
-              className="flex-1 rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
-            >
-              Dismiss
-            </button>
-          </div>
-        </>
+          <button
+            type="button"
+            onClick={() => onDismiss(report.id)}
+            className="flex-1 rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
+          >
+            Dismiss
+          </button>
+        </div>
       }
     >
       <div className="mb-4 flex items-center gap-2">
