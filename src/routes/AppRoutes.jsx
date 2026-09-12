@@ -35,7 +35,9 @@ import PurchaseSuccess from "../pages/user/PurchaseSuccess";
 // Organizer Pages
 import OrganizerDashboard from "../pages/organizer/Dashboard";
 import OrganizerEvent from "../pages/organizer/Event";
+import EventFormPage from "../pages/organizer/EventFormPage";
 import OrganizerOffers from "../pages/organizer/Offers";
+import OfferFormPage from "../pages/organizer/OfferFormPage";
 import OrganizerProfile from "../pages/organizer/Profile";
 
 // Admin Pages
@@ -197,10 +199,34 @@ function AppRoutes() {
               element={<OrganizerEvent />}
             />
 
+            {/* Create Event */}
+            <Route
+              path="/organizer/events/new"
+              element={<EventFormPage />}
+            />
+
+            {/* Edit Event */}
+            <Route
+              path="/organizer/events/:id/edit"
+              element={<EventFormPage />}
+            />
+
             {/* Organizer Offers */}
             <Route
               path="/organizer/offers"
               element={<OrganizerOffers />}
+            />
+
+            {/* Create Offer */}
+            <Route
+              path="/organizer/offers/new"
+              element={<OfferFormPage />}
+            />
+
+            {/* Edit Offer */}
+            <Route
+              path="/organizer/offers/:id/edit"
+              element={<OfferFormPage />}
             />
 
             {/* Organizer Profile*/}

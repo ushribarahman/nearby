@@ -1,4 +1,16 @@
-function OfferForm({ formData, editingOffer, handleInputChange, handleSubmit, resetForm, setShowForm, setEditingOffer }) {
+import CoverImageUpload from "./CoverImageUpload/CoverImageUpload";
+
+function OfferForm({
+  formData,
+  editingOffer,
+  handleInputChange,
+  handleSubmit,
+  resetForm,
+  setShowForm,
+  setEditingOffer,
+  onImageChange,
+  authToken,
+}) {
   return (
     <div className="mb-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 className="mb-5 text-xl font-semibold text-gray-900">
@@ -129,15 +141,14 @@ function OfferForm({ formData, editingOffer, handleInputChange, handleSubmit, re
 
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-medium text-gray-700">
-              Image URL
+              Cover Image
             </label>
-            <input
-              type="text"
-              name="image"
-              value={formData.image}
-              onChange={handleInputChange}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-              placeholder="Enter image URL"
+            <CoverImageUpload
+              imageUrl={formData.image}
+              publicId={formData.imagePublicId}
+              onChange={onImageChange}
+              uploadType="offer"
+              token={authToken}
             />
           </div>
 

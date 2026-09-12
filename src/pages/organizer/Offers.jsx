@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import offersData from "../../data/offers";
-import OfferForm from "../../components/organizer/OfferForm";
 import OfferTable from "../../components/organizer/OfferTable";
 
 function Offers() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [offers, setOffers] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingOffer, setEditingOffer] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
 
@@ -18,134 +16,51 @@ function Offers() {
     if (status === "pending") {
       setFilterStatus("Pending");
     }
-    const mappedOffers = offersData.map(offer => {
-    let newStatus = offer.status;
-    if (offer.status === "Active") {
+
+    const mappedOffers = offersData.map((offer) => {
+      let newStatus = offer.status;
+      if (offer.status === "Active") {
         newStatus = "Approved";
-    } else if (offer.status === "Upcoming") {
-        newStatus = "Pending";  
-    }
-    return { ...offer, status: newStatus };
+      } else if (offer.status === "Upcoming") {
+        newStatus = "Pending";
+      }
+      return { ...offer, status: newStatus };
     });
-    setOffers(mappedOffers);
+
+    // If we just came back from the create/edit page (OfferFormPage),
+    // location.state carries the offer that was created or updated —
+    // there's no offers API yet, so this is how it gets folded back in.
+    const savedOffer = location.state?.savedOffer;
+
+    if (savedOffer) {
+      const alreadyExists = mappedOffers.some((o) => o.id === savedOffer.id);
+
+      setOffers(
+        alreadyExists
+          ? mappedOffers.map((o) =>
+              o.id === savedOffer.id ? { ...o, ...savedOffer } : o
+            )
+          : [...mappedOffers, savedOffer]
+      );
+    } else {
+      setOffers(mappedOffers);
+    }
   }, [location]);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    location: "",
-    date: "",
-    time: "",
-    duration: "",
-    image: "",
-    category: "",
-    originalPrice: "",
-    discount: "",
-    about: "",
-    organizer: {
-      name: "",
-      description: "",
-      email: "",
-      phone: "",
-    },
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes("organizer.")) {
-      const field = name.split(".")[1];
-      setFormData({
-        ...formData,
-        organizer: {
-          ...formData.organizer,
-          [field]: value,
-        },
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newOffer = {
-      id: offers.length + 1,
-      type: "offer",
-      ...formData,
-      originalPrice: parseFloat(formData.originalPrice) || 0,
-      status: "Pending",
-      vendors: ["Vendor 1", "Vendor 2"],
-      schedule: [
-        { time: formData.time || "TBA", activity: "Offer Available" },
-      ],
-    };
-
-    if (editingOffer) {
-      setOffers(offers.map(o => o.id === editingOffer.id ? { ...o, ...newOffer } : o));
-    } else {
-      setOffers([...offers, newOffer]);
-    }
-
-    resetForm();
-    setShowForm(false);
-    setEditingOffer(null);
-  };
-
   const handleEdit = (offer) => {
-    setEditingOffer(offer);
-    setFormData({
-      title: offer.title || "",
-      location: offer.location || "",
-      date: offer.date || "",
-      time: offer.time || "",
-      duration: offer.duration || "",
-      image: offer.image || "",
-      category: offer.category || "",
-      originalPrice: offer.originalPrice?.toString() || "",
-      discount: offer.discount || "",
-      about: offer.about || "",
-      organizer: {
-        name: offer.organizer?.name || "",
-        description: offer.organizer?.description || "",
-        email: offer.organizer?.email || "",
-        phone: offer.organizer?.phone || "",
-      },
-    });
-    setShowForm(true);
+    navigate(`/organizer/offers/${offer.id}/edit`);
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this offer?")) {
-      setOffers(offers.filter(o => o.id !== id));
+      setOffers(offers.filter((o) => o.id !== id));
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      location: "",
-      date: "",
-      time: "",
-      duration: "",
-      image: "",
-      category: "",
-      originalPrice: "",
-      discount: "",
-      about: "",
-      organizer: {
-        name: "",
-        description: "",
-        email: "",
-        phone: "",
-      },
-    });
-  };
-
-  const filteredOffers = offers.filter(offer => {
-    const matchesSearch = offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          offer.location.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredOffers = offers.filter((offer) => {
+    const matchesSearch =
+      offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      offer.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === "all" || offer.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -168,18 +83,12 @@ function Offers() {
             </p>
           </div>
 
-          {!showForm && (
-            <button
-              onClick={() => {
-                resetForm();
-                setEditingOffer(null);
-                setShowForm(true);
-              }}
-              className="rounded-lg bg-black px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800"
-            >
-              + Create Offer
-            </button>
-          )}
+          <Link
+            to="/organizer/offers/new"
+            className="rounded-lg bg-black px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800"
+          >
+            + Create Offer
+          </Link>
         </div>
 
         <div className="mb-5 flex justify-end">
@@ -187,18 +96,6 @@ function Offers() {
             {totalOffers} offers
           </span>
         </div>
-
-        {showForm && (
-          <OfferForm
-            formData={formData}
-            editingOffer={editingOffer}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            resetForm={resetForm}
-            setShowForm={setShowForm}
-            setEditingOffer={setEditingOffer}
-          />
-        )}
 
         <OfferTable
           filteredOffers={filteredOffers}

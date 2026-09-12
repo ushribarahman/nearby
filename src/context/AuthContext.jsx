@@ -7,6 +7,14 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // The rest of the app relies on the httpOnly cookie for auth. This one
+    // in-memory token exists ONLY so the profile-picture upload/delete
+    // requests (multipart, sent via axios) can attach a Bearer header,
+    // since the backend's authMiddleware currently expects that instead of
+    // the cookie. It's never persisted, and is lost on refresh — that's a
+    // known limitation for now, not a decision to fix auth here.
+    const [authToken, setAuthToken] = useState(null);
+
     // Restore authentication.
     // The JWT lives in an httpOnly cookie set by the backend, so the browser
     // sends it automatically with every request — we just ask the API who
@@ -57,8 +65,10 @@ export function AuthProvider({ children }) {
         }
 
         // The backend already set the httpOnly auth cookie on this response;
-        // we only need to keep the user info in memory.
+        // we only need to keep the user info in memory. We also grab the
+        // token from the JSON body so profile-picture uploads can use it.
         setUser(loggedInUser);
+        setAuthToken(response.token || null);
 
         return response;
     };
@@ -84,6 +94,33 @@ export function AuthProvider({ children }) {
         return response;
     };
 
+    // Upload / update profile picture
+    const uploadProfilePicture = async (file) => {
+        const response = await authService.uploadProfilePicture(
+            file,
+            authToken
+        );
+
+        setUser((current) => ({
+            ...current,
+            profilePicture: response.profilePicture,
+        }));
+
+        return response;
+    };
+
+    // Remove profile picture
+    const removeProfilePicture = async () => {
+        const response = await authService.deleteProfilePicture(authToken);
+
+        setUser((current) => ({
+            ...current,
+            profilePicture: { url: null, publicId: null },
+        }));
+
+        return response;
+    };
+
     // Logout
     const logout = async () => {
         try {
@@ -92,6 +129,7 @@ export function AuthProvider({ children }) {
             console.error("Logout failed:", error);
         } finally {
             setUser(null);
+            setAuthToken(null);
         }
     };
 
@@ -103,9 +141,12 @@ export function AuthProvider({ children }) {
         user,
         loading,
         isAuthenticated,
+        authToken,
         login,
         register,
         updateProfile,
+        uploadProfilePicture,
+        removeProfilePicture,
         logout,
     };
 

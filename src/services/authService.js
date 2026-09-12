@@ -1,4 +1,5 @@
 import apiRequest from "./api";
+import { axiosInstance } from "../utils/axiosInstance";
 
 const register = async (userData) => {
   return await apiRequest("/auth/register", {
@@ -48,6 +49,38 @@ const logout = async () => {
   });
 };
 
+// Profile picture upload/delete go through axiosInstance (not apiRequest)
+// because they need multipart/form-data, same as cse2200's productController
+// upload flow. The backend's authMiddleware expects a Bearer token, so it's
+// passed in explicitly here rather than relying on the cookie.
+const uploadProfilePicture = async (file, token) => {
+  const formData = new FormData();
+  formData.set("profilePicture", file);
+
+  const response = await axiosInstance.post(
+    "/api/auth/profile-picture",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+const deleteProfilePicture = async (token) => {
+  const response = await axiosInstance.delete("/api/auth/profile-picture", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
 const authService = {
   register,
   login,
@@ -55,6 +88,8 @@ const authService = {
   updateProfile,
   changePassword,
   logout,
+  uploadProfilePicture,
+  deleteProfilePicture,
 };
 
 export default authService;
