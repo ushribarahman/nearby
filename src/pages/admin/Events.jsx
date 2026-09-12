@@ -1,15 +1,29 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
 import EventsTable from "../../components/admin/EventsTable";
 import EventReviewModal from "../../components/admin/EventReviewModal";
-import initialEvents from "../../data/admin/events";
+import adminService from "../../services/adminService";
+
+const displayEvent = (event) => ({ ...event, organizer: event.organizer?.name || "Unknown organizer" });
 
 function Events() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    adminService.getEvents().then(({ events }) => {
+      if (active) setEvents(events.map(displayEvent));
+    }).catch((err) => { if (active) setError(err.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
 
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
@@ -24,14 +38,16 @@ function Events() {
     });
   }, [events, search, filter]);
 
-  const updateStatus = (id, status) => {
-    setEvents((current) =>
-      current.map((event) =>
-        event.id === id ? { ...event, status } : event
-      )
-    );
-
-    setSelectedEvent(null);
+  const updateStatus = async (id, status) => {
+    if (saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      const { event } = await adminService.updateEventStatus(id, status);
+      setEvents((current) => current.map((item) => item.id === id ? displayEvent(event) : item));
+      setSelectedEvent(null);
+    } catch (err) { setError(err.message); }
+    finally { setSaving(false); }
   };
 
   return (
@@ -55,11 +71,14 @@ function Events() {
         onFilterChange={setFilter}
       />
 
-      <EventsTable events={filteredEvents} onReview={setSelectedEvent} />
+      {error && <p role="alert" className="mb-4 text-red-600">{error}</p>}
+      {loading ? <p>Loading events...</p> : <EventsTable events={filteredEvents} onReview={setSelectedEvent} />}
 
       {selectedEvent && (
         <EventReviewModal
           event={selectedEvent}
+          saving={saving}
+          error={error}
           onClose={() => setSelectedEvent(null)}
           onApprove={(id) => updateStatus(id, "Approved")}
           onReject={(id) => updateStatus(id, "Rejected")}

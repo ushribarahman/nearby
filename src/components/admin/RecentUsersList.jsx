@@ -1,3 +1,4 @@
+import Avatar from "../common/Avatar";
 import { Link } from "react-router-dom";
 
 function RecentUsersList({ users }) {
@@ -31,7 +32,7 @@ function RecentUsersList({ users }) {
               className="flex items-center gap-3 px-6 py-4"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#01BBC1]/10 font-semibold text-[#01BBC1]">
-                {user.name.charAt(0)}
+                <Avatar user={user} fallback="U" />
               </div>
 
               <div className="min-w-0 flex-1">

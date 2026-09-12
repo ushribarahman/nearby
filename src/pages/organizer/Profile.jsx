@@ -1,9 +1,12 @@
+import ProfilePhotoEditor from "../../components/common/ProfilePhotoEditor";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 
 function Profile() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, uploadProfilePicture, removeProfilePicture } = useAuth();
 
+  const [pictureFile, setPictureFile] = useState(null);
+  const [removePicture, setRemovePicture] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -49,11 +52,6 @@ function Profile() {
     }
   }, [user]);
 
-  const avatarLetter = user?.organizationName
-    ? user.organizationName.charAt(0).toUpperCase()
-    : user?.name
-    ? user.name.charAt(0).toUpperCase()
-    : "O";
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -86,12 +84,16 @@ function Profile() {
   };
 
   const handleCancel = () => {
+    if (isSaving) return;
+    setPictureFile(null);
+    setRemovePicture(false);
     resetFieldsFromUser();
     setError("");
     setIsEditing(false);
   };
 
   const handleSave = async () => {
+    if (!isEditing || isSaving) return;
     setError("");
     setSuccessMessage("");
 
@@ -130,6 +132,10 @@ function Profile() {
         instagram: fields.instagram.trim(),
       });
 
+      if (pictureFile) await uploadProfilePicture(pictureFile);
+      else if (removePicture) await removeProfilePicture();
+      setPictureFile(null);
+      setRemovePicture(false);
       setSuccessMessage("Profile updated successfully.");
       setIsEditing(false);
     } catch (err) {
@@ -191,9 +197,7 @@ function Profile() {
           {/* Header */}
           <div className="border-b border-gray-100 px-6 py-7 sm:px-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-              <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black text-2xl font-semibold text-white">
-                {avatarLetter}
-              </div>
+              <ProfilePhotoEditor user={user} editing={isEditing} saving={isSaving} file={pictureFile} remove={removePicture} onFile={setPictureFile} onRemove={setRemovePicture} />
 
               <div className="min-w-0">
                 <h2 className="truncate text-2xl font-semibold text-gray-900">

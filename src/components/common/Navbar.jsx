@@ -1,3 +1,4 @@
+import Avatar from "./Avatar";
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
@@ -89,7 +90,6 @@ function Navbar() {
   };
 
   // Avatar Letter
-  const avatarLetter = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   // Render
   return (
@@ -205,7 +205,7 @@ function Navbar() {
                   aria-label="Open user menu"
                   aria-expanded={isUserMenuOpen}
                 >
-                  {avatarLetter}
+                  <Avatar user={user} fallback="U" />
                 </button>
 
                 {/*Desktop User Dropdown*/}
@@ -320,7 +320,7 @@ function Navbar() {
                   aria-label="Open user menu"
                   aria-expanded={isUserMenuOpen}
                 >
-                  {avatarLetter}
+                  <Avatar user={user} fallback="U" />
                 </button>
 
                 {/*Mobile User Dropdown*/}

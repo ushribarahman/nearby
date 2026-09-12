@@ -30,7 +30,7 @@ function OrganizerFooter() {
 
 
           {/* Organizer */}
-          <div>
+          <div className="md:col-start-4">
 
             <h3 className="text-sm font-semibold text-white">
               Organizer
@@ -71,49 +71,7 @@ function OrganizerFooter() {
           </div>
 
 
-          {/* Support */}
-          <div>
-
-            <h3 className="text-sm font-semibold text-white">
-              Nearby
-            </h3>
-
-            <div className="mt-4 flex flex-col gap-3 text-sm text-gray-400">
-
-              <Link
-                to="/"
-                className="transition hover:text-white"
-              >
-                Visit Website
-              </Link>
-
-              <Link
-                to="/about"
-                className="transition hover:text-white"
-              >
-                About Nearby
-              </Link>
-
-              <Link
-                to="/events"
-                className="transition hover:text-white"
-              >
-                Explore Events
-              </Link>
-
-              <Link
-                to="/offers"
-                className="transition hover:text-white"
-              >
-                Explore Offers
-              </Link>
-
-            </div>
-
-          </div>
-
         </div>
-
 
         {/* Bottom */}
         <div className="mt-12 flex flex-col gap-4 border-t border-gray-800 pt-6 text-sm text-gray-500 md:flex-row md:items-center md:justify-between">

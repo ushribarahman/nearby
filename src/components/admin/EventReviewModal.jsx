@@ -1,7 +1,7 @@
 import AdminModal from "./AdminModal";
 import StatusBadge from "./StatusBadge";
 
-function EventReviewModal({ event, onClose, onApprove, onReject }) {
+function EventReviewModal({ event, onClose, onApprove, onReject, saving, error }) {
   return (
     <AdminModal
       eyebrow="Event Review"
@@ -12,6 +12,7 @@ function EventReviewModal({ event, onClose, onApprove, onReject }) {
           <button
             type="button"
             onClick={() => onApprove(event.id)}
+            disabled={saving}
             className="flex-1 rounded-lg bg-[#01BBC1] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#01a5aa]"
           >
             Approve
@@ -20,6 +21,7 @@ function EventReviewModal({ event, onClose, onApprove, onReject }) {
           <button
             type="button"
             onClick={() => onReject(event.id)}
+            disabled={saving}
             className="flex-1 rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-100"
           >
             Reject
@@ -36,6 +38,8 @@ function EventReviewModal({ event, onClose, onApprove, onReject }) {
       }
     >
       <div className="space-y-4">
+        {error && <p role="alert" className="text-red-600">{error}</p>}
+        {saving && <p>Saving status...</p>}
         <div className="rounded-xl bg-gray-50 p-4">
           <p className="text-xs text-gray-400">Organizer</p>
           <p className="mt-1 font-medium text-gray-900">{event.organizer}</p>

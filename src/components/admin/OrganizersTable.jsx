@@ -1,3 +1,4 @@
+import Avatar from "../common/Avatar";
 import StatusBadge from "./StatusBadge";
 
 function OrganizersTable({ organizers, onReview }) {
@@ -33,8 +34,8 @@ function OrganizersTable({ organizers, onReview }) {
               <tr key={organizer.id} className="transition hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#01BBC1]/10 font-bold text-[#01BBC1]">
-                      {organizer.name.charAt(0)}
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#01BBC1]/10 font-bold text-[#01BBC1]">
+                      <Avatar user={organizer} fallback="O" />
                     </div>
 
                     <div>

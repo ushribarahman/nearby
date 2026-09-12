@@ -9,7 +9,6 @@ function OfferForm({
   setShowForm,
   setEditingOffer,
   onImageChange,
-  authToken,
 }) {
   return (
     <div className="mb-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -148,7 +147,6 @@ function OfferForm({
               publicId={formData.imagePublicId}
               onChange={onImageChange}
               uploadType="offer"
-              token={authToken}
             />
           </div>
 

@@ -1,5 +1,4 @@
 import apiRequest from "./api";
-import { axiosInstance } from "../utils/axiosInstance";
 
 const register = async (userData) => {
   return await apiRequest("/auth/register", {
@@ -24,13 +23,34 @@ const getProfile = async () => {
   });
 };
 
-// Text-only profile fields for now (no image upload yet). Called by both
-// the regular user and organizer profile pages. Note: email is never
-// accepted here — the backend silently ignores it even if sent.
+// Text-only profile fields. Called by both the regular user and
+// organizer profile pages. Note: email is never accepted here — the
+// backend silently ignores it even if sent.
 const updateProfile = async (profileData) => {
   return await apiRequest("/auth/profile", {
     method: "PUT",
     body: JSON.stringify(profileData),
+  });
+};
+
+// Profile picture upload/removal — same cookie-based auth as every
+// other request here (apiRequest already sends credentials: "include").
+// No separate Bearer token needed; that was a leftover from a
+// different auth approach that never matched how this app's backend
+// actually authenticates requests.
+const uploadProfilePicture = async (file) => {
+  const formData = new FormData();
+  formData.append("profilePicture", file);
+
+  return await apiRequest("/auth/profile-picture", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+const deleteProfilePicture = async () => {
+  return await apiRequest("/auth/profile-picture", {
+    method: "DELETE",
   });
 };
 
@@ -49,47 +69,15 @@ const logout = async () => {
   });
 };
 
-// Profile picture upload/delete go through axiosInstance (not apiRequest)
-// because they need multipart/form-data, same as cse2200's productController
-// upload flow. The backend's authMiddleware expects a Bearer token, so it's
-// passed in explicitly here rather than relying on the cookie.
-const uploadProfilePicture = async (file, token) => {
-  const formData = new FormData();
-  formData.set("profilePicture", file);
-
-  const response = await axiosInstance.post(
-    "/api/auth/profile-picture",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  return response.data;
-};
-
-const deleteProfilePicture = async (token) => {
-  const response = await axiosInstance.delete("/api/auth/profile-picture", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data;
-};
-
 const authService = {
   register,
   login,
   getProfile,
   updateProfile,
-  changePassword,
-  logout,
   uploadProfilePicture,
   deleteProfilePicture,
+  changePassword,
+  logout,
 };
 
 export default authService;

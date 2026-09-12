@@ -1,4 +1,5 @@
 import ImageUploadButton from "../ImageUploadButton/ImageUploadButton";
+import { useEffect, useState } from "react";
 
 // Mirrors cse2200's ProductCoverPhotoSelection: shows a preview (either the
 // newly picked file, or the existing Cloudinary URL) with a way to clear it,
@@ -9,7 +10,15 @@ function ProfilePictureSelection({
   existingUrl = null,
   error = null,
 }) {
-  const previewSrc = file ? URL.createObjectURL(file) : existingUrl;
+  const [preview, setPreview] = useState(null);
+  useEffect(() => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setPreview({ file, url: reader.result });
+    reader.readAsDataURL(file);
+    return () => { reader.onload = null; if (reader.readyState === 1) reader.abort(); };
+  }, [file]);
+  const previewSrc = file ? (preview?.file === file ? preview.url : null) : existingUrl;
 
   return (
     <div>

@@ -35,6 +35,7 @@ import PurchaseSuccess from "../pages/user/PurchaseSuccess";
 // Organizer Pages
 import OrganizerDashboard from "../pages/organizer/Dashboard";
 import OrganizerEvent from "../pages/organizer/Event";
+import CreateEventPage from "../pages/organizer/CreateEventPage";
 import EventFormPage from "../pages/organizer/EventFormPage";
 import OrganizerOffers from "../pages/organizer/Offers";
 import OfferFormPage from "../pages/organizer/OfferFormPage";
@@ -199,13 +200,19 @@ function AppRoutes() {
               element={<OrganizerEvent />}
             />
 
-            {/* Create Event */}
+            {/* Create Event — the real, backend-connected flow
+                (see nearby-backend/models/Event.js). Posts to
+                MongoDB via POST /api/events; new events start
+                as "Pending" until an admin approves them. */}
             <Route
               path="/organizer/events/new"
-              element={<EventFormPage />}
+              element={<CreateEventPage />}
             />
 
-            {/* Edit Event */}
+            {/* Edit Event — still the legacy dummy-data flow.
+                Editing a real (backend) event isn't built yet;
+                this only ever operates on the mock data in
+                src/data/events.js. */}
             <Route
               path="/organizer/events/:id/edit"
               element={<EventFormPage />}

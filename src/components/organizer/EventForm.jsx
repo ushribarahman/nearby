@@ -9,7 +9,6 @@ function EventForm({
   setShowForm,
   setEditingEvent,
   onImageChange,
-  authToken,
 }) {
   return (
     <div className="mb-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -136,7 +135,6 @@ function EventForm({
               publicId={formData.imagePublicId}
               onChange={onImageChange}
               uploadType="event"
-              token={authToken}
             />
           </div>
 

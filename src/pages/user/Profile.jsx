@@ -4,19 +4,15 @@ import useAuth from "../../hooks/useAuth";
 import authService from "../../services/authService";
 import { getTicketHistory } from "../../utils/ticketHistory";
 import PasswordInput from "../../components/common/PasswordInput";
-import ProfilePictureSelection from "../../components/common/ProfilePictureSelection/ProfilePictureSelection";
+import ProfilePhotoEditor from "../../components/common/ProfilePhotoEditor";
 
 function Profile() {
   const { user, updateProfile, uploadProfilePicture, removeProfilePicture } =
     useAuth();
 
-  // ---- Profile picture ----
-  const [pictureFile, setPictureFile] = useState(null);
-  const [isUploadingPicture, setIsUploadingPicture] = useState(false);
-  const [isRemovingPicture, setIsRemovingPicture] = useState(false);
-  const [pictureError, setPictureError] = useState("");
-
   // ---- Personal info editing ----
+  const [pictureFile, setPictureFile] = useState(null);
+  const [removePicture, setRemovePicture] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -61,33 +57,6 @@ function Profile() {
     ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
     : "User";
 
-  const handlePictureUpload = async (file) => {
-    setPictureError("");
-
-    try {
-      setIsUploadingPicture(true);
-      await uploadProfilePicture(file);
-      setPictureFile(null);
-    } catch (err) {
-      setPictureError(err.message || "Couldn't upload the photo. Try again.");
-    } finally {
-      setIsUploadingPicture(false);
-    }
-  };
-
-  const handlePictureRemove = async () => {
-    setPictureError("");
-
-    try {
-      setIsRemovingPicture(true);
-      await removeProfilePicture();
-    } catch (err) {
-      setPictureError(err.message || "Couldn't remove the photo. Try again.");
-    } finally {
-      setIsRemovingPicture(false);
-    }
-  };
-
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -98,6 +67,9 @@ function Profile() {
   };
 
   const handleCancel = () => {
+    if (isSaving) return;
+    setPictureFile(null);
+    setRemovePicture(false);
     if (user) {
       setFields({
         name: user.name || "",
@@ -111,6 +83,7 @@ function Profile() {
   };
 
   const handleSave = async () => {
+    if (!isEditing || isSaving) return;
     setError("");
     setSuccessMessage("");
 
@@ -128,6 +101,10 @@ function Profile() {
         phone: fields.phone.trim(),
       });
 
+      if (pictureFile) await uploadProfilePicture(pictureFile);
+      else if (removePicture) await removeProfilePicture();
+      setPictureFile(null);
+      setRemovePicture(false);
       setSuccessMessage("Profile updated successfully.");
       setIsEditing(false);
     } catch (err) {
@@ -239,35 +216,7 @@ function Profile() {
           {/* Profile Header */}
           <div className="border-b border-gray-100 px-6 py-7 sm:px-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-              <div className="shrink-0">
-                <ProfilePictureSelection
-                  file={pictureFile}
-                  setFile={(file) => {
-                    setPictureFile(file);
-                    if (file) handlePictureUpload(file);
-                  }}
-                  existingUrl={user?.profilePicture?.url}
-                  error={pictureError}
-                />
-
-                {(isUploadingPicture || isRemovingPicture) && (
-                  <p className="mt-2 text-xs text-gray-400">
-                    {isUploadingPicture ? "Uploading..." : "Removing..."}
-                  </p>
-                )}
-
-                {user?.profilePicture?.url &&
-                  !isUploadingPicture &&
-                  !isRemovingPicture && (
-                    <button
-                      type="button"
-                      onClick={handlePictureRemove}
-                      className="mt-2 text-xs font-medium text-gray-500 underline-offset-2 hover:text-red-500 hover:underline"
-                    >
-                      Remove photo
-                    </button>
-                  )}
-              </div>
+              <ProfilePhotoEditor user={user} editing={isEditing} saving={isSaving} file={pictureFile} remove={removePicture} onFile={setPictureFile} onRemove={setRemovePicture} />
 
               <div className="min-w-0">
                 <h2 className="truncate text-2xl font-semibold text-gray-900">

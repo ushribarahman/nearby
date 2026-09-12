@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import eventsData from "../../data/events";
 import EventForm from "../../components/organizer/EventForm";
-import useAuth from "../../hooks/useAuth";
 
 const emptyFormData = {
   title: "",
@@ -25,7 +24,6 @@ const emptyFormData = {
 function EventFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { authToken } = useAuth();
   const isEdit = Boolean(id);
 
   const [editingEvent, setEditingEvent] = useState(null);
@@ -149,7 +147,6 @@ function EventFormPage() {
           setShowForm={() => navigate("/organizer/events")}
           setEditingEvent={() => {}}
           onImageChange={handleImageChange}
-          authToken={authToken}
         />
       </div>
     </div>

@@ -1,3 +1,4 @@
+import Avatar from "../common/Avatar";
 import StatusBadge from "./StatusBadge";
 
 function UsersTable({ users, onView, onToggleStatus }) {
@@ -34,7 +35,7 @@ function UsersTable({ users, onView, onToggleStatus }) {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#01BBC1]/10 font-semibold text-[#01BBC1]">
-                      {user.name.charAt(0)}
+                      <Avatar user={user} fallback="U" />
                     </div>
 
                     <div>

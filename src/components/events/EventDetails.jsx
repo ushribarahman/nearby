@@ -1,9 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import events from "../../data/events";
+import useEvents from "../../hooks/useEvents";
 
 function EventDetails() {
   const { id } = useParams();
-  const event = events.find((e) => e.id === parseInt(id));
+  const { event, loading, error } = useEvents(id);
+  if (loading) return <p className="p-8">Loading event...</p>;
+  if (error || !event) return <p role="alert" className="p-8">{error || "Event not found."}</p>;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-4 pb-8">
@@ -68,7 +70,6 @@ function EventDetails() {
             <h3 className="text-lg font-semibold">Location</h3>
           </div>
           <p className="font-medium">{event.location}</p>
-          <p className="text-sm text-gray-500 mt-1">5th Fl, Bari Momen's Heights, Banani</p>
           <a href={event.mapLink || "https://maps.google.com"} target="_blank" rel="noopener noreferrer" className="text-[#01BBC1] hover:text-[#019ca1] hover:underline text-sm inline-block mt-2">
             View Map →
           </a>
@@ -80,13 +81,13 @@ function EventDetails() {
           <img src="https://img.icons8.com/?size=100&id=1ztfvElILGPO&format=png&color=000000" alt="tickets" className="w-5 h-5" />
           <h3 className="text-lg font-semibold">Tickets</h3>
         </div>
-        <div className="bg-white rounded-lg border p-4 flex items-center justify-between">
+        {event.tickets.map((ticket) => <div key={ticket.id} className="bg-white rounded-lg border p-4 flex items-center justify-between">
           <div>
-            <p className="font-medium">Ticket 1</p>
-            <p className="text-sm text-gray-500">General Admission</p>
+            <p className="font-medium">{ticket.name}</p>
+            <p className="text-sm text-gray-500">{ticket.description}</p>
           </div>
-          <span className="text-lg font-bold">{event.ticketPrice === 0 ? "Free" : `${event.ticketPrice} BDT`}</span>
-        </div>
+          <span className="text-lg font-bold">{ticket.price === 0 ? "Free" : `${ticket.price} BDT`}</span>
+        </div>)}
       </div>
 
       <div className="mb-8">

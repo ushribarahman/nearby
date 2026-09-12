@@ -1,60 +1,50 @@
-import { axiosInstance } from "../utils/axiosInstance";
+import apiRequest from "./api";
 
 // ==========================================
 // EVENT / OFFER COVER IMAGE UPLOADS
 //
-// Keep these two values in sync with
+// Keep these values in sync with
 // nearby-backend/middleware/coverImageUpload.middleware.js
 // ==========================================
 
-export const MAX_IMAGE_SIZE_MB = 1;
+export const MAX_IMAGE_SIZE_MB = 5;
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
-const uploadEventImage = async (file, token) => {
+// 16:9 is the recommended ratio for event/offer banners — it reads
+// well both as a full-width hero image on the event page and as a
+// cropped thumbnail in card/list views, and matches the aspect ratio
+// most phone cameras and screenshot tools already default to.
+export const RECOMMENDED_BANNER_RATIO = 16 / 9;
+export const RECOMMENDED_BANNER_DIMENSIONS = "1200 × 675px";
+
+// Same cookie-based auth as the rest of the app (apiRequest already
+// sends credentials: "include") — no Bearer token needed.
+
+const uploadEventImage = async (file) => {
   const formData = new FormData();
-  formData.set("image", file);
+  formData.append("image", file);
 
-  const response = await axiosInstance.post(
-    "/api/upload/event-image",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  return response.data; // { url, publicId }
-};
-
-const uploadOfferImage = async (file, token) => {
-  const formData = new FormData();
-  formData.set("image", file);
-
-  const response = await axiosInstance.post(
-    "/api/upload/offer-image",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  return response.data; // { url, publicId }
-};
-
-const deleteCoverImage = async (publicId, token) => {
-  const response = await axiosInstance.delete("/api/upload/image", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    data: { publicId },
+  return await apiRequest("/upload/event-image", {
+    method: "POST",
+    body: formData,
   });
+};
 
-  return response.data;
+const uploadOfferImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  return await apiRequest("/upload/offer-image", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+const deleteCoverImage = async (publicId) => {
+  return await apiRequest("/upload/image", {
+    method: "DELETE",
+    body: JSON.stringify({ publicId }),
+  });
 };
 
 const uploadService = {

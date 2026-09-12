@@ -1,5 +1,6 @@
 import AdminModal from "./AdminModal";
 import StatusBadge from "./StatusBadge";
+import Avatar from "../common/Avatar";
 
 function OrganizerReviewModal({ organizer, onClose, onApprove, onSuspend }) {
   return (
@@ -7,6 +8,7 @@ function OrganizerReviewModal({ organizer, onClose, onApprove, onSuspend }) {
       eyebrow="Organizer Review"
       title={organizer.name}
       onClose={onClose}
+      maxWidthClassName="max-w-2xl"
       footer={
         <div className="flex gap-2">
           {organizer.status !== "Approved" && (
@@ -39,7 +41,11 @@ function OrganizerReviewModal({ organizer, onClose, onApprove, onSuspend }) {
         </div>
       }
     >
-      <div className="grid grid-cols-2 gap-4">
+      <div className="mb-6 flex items-center gap-5 rounded-2xl bg-gray-50 p-5">
+        <div className="h-24 w-24 shrink-0 rounded-full bg-black text-3xl font-semibold text-white"><Avatar user={organizer} fallback="O" /></div>
+        <div className="min-w-0"><h3 className="text-xl font-semibold">{organizer.name}</h3><p className="mt-1 break-words text-sm text-gray-500">{organizer.email}</p><p className="mt-2 text-xs text-gray-400">Organizer account</p></div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-xl bg-gray-50 p-4">
           <p className="text-xs text-gray-400">Owner</p>
           <p className="mt-1 text-sm font-medium text-gray-900">

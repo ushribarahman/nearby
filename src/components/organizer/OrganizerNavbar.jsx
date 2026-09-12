@@ -1,3 +1,4 @@
+import Avatar from "../common/Avatar";
 import { useEffect, useState, useRef } from "react";
 import {
   NavLink,
@@ -87,15 +88,7 @@ function OrganizerNavbar() {
     navigate("/organizer/profile");
   };
 
-  const getInitial = () => {
-    if (user?.name) {
-      return user.name
-        .charAt(0)
-        .toUpperCase();
-    }
 
-    return "O";
-  };
 
   const getDisplayName = () => {
     if (user?.name) {
@@ -197,15 +190,7 @@ function OrganizerNavbar() {
                   focus:ring-offset-2
                 "
               >
-                {user?.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt="Profile"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  getInitial()
-                )}
+                <Avatar user={user} fallback="O" />
               </button>
 
               {dropdownOpen && (

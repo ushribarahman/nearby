@@ -33,7 +33,7 @@ function RecentEventsTable({ events }) {
 
           <tbody className="divide-y divide-gray-100">
             {events.map((event) => (
-              <tr key={event.name} className="transition hover:bg-gray-50">
+              <tr key={event.id} className="transition hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <p className="font-medium text-gray-900">{event.name}</p>
                 </td>

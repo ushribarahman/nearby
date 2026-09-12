@@ -7,7 +7,7 @@ function PurchaseSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { eventTitle, quantity, total } = location.state || {};
+  const { eventTitle, quantity, total, items = [] } = location.state || {};
 
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
 
@@ -61,6 +61,17 @@ function PurchaseSuccess() {
           <p className="mt-3 text-gray-500">
             Your purchase has been confirmed.
           </p>
+        )}
+
+        {items.length > 0 && (
+          <ul className="mt-4 space-y-2 text-left text-sm text-gray-600">
+            {items.map((item) => (
+              <li key={item.ticketId} className="flex justify-between gap-3">
+                <span>{item.ticketName} × {item.quantity}</span>
+                <span>{item.unitPrice === 0 ? "Free" : `${item.unitPrice * item.quantity} BDT`}</span>
+              </li>
+            ))}
+          </ul>
         )}
 
         <p className="mt-6 text-sm text-gray-400">

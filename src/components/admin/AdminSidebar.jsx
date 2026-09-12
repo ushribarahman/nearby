@@ -1,3 +1,4 @@
+import Avatar from "../common/Avatar";
 import { NavLink, Link } from "react-router-dom";
 import logoAdmin from "/logo_admin.png";
 import useAuth from "../../hooks/useAuth";
@@ -27,7 +28,6 @@ function AdminSidebar() {
     await logout();
   };
 
-  const avatarLetter = user?.name ? user.name.charAt(0).toUpperCase() : "A";
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-gray-800 bg-[#0B0D12]">
@@ -66,7 +66,7 @@ function AdminSidebar() {
       <div className="border-t border-gray-800 p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#01BBC1] text-sm font-semibold text-black">
-            {avatarLetter}
+            <Avatar user={user} fallback="A" />
           </div>
 
           <div className="min-w-0 flex-1">

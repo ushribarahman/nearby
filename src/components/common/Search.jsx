@@ -3,6 +3,8 @@ function Search({ searchTerm, onSearchChange, placeholder = "Search events..." }
     <div className="relative">
       <input
         type="text"
+        value={searchTerm}
+        onChange={(event) => onSearchChange?.(event.target.value)}
         placeholder={placeholder}
         className="w-full rounded-full border border-gray-300 px-4 py-2 pl-10 pr-10 text-sm focus:border-[#01BBC1] focus:outline-none focus:ring-1 focus:ring-[#01BBC1]"
       />

@@ -1,3 +1,4 @@
+import useOffers from "../../hooks/useOffers";
 import { useEffect, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import DashboardStats from "../../components/admin/DashboardStats";
@@ -6,7 +7,7 @@ import RecentUsersList from "../../components/admin/RecentUsersList";
 import QuickActions from "../../components/admin/QuickActions";
 import { UsersIcon, OrganizersIcon, EventsIcon, OffersIcon } from "../../components/admin/icons";
 import adminService from "../../services/adminService";
-import { eventOfferStats, recentEvents } from "../../data/admin/dashboard";
+
 
 const formatJoinedDate = (isoDate) => {
   if (!isoDate) return "Unknown";
@@ -25,9 +26,10 @@ const formatJoinedDate = (isoDate) => {
   });
 };
 
-const EVENT_OFFER_ICONS = [EventsIcon, OffersIcon];
+
 
 function Dashboard() {
+  const offerData = useOffers("admin");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [userStats, setUserStats] = useState({
@@ -35,6 +37,8 @@ function Dashboard() {
     totalOrganizers: null,
   });
   const [recentUsers, setRecentUsers] = useState([]);
+  const [recentEvents, setRecentEvents] = useState([]);
+  const [totalEvents, setTotalEvents] = useState(null);
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -42,16 +46,22 @@ function Dashboard() {
         setIsLoading(true);
         setError("");
 
-        const [statsResponse, usersResponse] = await Promise.all([
+        const [statsResponse, usersResponse, eventsResponse] = await Promise.all([
           adminService.getStats(),
           adminService.getUsers(),
+          adminService.getEvents(),
         ]);
 
         setUserStats(statsResponse);
+        setTotalEvents(eventsResponse.events.length);
+        setRecentEvents(eventsResponse.events.slice(0, 4).map((event) => ({
+          ...event, name: event.title, organizer: event.organizer?.name || "Unknown organizer",
+        })));
 
         setRecentUsers(
           usersResponse.users.slice(0, 4).map((user) => ({
             name: user.name,
+            profilePicture: user.profilePicture,
             email: user.email,
             joined: formatJoinedDate(user.joined),
           }))
@@ -66,9 +76,7 @@ function Dashboard() {
     loadDashboardData();
   }, []);
 
-  // Total Users / Organizers come straight from MongoDB. Total Events
-  // and Total Offers are still mocked — there's no Event/Offer backend
-  // yet — so they're merged in from the (clearly labeled) mock file.
+  // All counts come from the corresponding live API.
   const stats = [
     {
       label: "Total Users",
@@ -82,10 +90,8 @@ function Dashboard() {
       description: "registered organizers",
       Icon: OrganizersIcon,
     },
-    ...eventOfferStats.map((stat, index) => ({
-      ...stat,
-      Icon: EVENT_OFFER_ICONS[index],
-    })),
+    { label: "Total Events", value: isLoading ? "…" : totalEvents, description: "submitted events", Icon: EventsIcon },
+    { label: "Total Offers", value: offerData.loading ? "…" : offerData.error ? "—" : offerData.offers.length, description: "submitted offers", Icon: OffersIcon },
   ];
 
   return (
@@ -112,6 +118,7 @@ function Dashboard() {
       )}
 
       <DashboardStats stats={stats} />
+      {offerData.error && <p role="alert" className="mt-4 text-red-600">{offerData.error}</p>}
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <RecentEventsTable events={recentEvents} />

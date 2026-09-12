@@ -1,4 +1,4 @@
-function Filter({ selectedFilter, onFilterChange }) {
+function Filter({ selectedFilter = "all", onFilterChange }) {
   const filters = [
     { id: "all", label: "All" },
     { id: "live", label: "Live" },
@@ -10,8 +10,9 @@ function Filter({ selectedFilter, onFilterChange }) {
       {filters.map((filter) => (
         <button
           key={filter.id}
+          onClick={() => onFilterChange?.(filter.id)}
           className={`rounded-full px-4 py-1.5 text-sm font-medium ${
-            filter.id === "all"
+            filter.id === selectedFilter
               ? "bg-black text-white"
               : "bg-white text-gray-600"
           }`}

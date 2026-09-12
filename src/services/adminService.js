@@ -37,6 +37,11 @@ const updateOrganizerStatus = async (id, status) => {
 };
 
 const adminService = {
+  getEvents: () => apiRequest("/admin/events"),
+  updateEventStatus: (id, status) => apiRequest(`/admin/events/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+  }),
   getUsers,
   getOrganizers,
   getStats,

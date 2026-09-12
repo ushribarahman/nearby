@@ -1,7 +1,8 @@
-import events from "../../data/events";
+import useEvents from "../../hooks/useEvents";
 import EventSlider from "./EventSlider";
 
 function NearbyEvents() {
+  const { events, loading, error } = useEvents();
   return (
     <section className="py-16 md:py-10">
 
@@ -21,6 +22,9 @@ function NearbyEvents() {
 
       </div>
 
+      {loading && <p className="px-6 text-center">Loading events...</p>}
+      {error && <p role="alert" className="px-6 text-center">{error}</p>}
+      {!loading && !error && events.length === 0 && <p className="text-center">No approved events yet.</p>}
       <EventSlider
         events={events}
         direction="left"
