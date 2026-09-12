@@ -28,11 +28,7 @@ function Card({ data }) {
           </span>
         )}
 
-        {data?.status && (
-          <span className="absolute right-2 top-2 rounded-md bg-[#01BBC1] px-2 py-1 text-xs font-semibold text-white">
-            {data.status}
-          </span>
-        )}
+
       </div>
 
       <div className="px-2 pb-3 pt-3">

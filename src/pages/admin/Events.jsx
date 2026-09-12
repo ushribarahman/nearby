@@ -1,3 +1,5 @@
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
@@ -9,11 +11,14 @@ const displayEvent = (event) => ({ ...event, organizer: event.organizer?.name ||
 
 function Events() {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All");
+  const [params,setParams]=useSearchParams();
+  const filter=["Pending","Approved","Rejected"].find(value=>value.toLowerCase()===params.get("status")) || "All";
+  const setFilter=value=>setParams({status:value.toLowerCase()});
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reviewError, setReviewError] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,15 +43,15 @@ function Events() {
     });
   }, [events, search, filter]);
 
-  const updateStatus = async (id, status) => {
+  const updateStatus = async (id, status, rejectionReason) => {
     if (saving) return;
     setSaving(true);
-    setError("");
+    setReviewError("");
     try {
-      const { event } = await adminService.updateEventStatus(id, status);
+      const { event } = await adminService.updateEventStatus(id, status, rejectionReason);
       setEvents((current) => current.map((item) => item.id === id ? displayEvent(event) : item));
       setSelectedEvent(null);
-    } catch (err) { setError(err.message); }
+    } catch (err) { setReviewError(err.message); }
     finally { setSaving(false); }
   };
 
@@ -72,16 +77,17 @@ function Events() {
       />
 
       {error && <p role="alert" className="mb-4 text-red-600">{error}</p>}
-      {loading ? <p>Loading events...</p> : <EventsTable events={filteredEvents} onReview={setSelectedEvent} />}
+      {loading ? <LoadingSkeleton variant="list" /> : <EventsTable events={filteredEvents} onReview={item => { setReviewError(""); setSelectedEvent(item); }} />}
 
       {selectedEvent && (
         <EventReviewModal
+          key={selectedEvent.id}
           event={selectedEvent}
           saving={saving}
-          error={error}
+          error={reviewError}
           onClose={() => setSelectedEvent(null)}
           onApprove={(id) => updateStatus(id, "Approved")}
-          onReject={(id) => updateStatus(id, "Rejected")}
+          onReject={(id, reason) => updateStatus(id, "Rejected", reason)}
         />
       )}
     </div>

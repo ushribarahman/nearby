@@ -1,3 +1,5 @@
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
@@ -9,11 +11,14 @@ const displayOffer = (offer) => ({ ...offer, organizer: offer.organizer?.name ||
 
 function Offers() {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All");
+  const [params,setParams]=useSearchParams();
+  const filter=["Pending","Approved","Rejected"].find(value=>value.toLowerCase()===params.get("status")) || "All";
+  const setFilter=value=>setParams({status:value.toLowerCase()});
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reviewError, setReviewError] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,15 +43,15 @@ function Offers() {
     });
   }, [offers, search, filter]);
 
-  const updateStatus = async (id, status) => {
+  const updateStatus = async (id, status, rejectionReason) => {
     if (saving) return;
     setSaving(true);
-    setError("");
+    setReviewError("");
     try {
-      const { offer } = await offerService.moderate(id, status);
+      const { offer } = await offerService.moderate(id, status, rejectionReason);
       setOffers((current) => current.map((item) => item.id === id ? displayOffer(offer) : item));
       setSelectedOffer(null);
-    } catch (err) { setError(err.message); }
+    } catch (err) { setReviewError(err.message); }
     finally { setSaving(false); }
   };
 
@@ -72,16 +77,17 @@ function Offers() {
       />
 
       {error && <p role="alert" className="mb-4 text-red-600">{error}</p>}
-      {loading ? <p>Loading offers...</p> : <OffersTable offers={filteredOffers} onReview={setSelectedOffer} />}
+      {loading ? <LoadingSkeleton variant="list" /> : <OffersTable offers={filteredOffers} onReview={item => { setReviewError(""); setSelectedOffer(item); }} />}
 
       {selectedOffer && (
         <OfferReviewModal
+          key={selectedOffer.id}
           offer={selectedOffer}
           saving={saving}
-          error={error}
+          error={reviewError}
           onClose={() => setSelectedOffer(null)}
           onApprove={(id) => updateStatus(id, "Approved")}
-          onReject={(id) => updateStatus(id, "Rejected")}
+          onReject={(id, reason) => updateStatus(id, "Rejected", reason)}
         />
       )}
     </div>

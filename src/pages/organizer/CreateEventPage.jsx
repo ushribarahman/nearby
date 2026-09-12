@@ -1,3 +1,6 @@
+import { getFormErrors } from "../../utils/formValidation";
+import ListingFields from "../../components/organizer/ListingFields";
+import { formatAddress } from "../../utils/listingOptions";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CoverImageUpload from "../../components/organizer/CoverImageUpload/CoverImageUpload";
@@ -9,6 +12,7 @@ const emptyFormData = {
   title: "",
   category: "",
   location: "",
+  address: { venue: "", area: "", division: "", country: "Bangladesh" },
   locationLink: "",
   date: "",
   time: "",
@@ -81,6 +85,8 @@ function CreateEventPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    const validationError = getFormErrors(e.currentTarget);
+    if (validationError) { setError(validationError); return; }
 
     if (!formData.bannerImage.url?.trim() || !formData.bannerImage.publicId?.trim()) {
       setError("Upload a banner image before submitting your event.");
@@ -252,13 +258,7 @@ function CreateEventPage() {
           before going live.
         </p>
 
-        {error && (
-          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form noValidate onSubmit={handleSubmit} className="space-y-6">
 
               <div className="md:col-span-2">
                 <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -297,35 +297,7 @@ function CreateEventPage() {
                 />
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Category *
-                </label>
-                <input
-                  type="text"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                  placeholder="e.g. Music, Food, Technology"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Location *
-                </label>
-                <input
-                  type="text"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black focus:bg-white"
-                  placeholder="Enter venue name and area"
-                />
-              </div>
+              <ListingFields kind="events" category={formData.category} address={formData.address} onCategory={category=>setFormData(current=>({...current,category}))} onAddress={address=>setFormData(current=>({...current,address,location:formatAddress(address)}))}/>
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -540,6 +512,7 @@ function CreateEventPage() {
               Cancel
             </Link>
           </div>
+          {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
         </form>
       </div>
     </div>

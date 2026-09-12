@@ -2,7 +2,7 @@ import useOffers from "../../hooks/useOffers";
 import { useEffect, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import DashboardStats from "../../components/admin/DashboardStats";
-import RecentEventsTable from "../../components/admin/RecentEventsTable";
+import PendingSubmissions from "../../components/admin/PendingSubmissions";
 import RecentUsersList from "../../components/admin/RecentUsersList";
 import QuickActions from "../../components/admin/QuickActions";
 import { UsersIcon, OrganizersIcon, EventsIcon, OffersIcon } from "../../components/admin/icons";
@@ -36,6 +36,7 @@ function Dashboard() {
     totalUsers: null,
     totalOrganizers: null,
   });
+  const [recentOrganizers,setRecentOrganizers]=useState([]);
   const [recentUsers, setRecentUsers] = useState([]);
   const [recentEvents, setRecentEvents] = useState([]);
   const [totalEvents, setTotalEvents] = useState(null);
@@ -46,15 +47,17 @@ function Dashboard() {
         setIsLoading(true);
         setError("");
 
-        const [statsResponse, usersResponse, eventsResponse] = await Promise.all([
+        const [statsResponse, usersResponse, eventsResponse, organizersResponse] = await Promise.all([
           adminService.getStats(),
           adminService.getUsers(),
           adminService.getEvents(),
+          adminService.getOrganizers(),
         ]);
 
         setUserStats(statsResponse);
+        setRecentOrganizers(organizersResponse.organizers.slice(0,4).map(organizer=>({...organizer,joined:formatJoinedDate(organizer.joined)})));
         setTotalEvents(eventsResponse.events.length);
-        setRecentEvents(eventsResponse.events.slice(0, 4).map((event) => ({
+        setRecentEvents(eventsResponse.events.map((event) => ({
           ...event, name: event.title, organizer: event.organizer?.name || "Unknown organizer",
         })));
 
@@ -120,9 +123,11 @@ function Dashboard() {
       <DashboardStats stats={stats} />
       {offerData.error && <p role="alert" className="mt-4 text-red-600">{offerData.error}</p>}
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <RecentEventsTable events={recentEvents} />
-        <RecentUsersList users={recentUsers} />
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <PendingSubmissions kind="events" items={recentEvents} loading={isLoading} error={error}/>
+        <PendingSubmissions kind="offers" items={offerData.offers} loading={offerData.loading} error={offerData.error}/>
+        <RecentUsersList loading={isLoading} users={recentUsers} />
+        <RecentUsersList loading={isLoading} users={recentOrganizers} organizers />
       </div>
 
       <QuickActions />

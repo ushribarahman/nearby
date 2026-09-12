@@ -34,10 +34,8 @@ function OffersTable({ offers, onReview }) {
             {offers.map((offer) => (
               <tr key={offer.id} className="transition hover:bg-gray-50">
                 <td className="px-6 py-4">
-                  <p className="font-medium text-gray-900">{offer.title}</p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    Offer #{offer.id}
-                  </p>
+                  <div className="flex items-center gap-3">{offer.bannerImage?.url && <img src={offer.bannerImage.url} alt="" className="h-12 w-20 shrink-0 rounded-lg object-cover"/>}<p className="font-medium text-gray-900">{offer.title}</p></div>
+
                 </td>
 
                 <td className="px-6 py-4 text-sm text-gray-700">

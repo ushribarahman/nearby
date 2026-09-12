@@ -1,3 +1,4 @@
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import { useEffect, useMemo, useState } from "react";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import SearchFilterBar from "../../components/admin/SearchFilterBar";
@@ -95,9 +96,7 @@ function Organizers() {
       />
 
       {isLoading ? (
-        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center text-sm text-gray-500">
-          Loading organizers...
-        </div>
+        <LoadingSkeleton />
       ) : error ? (
         <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center text-sm text-red-600">
           {error}

@@ -1,3 +1,4 @@
+import LoadingSkeleton from "../common/LoadingSkeleton";
 import useEvents from "../../hooks/useEvents";
 import EventSlider from "./EventSlider";
 
@@ -22,7 +23,7 @@ function NearbyEvents() {
 
       </div>
 
-      {loading && <p className="px-6 text-center">Loading events...</p>}
+      {loading && <LoadingSkeleton variant="cards" />}
       {error && <p role="alert" className="px-6 text-center">{error}</p>}
       {!loading && !error && events.length === 0 && <p className="text-center">No approved events yet.</p>}
       <EventSlider

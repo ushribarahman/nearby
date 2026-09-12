@@ -1,3 +1,5 @@
+import OrganizerEventDetails from "../pages/organizer/EventDetailsPage";
+import OrganizerOfferDetails from "../pages/organizer/OfferDetailsPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Layouts
@@ -193,6 +195,9 @@ function AppRoutes() {
               path="/organizer/dashboard"
               element={<OrganizerDashboard />}
             />
+
+            <Route path="/organizer/events/:id" element={<OrganizerEventDetails />} />
+            <Route path="/organizer/offers/:id" element={<OrganizerOfferDetails />} />
 
             {/* Organizer Events */}
             <Route

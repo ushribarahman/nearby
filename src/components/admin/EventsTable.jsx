@@ -34,10 +34,8 @@ function EventsTable({ events, onReview }) {
             {events.map((event) => (
               <tr key={event.id} className="transition hover:bg-gray-50">
                 <td className="px-6 py-4">
-                  <p className="font-medium text-gray-900">{event.title}</p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    Event #{event.id}
-                  </p>
+                  <div className="flex items-center gap-3">{event.bannerImage?.url && <img src={event.bannerImage.url} alt="" className="h-12 w-20 shrink-0 rounded-lg object-cover"/>}<p className="font-medium text-gray-900">{event.title}</p></div>
+
                 </td>
 
                 <td className="px-6 py-4 text-sm text-gray-700">

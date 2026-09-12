@@ -91,6 +91,7 @@ function OrganizerNavbar() {
 
 
   const getDisplayName = () => {
+    if (user?.organizationName) return user.organizationName;
     if (user?.name) {
       return user.name;
     }

@@ -1,3 +1,4 @@
+import LoadingSkeleton from "../components/common/LoadingSkeleton";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
@@ -7,17 +8,7 @@ function ProtectedRoute() {
 
   //wait for authentication restoration
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-black" />
-
-          <p className="text-sm text-gray-500">
-            Loading...
-          </p>
-        </div>
-      </div>
-    );
+    return <div className="mx-auto min-h-screen max-w-7xl px-6 py-10"><div aria-hidden="true" className="mb-8 h-8 w-48 animate-pulse rounded-lg bg-gray-200 motion-reduce:animate-none"/><LoadingSkeleton rows={5}/></div>;
   }
 
   //not authenticated

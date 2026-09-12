@@ -1,40 +1,21 @@
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
+import { useState } from "react";
 import Card from "../../components/common/Card";
-import Filter from "../../components/common/Filter";
-import Search from "../../components/common/Search";
-import CategoryFilter from "../../components/common/CategoryFilter";
+import PublicListingFilters from "../../components/common/PublicListingFilters";
+import EventHero from "../../components/events/EventHero";
 import useEvents from "../../hooks/useEvents";
-import EventHero from "../../components/events/EventHero"
-
-function Events() {
-  const { events, loading, error } = useEvents();
-  return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-
-        <EventHero />
-
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-gray-100 p-3">
-
-        <Filter />
-
-        <div className="flex items-center gap-3">
-          <div className="w-48">
-            <Search />
-          </div>
-
-          <CategoryFilter />
-        </div>
-
-      </div>
-        {loading && <p>Loading events...</p>}
-        {error && <p role="alert">{error}</p>}
-        {!loading && !error && events.length === 0 && <p>No approved events yet.</p>}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {events.map((event) => (
-          <Card key={event.id} data={event} />
-        ))}
-        </div>
-    </div>
-  );
+import { matchesPublicFilters } from "../../utils/publicFilters";
+export default function Events() {
+ const {events,loading,error}=useEvents();
+ const [search,setSearch]=useState("");
+ const [category,setCategory]=useState("all");
+ const [location,setLocation]=useState("all");
+ const filtered=events.filter(item=>matchesPublicFilters(item,search,location,category));
+ return <main className="mx-auto max-w-7xl px-6 py-8">
+  <EventHero/>
+  <PublicListingFilters kind="events" search={search} onSearch={setSearch} location={location} onLocation={setLocation} category={category} onCategory={setCategory} categories={events.map(item=>item.category).filter(Boolean)}/>
+  {loading ? <LoadingSkeleton variant="cards" /> : error ? <p role="alert">{error}</p> : filtered.length===0 ? <p>No events match your search or location.</p> : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+   {filtered.map(item=><Card key={item.id} data={{...item,date:/^\d{4}-\d{2}-\d{2}$/.test(item.date)?new Date(item.date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):item.date}}/>)}
+  </div>}
+ </main>;
 }
-
-export default Events;

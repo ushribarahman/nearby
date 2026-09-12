@@ -1,3 +1,4 @@
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import useEvents from "../../hooks/useEvents";
@@ -12,7 +13,7 @@ function BuyTicket() {
   const { event, loading, error } = useEvents(id);
 
   const [quantities, setQuantities] = useState({});
-  if (loading) return <p className="p-8">Loading event...</p>;
+  if (loading) return <div className="mx-auto max-w-3xl px-6 py-10"><LoadingSkeleton variant="details" /></div>;
   if (error) return <p role="alert" className="p-8">{error}</p>;
 
   if (!event) {
@@ -94,15 +95,15 @@ function BuyTicket() {
 
       <div className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         {/* Event summary */}
-        <div className="flex gap-4 border-b border-gray-100 p-6">
+        <div className="border-b border-gray-100">
           <img
             src={event.image}
             alt={event.title}
-            className="h-20 w-28 shrink-0 rounded-lg object-cover"
+            className="aspect-video w-full object-cover object-center"
           />
 
-          <div className="min-w-0">
-            <h2 className="truncate text-lg font-semibold text-gray-900">
+          <div className="min-w-0 p-6 sm:p-8">
+            <h2 className="break-words text-2xl font-semibold text-gray-900">
               {event.title}
             </h2>
             <p className="mt-1 text-sm text-gray-500">

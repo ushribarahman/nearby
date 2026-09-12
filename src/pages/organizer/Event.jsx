@@ -1,3 +1,4 @@
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import OrganizerListFilters from "../../components/organizer/OrganizerListFilters";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -21,6 +22,6 @@ export default function Events() {
       <Link to="/organizer/events/new" className="rounded-lg bg-black px-5 py-3 text-white">+ Create Event</Link>
     </div>
     <OrganizerListFilters kind="events" search={search} onSearch={setSearch} status={status} onStatus={status=>setParams({status})} loading={loading} error={error} count={filtered.length} total={events.length}/>
-    {loading ? <p role="status">Loading your events...</p> : error ? <p role="alert" className="text-red-600">{error}</p> : <OrganizerEventList events={filtered} emptyMessage={events.length === 0 ? "You have no events yet. Create your first event!" : "No events match your search or status filter."} />}
+    {loading ? <LoadingSkeleton variant="list" /> : error ? <p role="alert" className="text-red-600">{error}</p> : <OrganizerEventList events={filtered} emptyMessage={events.length === 0 ? "You have no events yet. Create your first event!" : "No events match your search or status filter."} />}
   </div>;
 }

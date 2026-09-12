@@ -1,9 +1,9 @@
 import Avatar from "../common/Avatar";
 const formatDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(value + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : value;
-export default function OfferContent({ offer }) {
+export default function OfferContent({ offer, fullBanner = true }) {
   return <article>
-    <div className="relative mb-6 h-64 w-full overflow-hidden rounded-xl sm:h-96 lg:h-125">
-      <img src={offer.image} alt={offer.title} className="h-full w-full object-cover" />
+    <div className={"relative mb-6 w-full overflow-hidden rounded-xl " + (fullBanner ? "aspect-video bg-gray-100" : "h-64 sm:h-96 lg:h-125")}>
+      <img src={offer.image} alt={offer.title} className="h-full w-full object-cover object-center" />
       <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-6 sm:p-8">
         <p className="mb-2 text-sm text-white/80">{offer.category}</p>
         <h1 className="text-3xl font-bold text-white">{offer.title}</h1>

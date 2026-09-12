@@ -4,6 +4,6 @@ export default function OrganizerListFilters({ kind, search, onSearch, status, o
     <select aria-label="Filter by status" value={status} onChange={event => onStatus(event.target.value)} className="rounded-lg border border-gray-200 bg-white p-3">
       <option value="all">All {kind}</option><option value="pending">Pending</option><option value="approved">Running / Approved</option><option value="rejected">Rejected</option>
     </select>
-    <span className="text-sm text-gray-500">{loading ? "Loading..." : error ? "Count unavailable" : `${count} of ${total} ${kind}`}</span>
+    <span className="text-sm text-gray-500">{loading ? <span className="inline-block h-4 w-28 animate-pulse rounded bg-gray-200 motion-reduce:animate-none" aria-label="Loading count"/> : error ? "Count unavailable" : `${count} of ${total} ${kind}`}</span>
   </div>;
 }

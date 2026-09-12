@@ -1,3 +1,4 @@
+import LoadingSkeleton from "../common/LoadingSkeleton";
 function DashboardStats({ stats }) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -17,7 +18,7 @@ function DashboardStats({ stats }) {
           </div>
 
           <h2 className="mt-3 text-3xl font-bold text-gray-900">
-            {stat.value}
+            {stat.value === "…" ? <LoadingSkeleton variant="number"/> : stat.value}
           </h2>
 
           <p className="mt-2 text-xs text-gray-400">{stat.description}</p>

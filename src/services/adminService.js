@@ -38,9 +38,9 @@ const updateOrganizerStatus = async (id, status) => {
 
 const adminService = {
   getEvents: () => apiRequest("/admin/events"),
-  updateEventStatus: (id, status) => apiRequest(`/admin/events/${id}/status`, {
+  updateEventStatus: (id, status, rejectionReason) => apiRequest(`/admin/events/${id}/status`, {
     method: "PATCH",
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status, rejectionReason }),
   }),
   getUsers,
   getOrganizers,

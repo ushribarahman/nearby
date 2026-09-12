@@ -4,5 +4,5 @@ export default {
  get: (id,mine=false) => api((mine ? "/offers/mine/" : "/offers/") + encodeURIComponent(id)),
  save: (data,id) => api(id ? "/offers/"+id : "/offers",{method:id ? "PUT" : "POST",body:JSON.stringify(data)}),
  remove: (id) => api("/offers/"+id,{method:"DELETE"}),
- moderate: (id,status) => api("/admin/offers/"+id+"/status",{method:"PATCH",body:JSON.stringify({status})}),
+ moderate: (id,status,rejectionReason) => api("/admin/offers/"+id+"/status",{method:"PATCH",body:JSON.stringify({status,rejectionReason})}),
 };
