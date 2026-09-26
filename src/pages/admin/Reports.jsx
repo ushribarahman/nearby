@@ -1,17 +1,58 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import AdminPageHeader from "../../components/admin/AdminPageHeader";
 import ReportsSummaryCards from "../../components/admin/ReportsSummaryCards";
 import ReportsFilterBar from "../../components/admin/ReportsFilterBar";
 import ReportsTable from "../../components/admin/ReportsTable";
 import ReportReviewModal from "../../components/admin/ReportReviewModal";
-import initialReports from "../../data/admin/reports";
+import reportService from "../../services/reportService";
+
+// Keeps the list fresh without a websocket: refetch on an interval and
+// whenever the tab regains focus — the same pattern useEvents/useOffers
+// use elsewhere in the app.
+const POLL_INTERVAL_MS = 15000;
 
 function Reports() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [selectedReport, setSelectedReport] = useState(null);
-  const [reports, setReports] = useState(initialReports);
+
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
+  const [saving, setSaving] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    const refresh = () =>
+      reportService
+        .adminList()
+        .then(({ reports }) => {
+          if (!active) return;
+          setReports(reports);
+          setLoadError("");
+        })
+        .catch((error) => {
+          if (active) setLoadError(error.message);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+
+    refresh();
+    const timer = window.setInterval(refresh, POLL_INTERVAL_MS);
+    window.addEventListener("focus", refresh);
+
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refresh);
+    };
+  }, []);
 
   const filteredReports = useMemo(() => {
     return reports.filter((report) => {
@@ -33,14 +74,21 @@ function Reports() {
     });
   }, [reports, search, typeFilter, statusFilter]);
 
-  const updateReportStatus = (id, status) => {
-    setReports((current) =>
-      current.map((report) =>
-        report.id === id ? { ...report, status } : report
-      )
-    );
-
-    setSelectedReport(null);
+  const updateReportStatus = async (id, status) => {
+    if (saving) return;
+    setSaving(true);
+    setReviewError("");
+    try {
+      const { report } = await reportService.updateStatus(id, status);
+      setReports((current) =>
+        current.map((item) => (item.id === id ? report : item)),
+      );
+      setSelectedReport(null);
+    } catch (error) {
+      setReviewError(error.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const pendingCount = reports.filter(
@@ -93,15 +141,31 @@ function Reports() {
         onStatusChange={setStatusFilter}
       />
 
-      <ReportsTable
-        reports={filteredReports}
-        onReview={setSelectedReport}
-        onClearFilters={clearFilters}
-      />
+      {loadError && (
+        <p role="alert" className="mb-4 text-red-600">
+          {loadError}
+        </p>
+      )}
+
+      {loading ? (
+        <LoadingSkeleton variant="list" />
+      ) : (
+        <ReportsTable
+          reports={filteredReports}
+          onReview={(report) => {
+            setReviewError("");
+            setSelectedReport(report);
+          }}
+          onClearFilters={clearFilters}
+        />
+      )}
 
       {selectedReport && (
         <ReportReviewModal
+          key={selectedReport.id}
           report={selectedReport}
+          saving={saving}
+          error={reviewError}
           onClose={() => setSelectedReport(null)}
           onMarkUnderReview={(id) => updateReportStatus(id, "Under Review")}
           onResolve={(id) => updateReportStatus(id, "Resolved")}

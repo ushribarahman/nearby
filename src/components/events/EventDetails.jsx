@@ -1,5 +1,6 @@
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import Avatar from "../common/Avatar";
+import ReportButton from "../common/ReportButton";
 import { useParams, Link } from "react-router-dom";
 import useEvents from "../../hooks/useEvents";
 
@@ -23,12 +24,15 @@ function EventDetails() {
         </div>
       </div>
 
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">{event.title}</h2>
-        <div className="flex items-center gap-2 mt-2">
-          <div className="h-8 w-8 shrink-0 rounded-full bg-black text-white"><Avatar user={event.organizer} fallback="O" /></div>
-          <span className="text-sm text-gray-500">Event by {event.organizer?.name || "Organizer"}</span>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold">{event.title}</h2>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="h-8 w-8 shrink-0 rounded-full bg-black text-white"><Avatar user={event.organizer} fallback="O" /></div>
+            <span className="text-sm text-gray-500">Event by {event.organizer?.name || "Organizer"}</span>
+          </div>
         </div>
+        <ReportButton targetType="Event" targetId={event.id} />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
