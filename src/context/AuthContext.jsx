@@ -7,10 +7,6 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Restore authentication.
-    // The JWT lives in an httpOnly cookie set by the backend, so the browser
-    // sends it automatically with every request — we just ask the API who
-    // we are, instead of reading a token out of localStorage.
     useEffect(() => {
         const restoreUser = async () => {
             try {
@@ -18,8 +14,6 @@ export function AuthProvider({ children }) {
 
                 setUser(response.user);
             } catch (error) {
-                // No valid session cookie (or it expired) — that's fine,
-                // it just means the user isn't logged in.
                 setUser(null);
             } finally {
                 setLoading(false);
@@ -56,8 +50,6 @@ export function AuthProvider({ children }) {
             throw error;
         }
 
-        // The backend already set the httpOnly auth cookie on this response;
-        // we only need to keep the user info in memory.
         setUser(loggedInUser);
 
         return response;
@@ -72,9 +64,6 @@ export function AuthProvider({ children }) {
         return response;
     };
 
-    // Update profile (text fields only — no image upload here, see
-    // uploadProfilePicture/removeProfilePicture below for that). Used
-    // by both the regular user and organizer profile pages.
     const updateProfile = async (profileData) => {
         const response = await authService.updateProfile(
             profileData
@@ -85,8 +74,6 @@ export function AuthProvider({ children }) {
         return response;
     };
 
-    // Upload / update profile picture. Auth is via the same httpOnly
-    // cookie as every other request — no separate token to manage.
     const uploadProfilePicture = async (file) => {
         const response = await authService.uploadProfilePicture(file);
 

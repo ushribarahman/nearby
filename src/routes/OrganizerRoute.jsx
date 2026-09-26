@@ -16,8 +16,6 @@ function OrganizerRoute() {
     return <Navigate to="/login" replace />;
   }
 
-  //logged in but as a different role — send them to their own area,
-  //not the public homepage (e.g. an admin shouldn't land on "/").
   if (user.role !== "organizer") {
     return <Navigate to={getRoleHome(user.role)} replace />;
   }

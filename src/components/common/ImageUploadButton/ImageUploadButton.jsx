@@ -1,7 +1,6 @@
 import { useRef } from "react";
 
-// Mirrors cse2200's ImageUploadButton: a hidden file input triggered by a
-// visible button. Single-file only (profile picture doesn't need `multiple`).
+
 function ImageUploadButton({ setFile, className = "" }) {
   const inputRef = useRef(null);
 
@@ -12,7 +11,6 @@ function ImageUploadButton({ setFile, className = "" }) {
       setFile(files[0]);
     }
 
-    // Reset so selecting the same file again still fires onChange
     event.target.value = "";
   };
 

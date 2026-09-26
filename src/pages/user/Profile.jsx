@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import authService from "../../services/authService";
-import { getTicketHistory } from "../../utils/ticketHistory";
+import paymentService from "../../services/paymentService";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import PasswordInput from "../../components/common/PasswordInput";
 import ProfilePhotoEditor from "../../components/common/ProfilePhotoEditor";
 
@@ -47,11 +48,16 @@ function Profile() {
   // ---- Ticket history ----
   const [ticketHistory, setTicketHistory] = useState([]);
 
+  const [ticketsLoading, setTicketsLoading] = useState(true);
+  const [ticketsError, setTicketsError] = useState("");
   useEffect(() => {
-    if (user?.email) {
-      setTicketHistory(getTicketHistory(user.email));
-    }
-  }, [user]);
+    let active = true;
+    paymentService.history().then(({ orders }) => {
+      if (active) setTicketHistory(orders);
+    }).catch(error => { if (active) setTicketsError(error.message); })
+      .finally(() => { if (active) setTicketsLoading(false); });
+    return () => { active = false; };
+  }, [user?.email]);
 
   const roleLabel = user?.role
     ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
@@ -452,7 +458,7 @@ function Profile() {
             </p>
           </div>
 
-          {ticketHistory.length === 0 ? (
+          {ticketsLoading ? <div className="p-6"><LoadingSkeleton /></div> : ticketsError ? <p role="alert" className="p-6 text-red-600">{ticketsError}</p> : ticketHistory.length === 0 ? (
             <div className="px-6 py-12 text-center sm:px-8">
               <p className="text-sm text-gray-500">
                 You haven't bought any tickets yet.

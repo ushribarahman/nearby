@@ -1,9 +1,5 @@
 import apiRequest from "./api";
 
-// Organizer-only endpoints — the backend enforces this via
-// authMiddleware + requireOrganizer regardless of what the frontend
-// does, but only organizers ever see the UI that calls these.
-
 const createEvent = async (eventData) => {
   return await apiRequest("/events", {
     method: "POST",

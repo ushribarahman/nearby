@@ -1,9 +1,5 @@
 import apiRequest from "./api";
 
-// All of these are admin-only on the backend (authMiddleware +
-// requireAdmin) — this file just wraps the fetch calls for the admin
-// pages, same pattern as authService.js.
-
 const getUsers = async () => {
   return await apiRequest("/admin/users", {
     method: "GET",

@@ -62,15 +62,6 @@ function AppRoutes() {
 
       <Routes>
 
-        {/* ==========================================
-            USER-ZONE ROUTES
-            (public site + auth pages + logged-in user
-            pages). An organizer or admin session is
-            never allowed to render anything in here —
-            RestrictToUserRoute sends them straight to
-            their own dashboard instead.
-        =========================================== */}
-
         <Route element={<RestrictToUserRoute />}>
 
           <Route element={<PublicLayout />}>
@@ -150,9 +141,6 @@ function AppRoutes() {
                 element={<UserProfile />}
               />
 
-              {/* Buy Ticket — must be logged in as a regular user.
-                  Uses dummy ticket data for now; no real
-                  payment/order backend yet. */}
               <Route
                 path="/events/:id/buy-ticket"
                 element={<BuyTicket />}
@@ -160,10 +148,6 @@ function AppRoutes() {
 
             </Route>
 
-            {/* Purchase confirmation is a standalone full-screen
-                page (no navbar/footer) so the confirmation +
-                auto-redirect reads cleanly, same idea as the
-                admin login page being standalone. */}
             <Route
               path="/purchase-success"
               element={<PurchaseSuccess />}
@@ -171,10 +155,6 @@ function AppRoutes() {
 
           </Route>
 
-          {/* Unknown routes fall back to Home for regular
-              visitors, but organizers/admins are still
-              redirected to their own dashboard by the
-              guard above before this ever renders. */}
           <Route
             path="*"
             element={<Home />}
@@ -205,19 +185,13 @@ function AppRoutes() {
               element={<OrganizerEvent />}
             />
 
-            {/* Create Event — the real, backend-connected flow
-                (see nearby-backend/models/Event.js). Posts to
-                MongoDB via POST /api/events; new events start
-                as "Pending" until an admin approves them. */}
+            
             <Route
               path="/organizer/events/new"
               element={<CreateEventPage />}
             />
 
-            {/* Edit Event — still the legacy dummy-data flow.
-                Editing a real (backend) event isn't built yet;
-                this only ever operates on the mock data in
-                src/data/events.js. */}
+            
             <Route
               path="/organizer/events/:id/edit"
               element={<EventFormPage />}
@@ -250,20 +224,6 @@ function AppRoutes() {
           </Route>
 
         </Route>
-
-        {/* ==========================================
-            ADMIN LOGIN
-            Deliberately its own standalone route — not
-            nested under RestrictToUserRoute (which is
-            for the public/user zone) and not nested
-            under AdminRoute (which requires already
-            being an admin, which would make a login
-            page unreachable). The page itself redirects
-            away anyone who's already signed in, of any
-            role. There is no link to this route
-            anywhere in the UI — it's reached only by
-            typing the URL directly.
-        =========================================== */}
 
         <Route
           path="/admin/login"
