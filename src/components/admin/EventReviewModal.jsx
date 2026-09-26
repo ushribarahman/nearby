@@ -12,7 +12,7 @@ function EventReviewModal({ event, onClose, onApprove, onReject, saving, error }
       footer={<ReviewActions rejected={event.status === "Rejected"} saving={saving} error={error} onApprove={()=>onApprove(event.id)} onReject={reason=>onReject(event.id,reason)} onClose={onClose}/>} 
     >
       <div className="space-y-4">
-        {event.status === "Rejected" ? <div className="rounded-xl bg-red-50 p-4"><p className="font-semibold text-red-700">Rejected — final decision</p><p className="whitespace-pre-line">{event.rejectionReason || "No reason recorded."}</p></div> : null}
+        {event.status === "Rejected" ? <div className="rounded-xl bg-teal-50 p-4"><p className="font-semibold text-teal-700">Rejected — final decision</p><p className="whitespace-pre-line text-teal-800">{event.rejectionReason || "No reason recorded."}</p></div> : null}
         {saving && <p>Saving status...</p>}
         {event.bannerImage?.url && <img src={event.bannerImage.url} alt={event.title} className="aspect-video w-full rounded-xl object-cover"/>}
         <p className="whitespace-pre-line leading-7 text-gray-600">{event.description}</p>

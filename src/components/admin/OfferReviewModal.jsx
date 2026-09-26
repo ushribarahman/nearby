@@ -12,7 +12,7 @@ function OfferReviewModal({ offer, onClose, onApprove, onReject, saving, error }
       footer={<ReviewActions rejected={offer.status === "Rejected"} saving={saving} error={error} onApprove={()=>onApprove(offer.id)} onReject={reason=>onReject(offer.id,reason)} onClose={onClose}/>} 
     >
       <div className="space-y-4">
-        {offer.status === "Rejected" ? <div className="rounded-xl bg-red-50 p-4"><p className="font-semibold text-red-700">Rejected — final decision</p><p className="whitespace-pre-line">{offer.rejectionReason || "No reason recorded."}</p></div> : null}
+        {offer.status === "Rejected" ? <div className="rounded-xl bg-teal-50 p-4"><p className="font-semibold text-teal-700">Rejected — final decision</p><p className="whitespace-pre-line text-teal-800">{offer.rejectionReason || "No reason recorded."}</p></div> : null}
         {saving && <p>Saving status...</p>}
         {offer.image && <img src={offer.image} alt={offer.title} className="aspect-video w-full rounded-xl object-cover" />}
         <p className="whitespace-pre-line text-sm text-gray-600">{offer.description}</p>

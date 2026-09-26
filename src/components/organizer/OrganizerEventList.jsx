@@ -25,6 +25,12 @@ export default function OrganizerEventList({ events, emptyMessage = "No events f
               <div className="text-sm"><p className="font-medium text-gray-800">{event.date}</p><p className="mt-1 text-xs text-gray-500">{event.time}</p><p className="mt-2 line-clamp-2 text-xs text-gray-500">{event.location}</p></div>
               <div><StatusBadge status={event.status} /></div>
               <Link to={"/organizer/events/" + event.id} aria-label={"View details for " + event.title} className="rounded-full border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 transition hover:border-teal-500 hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-teal-500">View details ↗</Link>
+              {event.status === "Rejected" && (
+                <div className="col-span-full rounded-lg bg-teal-50 px-4 py-3 text-sm text-teal-800">
+                  <span className="font-semibold text-teal-700">Why it was rejected: </span>
+                  <span className="whitespace-pre-line">{event.rejectionReason || "No reason recorded."}</span>
+                </div>
+              )}
             </article>
           ))}
         </div>

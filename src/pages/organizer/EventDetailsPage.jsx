@@ -17,7 +17,7 @@ function EventContent({ selected }) {
       </div>
       {selected.bannerImage?.url && <div className="aspect-video w-full overflow-hidden bg-gray-100"><img src={selected.bannerImage.url} alt={selected.title} className="h-full w-full object-cover object-center" /></div>}
       <div className="space-y-8 p-6 sm:p-8">
-        {selected.status === "Rejected" && <div className="rounded-xl bg-red-50 p-5"><h3 className="font-semibold text-red-700">Rejection reason</h3><p className="mt-2 whitespace-pre-line">{selected.rejectionReason || "No reason recorded."}</p><p className="mt-2 text-sm">This submission cannot be resubmitted.</p></div>}
+        {selected.status === "Rejected" && <div className="rounded-xl bg-teal-50 p-5"><h3 className="font-semibold text-teal-700">Rejection reason</h3><p className="mt-2 whitespace-pre-line text-teal-800">{selected.rejectionReason || "No reason recorded."}</p><p className="mt-2 text-sm text-teal-700">This submission cannot be resubmitted.</p></div>}
         <header><p className="mb-2 text-sm font-medium text-teal-600">{selected.category}</p><h2 className="text-3xl font-bold tracking-tight text-gray-900">{selected.title}</h2></header>
         <div className="grid gap-4 rounded-xl bg-gray-50 p-5 sm:grid-cols-3">
           <div><p className="mb-2 text-xs uppercase tracking-wide text-gray-400">Date & time</p><p className="font-medium">{selected.date}</p><p className="mt-1 text-sm text-gray-600">{selected.time}</p></div>
