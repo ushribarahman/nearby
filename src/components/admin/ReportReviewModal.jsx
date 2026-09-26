@@ -7,6 +7,8 @@ function ReportReviewModal({
   onMarkUnderReview,
   onResolve,
   onDismiss,
+  saving,
+  error,
 }) {
   return (
     <AdminModal
@@ -15,30 +17,40 @@ function ReportReviewModal({
       onClose={onClose}
       maxWidthClassName="max-w-2xl"
       footer={
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <button
-            type="button"
-            onClick={() => onMarkUnderReview(report.id)}
-            className="flex-1 rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-          >
-            Mark Under Review
-          </button>
+        <div className="w-full">
+          {error && (
+            <p role="alert" className="mb-3 text-sm text-red-600">
+              {error}
+            </p>
+          )}
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              disabled={saving || report.status === "Under Review"}
+              onClick={() => onMarkUnderReview(report.id)}
+              className="flex-1 rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Mark Under Review
+            </button>
 
-          <button
-            type="button"
-            onClick={() => onResolve(report.id)}
-            className="flex-1 rounded-lg bg-[#01BBC1] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#01a5aa]"
-          >
-            Resolve Report
-          </button>
+            <button
+              type="button"
+              disabled={saving || report.status === "Resolved"}
+              onClick={() => onResolve(report.id)}
+              className="flex-1 rounded-lg bg-[#01BBC1] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#01a5aa] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {saving ? "Saving…" : "Resolve Report"}
+            </button>
 
-          <button
-            type="button"
-            onClick={() => onDismiss(report.id)}
-            className="flex-1 rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
-          >
-            Dismiss
-          </button>
+            <button
+              type="button"
+              disabled={saving || report.status === "Dismissed"}
+              onClick={() => onDismiss(report.id)}
+              className="flex-1 rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       }
     >
