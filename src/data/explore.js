@@ -5,7 +5,7 @@ const exploreData = [
     city: "Dhaka",
     type: "Park",
     location: "Mirpur, Dhaka",
-    image: "https://lh3.googleusercontent.com/grass-cs/ACvplmOiurZOlUC9tZ0f6IjuD96M12usmvzuCsRzcwlAQaN2cF_OggtwmHPTVBISQNXMsfXqgaNzKiB_359r7H0flhouIm27XtUoPgamQaMka2g710NzRD3F6buN1vzoblMftIfwhSWivg=s294-w294-h220-n-k-no",
+    image: "https://ak-d.tripcdn.com/images/1mi2o224x92yyrcv435D3_R_600_400_R5_Q90.jpg?proc=source/trip",
     description: "A peaceful green space with a wide variety of plants and walking areas.",
     rating: 4.4,
     entryFee: 20,

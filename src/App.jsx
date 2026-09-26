@@ -6,7 +6,7 @@ function App() {
   return (
     <AuthProvider>
       <AppRoutes />
-      {(import.meta.env.DEV || import.meta.env.VITE_CARBON_TRACKING === "true") && typeof PerformanceObserver !== "undefined" && <CarbonFootprintDisplay />}
+      <CarbonFootprintDisplay />
     </AuthProvider>
   );
 }
