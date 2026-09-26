@@ -5,7 +5,9 @@ import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 
 export default function PurchaseSuccess() {
   const [params] = useSearchParams();
-  const transactionId = params.get('transactionId');
+  const transactionId = params.get('transactionId') || (() => {
+    try { return sessionStorage.getItem('nearby:lastPayment'); } catch { return null; }
+  })();
   const [order, setOrder] = useState(null);
   const [error, setError] = useState('');
   const [refresh, setRefresh] = useState(0);

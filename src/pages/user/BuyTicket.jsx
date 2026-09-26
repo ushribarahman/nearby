@@ -86,7 +86,10 @@ function BuyTicket() {
         items: items.map(({ ticketId, quantity }) => ({ ticketId, quantity })),
         phone: phone ?? user?.phone ?? "", address,
       });
-      if (result.paymentUrl) window.location.assign(result.paymentUrl);
+      if (result.paymentUrl) {
+        try { sessionStorage.setItem('nearby:lastPayment', result.transactionId); } catch { /* Storage may be unavailable. */ }
+        window.location.assign(result.paymentUrl);
+      }
       else navigate(new URL(result.redirectUrl).pathname + new URL(result.redirectUrl).search);
     } catch (error) {
       setPaymentError(error.message);
