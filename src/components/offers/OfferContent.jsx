@@ -1,6 +1,7 @@
 import Avatar from "../common/Avatar";
+import ReportButton from "../common/ReportButton";
 const formatDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(value + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : value;
-export default function OfferContent({ offer, fullBanner = true }) {
+export default function OfferContent({ offer, fullBanner = true, showReport = true }) {
   return <article>
     <div className={"relative mb-6 w-full overflow-hidden rounded-xl " + (fullBanner ? "aspect-video bg-gray-100" : "h-64 sm:h-96 lg:h-125")}>
       <img src={offer.image} alt={offer.title} className="h-full w-full object-cover object-center" />
@@ -10,7 +11,10 @@ export default function OfferContent({ offer, fullBanner = true }) {
         <p className="mt-2 text-white/90">{formatDate(offer.date)} · {offer.time}</p>
       </div>
     </div>
-    <div className="mb-6"><h2 className="text-2xl font-bold">{offer.title}</h2><p className="mt-2 text-sm text-gray-500">Offer by {offer.organizer?.name || "Organizer"}</p></div>
+    <div className="mb-6 flex items-start justify-between gap-4">
+      <div><h2 className="text-2xl font-bold">{offer.title}</h2><p className="mt-2 text-sm text-gray-500">Offer by {offer.organizer?.name || "Organizer"}</p></div>
+      {showReport && <ReportButton targetType="Offer" targetId={offer.id} />}
+    </div>
     <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {[["Start date",formatDate(offer.date)],["Time",offer.time],["Location",offer.location],["Valid until",formatDate(offer.validUntil)]].map(([label,value]) => <div key={label} className="min-w-0 rounded-lg border border-gray-200 bg-white p-4"><p className="mb-2 text-sm text-gray-500">{label}</p><p className="break-words font-semibold">{value}</p></div>)}
     </div>
